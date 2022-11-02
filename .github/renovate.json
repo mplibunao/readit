@@ -1,0 +1,38 @@
+{
+	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
+	"extends": ["config:base"],
+	"automerge": true,
+	"commitMessage": "{{semanticPrefix}}Update {{depName}} to {{newVersion}} 🌟",
+	"prTitle": "{{semanticPrefix}}{{#if isPin}}Pin{{else}}Update{{/if}} dependency {{depName}} to version {{newVersion}} 🌟",
+	"major": {
+		"dependencyDashboardApproval": true,
+		"automerge": false
+	},
+	"minor": {
+		"automerge": false
+	},
+	"prConcurrentLimit": 3,
+	"prHourlyLimit": 1,
+	"schedule": ["before 3am on Monday"],
+	"updateNotScheduled": false,
+	"timezone": "Asia/Manila",
+	"lockFileMaintenance": {
+		"enabled": true
+	},
+	"separatePatchReleases": true,
+	"separateMultipleMajor": true,
+	"masterIssue": true,
+	"labels": ["dependencies", "renovate"],
+	"dependencyDashboard": true,
+	"includeForks": false,
+	"packageRules": [
+		{
+			"matchDatasources": ["docker"],
+			"labels": ["docker-update"]
+		},
+		{
+			"matchPackagePatterns": ["eslint"],
+			"labels": ["linting"]
+		}
+	]
+}
