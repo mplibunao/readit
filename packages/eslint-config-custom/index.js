@@ -1,7 +1,21 @@
 module.exports = {
-  extends: ["next", "turbo", "prettier"],
-  rules: {
-    "@next/next/no-html-link-for-pages": "off",
-    "react/jsx-key": "off",
-  },
-};
+	parser: '@typescript-eslint/parser',
+	parserOptions: {
+		ecmaVersion: 'latest',
+		sourceType: 'module',
+	},
+	plugins: ['testing-library', '@typescript-eslint'],
+	extends: [
+		'plugin:@typescript-eslint/recommended',
+		'next/core-web-vitals',
+		'turbo',
+		'prettier',
+		'plugin:testing-library/react',
+	],
+	rules: {
+		'@next/next/no-html-link-for-pages': 'off',
+		'testing-library/no-unnecessary-act': 'warn',
+		'@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+		'@typescript-eslint/no-non-null-assertion': 'off',
+	},
+}
