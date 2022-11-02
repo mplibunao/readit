@@ -1,0 +1,19 @@
+{
+	"$schema": "https://json.schemastore.org/tsconfig",
+	"display": "esbuild server",
+	"extends": "./base.json",
+	"compilerOptions": {
+		"target": "esnext",
+		"module": "esnext",
+		"lib": ["esnext"],
+		"useDefineForClassFields": true,
+		"sourceMap": true,
+		"emitDecoratorMetadata": false,
+		"newLine": "lf",
+		"experimentalDecorators": false,
+		"noEmit": true,
+		"noEmitOnError": true
+	},
+	"include": ["src"],
+	"exclude": ["node_modules", "**/*.test.ts"]
+}
