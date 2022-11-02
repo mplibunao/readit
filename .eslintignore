@@ -1,0 +1,8 @@
+node_modules
+dist
+coverage
+index.d.ts
+migrations
+scripts/**
+vitest.config.ts
+.eslintrc.cjs

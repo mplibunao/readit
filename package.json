@@ -1,25 +1,30 @@
 {
-  "name": "readit",
-  "version": "0.0.0",
-  "private": true,
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
-  "scripts": {
-    "build": "turbo run build",
-    "dev": "turbo run dev --parallel",
-    "lint": "turbo run lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
-  },
-  "devDependencies": {
-    "eslint-config-custom": "workspace:*",
-    "prettier": "latest",
-    "prettier-plugin-tailwindcss": "^0.1.13",
-    "turbo": "latest"
-  },
-  "engines": {
-    "node": ">=14.0.0"
-  },
-  "packageManager": "pnpm@7.9.0"
+	"name": "readit",
+	"version": "0.0.0",
+	"private": true,
+	"workspaces": [
+		"apps/*",
+		"packages/*"
+	],
+	"scripts": {
+		"build": "turbo run build",
+		"dev": "turbo run dev --parallel",
+		"lint": "turbo run lint",
+		"format": "prettier --write \"**/*.{ts,tsx,md}\""
+	},
+	"devDependencies": {
+		"esbuild": "^0.15.12",
+		"eslint-config-custom": "workspace:*",
+		"globby": "^13.1.2",
+		"minimist": "^1.2.7",
+		"prettier": "latest",
+		"prettier-plugin-tailwindcss": "^0.1.13",
+		"turbo": "latest"
+	},
+	"engines": {
+		"npm": ">=8.15.0",
+		"node": ">=18.12.0"
+	},
+	"packageManager": "pnpm@7.14.1"
 }
+
