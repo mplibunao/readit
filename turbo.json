@@ -1,15 +1,65 @@
 {
-  "$schema": "https://turbo.build/schema.json",
-  "pipeline": {
-    "build": {
-      "dependsOn": ["^build"],
-      "outputs": ["dist/**", ".next/**"]
-    },
-    "lint": {
-      "outputs": []
-    },
-    "dev": {
-      "cache": false
-    }
-  }
+	"$schema": "https://turbo.build/schema.json",
+	"pipeline": {
+		"build": {
+			"dependsOn": ["^build"],
+			"outputs": ["dist/**", ".next/**"],
+			"inputs": [
+				"src/**/*.{tsx,ts}",
+				"!src/**/*.test.{tsx,ts}",
+				"tsconfig.json"
+			]
+		},
+		"build:analyze": {
+			"dependsOn": ["^build:analyze"],
+			"outputs": ["analyze", "dist/**"],
+			"inputs": [
+				"src/**/*.{ts,tsx}",
+				"!src/**/*.test.{tsx,ts}",
+				"tsconfig.json"
+			]
+		},
+		"lint:check": {
+			"outputs": [".eslintcache"],
+			"dependsOn": [],
+			"inputs": [
+				"src/**/*.{ts,tsx,js,jsx}",
+				"!src/**/*.test.{tsx,ts}",
+				"tsconfig.json"
+			]
+		},
+		"lint:fix": {
+			"outputs": [".eslintcache"],
+			"dependsOn": [],
+			"inputs": [
+				"src/**/*.{ts,tsx,js,jsx}",
+				"!src/**/*.test.{tsx,ts}",
+				"tsconfig.json"
+			]
+		},
+		"test": {
+			"outputs": ["coverage/**"],
+			"dependsOn": ["build"],
+			"inputs": ["src/**/*.{tsx,ts}"]
+		},
+		"dev": {
+			"cache": false
+		},
+		"typecheck": {
+			"outputs": [],
+			"dependsOn": [],
+			"inputs": ["src/**/*.{tsx,ts}", "tsconfig.json"]
+		},
+		"format:check": {
+			"outputs": [],
+			"inputs": ["src/**/*.{js,jsx,ts,tsx,md,mdx,graphql,css,scss,yaml,json}"]
+		},
+		"format:fix": {
+			"outputs": [],
+			"inputs": ["src/**/*.{js,jsx,ts,tsx,md,mdx,graphql,css,scss,yaml,json}"]
+		},
+		"ci": {
+			"dependsOn": ["typecheck", "lint:check", "format:check"]
+		}
+	}
 }
