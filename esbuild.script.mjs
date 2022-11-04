@@ -24,9 +24,10 @@ import fs from 'fs'
  *															 Defaults to false
  *
  *			--saveAnalyze						 Save analyze instead of printing it to console (scrollback buffer may not be able to handle console.log-ing for big projects)
+ *	-w  --watch									 Watch for changes and rebuild
  */
 
-const getPlugins = (isProduction, entryPoints, isServer) => {
+const getPlugins = (isProduction, entryPoints, _isServer) => {
 	if (entryPoints.length > 1 || isProduction) {
 		return []
 	}
@@ -42,13 +43,15 @@ const getPlugins = (isProduction, entryPoints, isServer) => {
 }
 
 const getExternal = () => {
-	const packageJson = JSON.parse(fs.readFileSync('./package.json', 'utf-8'))
+	//const packageJson = JSON.parse(fs.readFileSync('./package.json', 'utf-8'))
 
-	const included = new Set(['validation'])
-	const external = [...Object.keys(packageJson.dependencies)].filter(
-		(deps) => !included.has(deps)
-	)
-	return external
+	//const included = new Set(['validation'])
+	//const external = [...Object.keys(packageJson.dependencies)].filter(
+	//(deps) => !included.has(deps)
+	//)
+	//return external
+
+	return ['./node_modules/*']
 }
 
 const argv = minimist(process.argv.slice(2))
@@ -58,6 +61,7 @@ const analyze = argv.analyze
 const app = argv.a || argv.app || 'server'
 const isServer = app === 'server'
 const entrypoint = argv.e || argv.entrypoint || 'src/index.ts'
+const watch = argv.w || argv.watch
 
 const entryPoints = await globby(entrypoint)
 const plugins = getPlugins(isProduction, entryPoints, isServer)
@@ -76,6 +80,7 @@ const result = await build({
 	sourcemap: true,
 	plugins,
 	metafile: true,
+	watch: !!watch,
 })
 
 let text = await analyzeMetafile(result.metafile, {
