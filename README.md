@@ -155,6 +155,7 @@ The advantages of distroless over alpine:
 Disadvantages:
 
 - No shell. Although they have a version of the image with a shell which is 1 MB bigger if you need it for debugging purposes (`gcr.io/distroless/nodejs:debug`)
+  - To debug run `docker run --entrypoint sh -it <image_name>`
 
 ##### References
 

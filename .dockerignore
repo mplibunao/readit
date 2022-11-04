@@ -1,6 +1,6 @@
-.git/
+#.git/
 .github/
-.gitignore
+#.gitignore
 **/*.env*
 !.env.example
 
@@ -29,19 +29,22 @@ docker-compose.override.yml
 db_data
 
 # custom esbuild artifact
-analyze
+**/*analyze
 
 # eslint
-.eslintcache
+**/*.eslintcache
 
 # typescript
-*.tsbuildinfo
+**/*.tsbuildinfo
 
 # turbo
-.turbo
+#.turbo
 
 # wireit
-.wireit
+#.wireit
 
 # vercel
-.vercel
+**/*.vercel
+
+# test artifacts
+**/*coverage
