@@ -12,6 +12,7 @@ coverage
 .next/
 out/
 build
+dist
 
 # misc
 .DS_Store
@@ -29,6 +30,34 @@ yarn-error.log*
 .env.development.local
 .env.test.local
 .env.production.local
+.env.test
 
 # turbo
 .turbo
+
+# wireit
+.wireit
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+
+# docker pg
+db_data
+
+# docker-compose
+docker-compose.override.yml
+
+# eslint
+.eslintcache
+
+# pnpm store
+.pnpm-store/**
+
+# esbuild analyze artifacts
+analyze
+
+# typescript build artifacts
+tsconfig.tsbuildinfo
