@@ -58,6 +58,3 @@ docker-compose.override.yml
 
 # esbuild analyze artifacts
 analyze
-
-# typescript build artifacts
-tsconfig.tsbuildinfo
