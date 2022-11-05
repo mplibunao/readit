@@ -12,7 +12,7 @@ const envJsonSchema = Type.Object({
 	]),
 	PORT: Type.Number({ default: 4000 }),
 	CI: Type.Optional(Type.Boolean({ default: false })),
-	API_HOST: Type.String(),
+	API_HOST: Type.Optional(Type.String()),
 	IS_PROD: Type.Boolean(),
 	FRONTEND_URL: Type.String(),
 	REDIS_HOST: Type.String(),
