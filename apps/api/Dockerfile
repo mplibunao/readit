@@ -27,9 +27,8 @@ RUN pnpm install --frozen-lockfile --prefer-offline
 COPY --from=pruner /app/out/full/ .
 COPY turbo.json turbo.json
 # Build then use pnpm's own prune to generate node_modules with only prod deps
-RUN pnpm build --filter=api && \
-      pnpm --filter=api --prod deploy pruned
-
+RUN pnpm dlx turbo run build --filter=api
+RUN pnpm --filter=api --prod deploy pruned
 
 FROM $DISTROLESS AS runner
 WORKDIR /app
