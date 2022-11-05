@@ -157,13 +157,13 @@ export const config: Config = {
 	//connectTimeout: 500,
 	//maxRetriesPerRequest: 1,
 	//},
-	//secretsManager: {
-	//strategy: env.SECRETS_STRATEGY,
-	//secrets: {
-	//dbPassword: env.DATABASE_URL,
-	//redisPassword: env.SECRETS_REDIS_PASS,
-	//},
-	//},
+	secretsManager: {
+		strategy: env.SECRETS_STRATEGY,
+		secrets: {
+			//dbPassword: env.DATABASE_URL,
+			//redisPassword: env.SECRETS_REDIS_PASS,
+		},
+	},
 	underPressure: {
 		version: env.APP_VERSION,
 		maxHeapUsedBytes: env.HEALTHCHECK_MAX_HEAP_USED,
