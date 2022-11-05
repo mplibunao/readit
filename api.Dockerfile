@@ -1,7 +1,7 @@
 ARG BASE_IMAGE=node:18.12.0-bullseye-slim
 ARG DISTROLESS=gcr.io/distroless/nodejs:18
 # docker run --entrypoint sh -it [IMAGE_NAME:TAG] to debug
-ARG DISTROLESS_DEBUG=gcr.io/distroless/nodejs:debug
+#ARG DISTROLESS_DEBUG=gcr.io/distroless/nodejs:debug
 
 # Need a lightweight base image since pnpm isn't included by default
 FROM $BASE_IMAGE AS base
@@ -36,6 +36,4 @@ ENV NODE_ENV=production
 COPY --from=installer /app/apps/api/dist dist
 COPY --from=installer /app/pruned/package.json ./
 COPY --from=installer /app/pruned/node_modules node_modules
-CMD ["apps/api/dist/index.js"]
-
-
+CMD ["dist/index.js"]
