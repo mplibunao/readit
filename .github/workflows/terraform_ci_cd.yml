@@ -44,10 +44,10 @@ jobs:
               - 'tf/applications/backend/0-folder/*.tf'
               - 'tf/applications/backend/0-folder/*.tfvars'
               - 'tf/applications/backend/0-folder/*.hcl'
-            'tf/applications/backend/prod':
-              - 'tf/applications/backend/prod/*.tf'
-              - 'tf/applications/backend/prod/*.tfvars'
-              - 'tf/applications/backend/prod/*.hcl'
+            #'tf/applications/backend/prod':
+              #- 'tf/applications/backend/prod/*.tf'
+              #- 'tf/applications/backend/prod/*.tfvars'
+              #- 'tf/applications/backend/prod/*.hcl'
 
   terraform-ci-cd:
     needs: changes
