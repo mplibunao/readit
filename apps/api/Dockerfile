@@ -30,7 +30,7 @@ COPY turbo.json turbo.json
 RUN pnpm dlx turbo run build --filter=api
 RUN pnpm --filter=api --prod deploy pruned
 
-FROM $DISTROLESS AS runner
+FROM $DISTROLESS AS production
 WORKDIR /app
 ENV NODE_ENV=production
 COPY --from=installer /app/apps/api/dist dist
