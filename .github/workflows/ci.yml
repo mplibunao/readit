@@ -6,10 +6,6 @@ defaults:
 
 on:
   push:
-    branches:
-      - '**'
-  pull_request:
-    types: [opened, synchronize]
   workflow_dispatch:
 
 env:
