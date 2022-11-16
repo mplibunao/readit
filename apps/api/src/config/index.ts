@@ -15,9 +15,14 @@ const envJsonSchema = Type.Object({
 	API_HOST: Type.Optional(Type.String()),
 	IS_PROD: Type.Boolean(),
 	FRONTEND_URL: Type.String(),
-	//Pass this if you are using `env` for SECRETS_STRATEGY
-	//REDIS_URL: Type.Optional(Type.String()),
-
+	// Change to required later
+	REDIS_URL: Type.Optional(Type.String()),
+	// https://www.youtube.com/watch?app=desktop&v=0L0ER4pZbX4
+	REDIS_ENABLE_AUTO_PIPELINING: Type.Optional(Type.Boolean({ default: true })),
+	REDIS_MAX_RETRIES_PER_REQ: Type.Optional(Type.Number({ default: 1 })),
+	REDIS_CONNECT_TIMEOUT: Type.Optional(Type.Number({ default: 500 })),
+	// Change to required later
+	DATABASE_URL: Type.Optional(Type.String()),
 	//Derived from K_SERVICE env passed by cloud run
 	IS_GCP_CLOUD_RUN: Type.Boolean(),
 	APP_NAME: Type.String({ default: 'readit-api' }),
@@ -34,22 +39,6 @@ const envJsonSchema = Type.Object({
 		{ default: 'info' }
 	),
 
-	// Strategy to use for managing secrets. Whether to use a managed service like GCP/AWS/Azure secret manager or use env variables (for dev)
-	SECRETS_STRATEGY: Type.Optional(
-		Type.Union([Type.Literal('env'), Type.Literal('gcp')], { default: 'env' })
-	),
-
-	//secret name for database password. Will resolve to process.env[value] for env and use the value to fetch the secret from service for managed strategies
-	//SECRETS_PG_PASS: Type.String({ default: 'PG_PASS' }),
-
-	//secret name for redis password. Will resolve to process.env[value] for env and use the value to fetch the secret from service for managed strategies
-	//SECRETS_REDIS_URL: Type.String({ default: 'REDIS_URL' }),
-
-	//PG_PASS: Type.Optional(Type.String()), //Pass this if you are using `env` for SECRETS_STRATEGY
-	//PG_HOST: Type.String(),
-	//PG_PORT: Type.Number(),
-	//PG_DB: Type.String(),
-	//PG_USER: Type.String(),
 	HEALTHCHECK_URL: Type.Optional(Type.String({ default: '/health' })),
 
 	/*
@@ -89,14 +78,11 @@ const envJsonSchema = Type.Object({
 
 export type Env = Static<typeof envJsonSchema>
 
-const dotenv =
-	Boolean(process.env.CI) || process.env.NODE_ENV === 'production'
-		? false
-		: true
-console.log('dotenv', dotenv) // eslint-disable-line no-console
-
 const env = envSchema<Env>({
-	dotenv,
+	dotenv:
+		Boolean(process.env.CI) || process.env.NODE_ENV === 'production'
+			? false
+			: true,
 	schema: envJsonSchema,
 	data: {
 		...process.env,
@@ -122,12 +108,6 @@ export interface Config {
 	}
 	//pg: PostgresjsPluginOptions
 	//redis: FastifyRedisPluginOptions
-	secretsManager: {
-		strategy: Env['SECRETS_STRATEGY']
-		secrets: {
-			[key: string]: string
-		}
-	}
 	underPressure: UnderPressure
 }
 
@@ -163,13 +143,6 @@ export const config: Config = {
 	//connectTimeout: 500,
 	//maxRetriesPerRequest: 1,
 	//},
-	secretsManager: {
-		strategy: env.SECRETS_STRATEGY,
-		secrets: {
-			//dbPassword: env.DATABASE_URL,
-			//redisPassword: env.SECRETS_REDIS_PASS,
-		},
-	},
 	underPressure: {
 		version: env.APP_VERSION,
 		maxHeapUsedBytes: env.HEALTHCHECK_MAX_HEAP_USED,

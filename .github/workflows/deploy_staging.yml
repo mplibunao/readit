@@ -19,16 +19,19 @@ env:
   APP_NAME: readit
   PNPM_VERSION: 7.14.1
   NODE_VERSION: 18.12.0
+  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+  TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+  TURBO_REMOTE_ONLY: true
 
 jobs:
   cd:
     name: cd
     if: ${{ contains(github.event.comment.body, '/deploy') && github.event.issue.pull_request }}
     runs-on: ubuntu-latest
-    env:
-      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
-      TURBO_REMOTE_ONLY: true
+    permissions:
+      # wif
+      contents: read
+      id-token: write
     steps:
       - name: Check command
         id: command
@@ -43,7 +46,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          fetch-depth: 2
+          fetch-depth: 1
 
       - name: Auth GCP Service Account
         id: auth-gcp
