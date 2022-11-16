@@ -1,0 +1,70 @@
+name: ci
+
+defaults:
+  run:
+    shell: bash
+
+on:
+  push:
+  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+  COMPOSE_DOCKER_CLI_BUILD: 1
+  DOCKER_BUILDKIT: 1
+  PNPM_VERSION: 7.14.1
+  NODE_VERSION: 18.12.0
+  API_HOST: ${{ secrets.API_HOST }}
+  APP_NAME: ${{ secrets.APP_NAME }}
+  DATABASE_URL: ${{ secrets.DATABASE_URL }}
+  FRONTEND_URL: ${{ secrets.FRONTEND_URL }}
+  IS_PROD: ${{ secrets.IS_PROD }}
+  LOGGING_LEVEL: ${{ secrets.LOGGING_LEVEL }}
+  NODE_ENV: ${{ secrets.NODE_ENV }}
+  PORT: ${{ secrets.PORT }}
+  REDIS_URL: ${{ secrets.REDIS_URL }}
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+      TURBO_REMOTE_ONLY: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 1
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - uses: pnpm/action-setup@v2.0.1
+        name: Install pnpm
+        id: pnpm-install
+        with:
+          version: ${{ env.PNPM_VERSION }}
+          run_install: false
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        run: |
+          echo "::set-output name=pnpm_cache_dir::$(pnpm store path)"
+
+      - uses: actions/cache@v3
+        name: Setup pnpm cache
+        with:
+          path: ${{ steps.pnpm-cache.outputs.pnpm_cache_dir }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --prefer-offline
+
+      - name: Run CI
+        run: |
+          pnpm ci

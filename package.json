@@ -13,7 +13,8 @@
 		"lint:fix": "turbo run lint:fix",
 		"format:fix": "turbo format:fix",
 		"format:check": "turbo format:check",
-		"ci": "turbo ci"
+		"ci": "turbo ci",
+		"docker:up": "docker-compose up -d"
 	},
 	"devDependencies": {
 		"esbuild": "^0.15.12",
