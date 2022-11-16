@@ -90,7 +90,10 @@ const envJsonSchema = Type.Object({
 export type Env = Static<typeof envJsonSchema>
 
 const env = envSchema<Env>({
-	dotenv: { path: '.env' },
+	dotenv:
+		Boolean(process.env.CI) || process.env.NODE_ENV === 'production'
+			? false
+			: true,
 	schema: envJsonSchema,
 	data: {
 		...process.env,
