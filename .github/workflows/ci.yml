@@ -16,9 +16,17 @@ env:
   REGISTRY: ghcr.io
   COMPOSE_DOCKER_CLI_BUILD: 1
   DOCKER_BUILDKIT: 1
-  APP_NAME: readit
   PNPM_VERSION: 7.14.1
   NODE_VERSION: 18.12.0
+  API_HOST: ${{ secrets.API_HOST }}
+  APP_NAME: ${{ secrets.APP_NAME }}
+  DATABASE_URL: ${{ secrets.DATABASE_URL }}
+  FRONTEND_URL: ${{ secrets.FRONTEND_URL }}
+  IS_PROD: ${{ secrets.IS_PROD }}
+  LOGGING_LEVEL: ${{ secrets.LOGGING_LEVEL }}
+  NODE_ENV: ${{ secrets.NODE_ENV }}
+  PORT: ${{ secrets.PORT }}
+  REDIS_URL: ${{ secrets.REDIS_URL }}
 
 jobs:
   ci:
