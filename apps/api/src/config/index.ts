@@ -6,8 +6,8 @@ import { getLoggerConfig } from './logger'
 
 const envJsonSchema = Type.Object({
 	NODE_ENV: Type.Union([
-		Type.Literal('test'),
 		Type.Literal('development'),
+		Type.Literal('test'),
 		Type.Literal('production'),
 	]),
 	PORT: Type.Number({ default: 4000 }),
