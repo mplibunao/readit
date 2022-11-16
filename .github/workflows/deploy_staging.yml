@@ -5,6 +5,7 @@ defaults:
     shell: bash
 
 on:
+  push:
   issue_comment:
     types:
       - created
