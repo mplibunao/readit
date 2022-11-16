@@ -5,7 +5,7 @@ defaults:
     shell: bash
 
 on:
-  push:
+  #push:
   workflow_dispatch:
 
 env:
