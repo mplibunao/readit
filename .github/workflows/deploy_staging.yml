@@ -34,6 +34,7 @@ jobs:
       id-token: write
       # xt0rted/slash-command
       issues: 'write'
+      pull-requests: 'write'
     steps:
       - name: Check command
         id: command
