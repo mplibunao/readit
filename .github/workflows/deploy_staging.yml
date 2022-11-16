@@ -73,8 +73,7 @@ jobs:
         with:
           registry: ${{ env.REGISTRY }}
           username: oauth2accesstoken
-          #password: ${{ steps.auth.outputs.access_token }}
-          password: password
+          password: ${{ steps.auth-gcp.outputs.access_token }}
 
       - name: Docker meta
         id: meta
