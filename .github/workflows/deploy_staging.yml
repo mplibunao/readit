@@ -5,6 +5,7 @@ defaults:
     shell: bash
 
 on:
+  push:
   issue_comment:
     types:
       - created
@@ -28,6 +29,8 @@ jobs:
     if: ${{ contains(github.event.comment.body, '/deploy') && github.event.issue.pull_request }}
     runs-on: ubuntu-latest
     permissions:
+      contents: read
+      id-token: write
       # xt0rted/slash-command
       issues: 'write'
       pull-requests: 'write'
