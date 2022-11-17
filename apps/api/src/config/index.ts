@@ -10,6 +10,7 @@ const envJsonSchema = Type.Object({
 		Type.Literal('test'),
 		Type.Literal('production'),
 	]),
+	// comment here
 
 	PORT: Type.Number({ default: 4000 }),
 	CI: Type.Optional(Type.Boolean({ default: false })),
