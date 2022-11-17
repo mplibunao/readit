@@ -28,9 +28,6 @@ jobs:
     if: ${{ contains(github.event.comment.body, '/deploy') && github.event.issue.pull_request }}
     runs-on: ubuntu-latest
     permissions:
-      # wif
-      contents: read
-      id-token: write
       # xt0rted/slash-command
       issues: 'write'
       pull-requests: 'write'
@@ -62,6 +59,10 @@ jobs:
     needs: [changes]
     if: needs.changes.outputs.services != '[]'
     runs-on: ubuntu-latest
+    permissions:
+      # wif
+      contents: read
+      id-token: write
     strategy:
       matrix:
         service: ${{ fromJSON(needs.changes.outputs.services) }}
