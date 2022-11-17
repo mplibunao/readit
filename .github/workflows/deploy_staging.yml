@@ -90,6 +90,11 @@ jobs:
             prefix=
             suffix=
 
+      - name: Debug
+        run: |
+          echo "${{ steps.meta.outputs.tags }}"
+          echo "${{ steps.meta.outputs.labels }}"
+
       - name: Build and push
         uses: docker/build-push-action@v3
         with:
