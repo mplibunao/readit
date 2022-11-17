@@ -13,7 +13,6 @@ on:
 env:
   REGISTRY: asia-southeast1-docker.pkg.dev
   IMAGE_TAG_PREFIX: asia-southeast1-docker.pkg.dev/prj-c-readit-cicd-725e/container-repo-c-readit
-  DOCKERFILE: ./apps/api/Dockerfile
   COMPOSE_DOCKER_CLI_BUILD: 1
   DOCKER_BUILDKIT: 1
   APP_NAME: readit
@@ -24,8 +23,8 @@ env:
   TURBO_REMOTE_ONLY: true
 
 jobs:
-  cd:
-    name: cd
+  changes:
+    name: changes
     if: ${{ contains(github.event.comment.body, '/deploy') && github.event.issue.pull_request }}
     runs-on: ubuntu-latest
     permissions:
@@ -35,7 +34,19 @@ jobs:
       # xt0rted/slash-command
       issues: 'write'
       pull-requests: 'write'
+    # Set job outputs to values from filter step
+    outputs:
+      services: ${{ steps.filter.outputs.changes }}
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            'api': 'apps/api/**'
+
       - name: Check command
         id: command
         uses: xt0rted/slash-command-action@v1.1.0
@@ -46,6 +57,15 @@ jobs:
           reaction-type: 'rocket'
           permission-level: 'write'
 
+  cd:
+    name: cd
+    needs: [changes]
+    if: needs.changes.outputs.services != '[]'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: ${{ fromJSON(needs.changes.outputs.services) }}
+    steps:
       - name: Checkout
         uses: actions/checkout@v3
         with:
@@ -58,7 +78,12 @@ jobs:
           workload_identity_provider: '${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}'
           service_account: '${{ secrets.GCP_SERVICE_ACCOUNT }}'
           token_format: 'access_token'
-          access_token_lifetime: '1200s'
+          access_token_lifetime: '600s'
+
+      - name: Build image tag
+        run: |
+          echo "IMAGE_TAG=${{ env.IMAGE_TAG_PREFIX }}/${{ env.APP_NAME }}-${{ matrix.service }}" >> $GITHUB_ENV
+          echo "DOCKERFILE=./apps/${{ matrix.service }}/Dockerfile" >> $GITHUB_ENV
 
       - name: Setup buildx
         uses: docker/setup-buildx-action@v2
@@ -78,8 +103,7 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: |
-            name=${{ env.IMAGE_TAG_PREFIX }},enable=true
-            # Can add more here
+            name=${{ env.IMAGE_TAG }},enable=true
           tags: |
             type=ref,event=branch
             type=ref,event=pr
@@ -105,5 +129,5 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           builder: ${{ steps.buildx.outputs.name }}
           target: production
-          cache-from: type=registry,ref=${{ env.IMAGE_TAG_PREFIX }}:buildcache
-          cache-to: type=registry,ref=${{ env.IMAGE_TAG_PREFIX }}:buildcache,mode=max
+          cache-from: type=registry,ref=${{ env.IMAGE_TAG }}:buildcache
+          cache-to: type=registry,ref=${{ env.IMAGE_TAG }}:buildcache,mode=max
