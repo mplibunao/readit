@@ -26,7 +26,7 @@ env:
 jobs:
   changes:
     name: changes
-    if: ${{ contains(github.event.comment.body, '/deploy') && github.event.issue.pull_request }}
+    #if: ${{ contains(github.event.comment.body, '/deploy') && github.event.issue.pull_request }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
