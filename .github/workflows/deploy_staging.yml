@@ -1,4 +1,4 @@
-name: cd_staging
+name: ci_cd
 
 defaults:
   run:
