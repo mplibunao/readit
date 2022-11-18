@@ -1,15 +1,16 @@
-name: cd_staging
+name: release
 
 defaults:
   run:
     shell: bash
 
 on:
-  push:
-  issue_comment:
+  release:
     types:
-      - created
-  workflow_dispatch:
+      - published
+  push:
+    tags:
+      - '*'
 
 env:
   REGISTRY: asia-southeast1-docker.pkg.dev
@@ -94,18 +95,8 @@ jobs:
           filters: |
             'api': 'apps/api/**'
 
-      - name: Check command
-        id: command
-        uses: xt0rted/slash-command-action@v1.1.0
-        with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          command: deploy
-          reaction: 'true'
-          reaction-type: 'rocket'
-          permission-level: 'write'
-
-  docker_staging_cd:
-    name: docker_staging_cd
+  docker_prod_cd:
+    name: docker_prod_cd
     needs: [docker_changes, ci]
     if: needs.changes.outputs.services != '[]'
     runs-on: ubuntu-latest
@@ -154,10 +145,10 @@ jobs:
           images: |
             name=${{ env.IMAGE_TAG }},enable=true
           tags: |
+            type=ref,event=branch
+            type=ref,event=pr
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
-            type=raw,value={{branch}}-{{sha}}
-
           flavor: |
             latest=auto
             prefix=
