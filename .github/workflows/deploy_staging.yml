@@ -107,7 +107,7 @@ jobs:
   docker_staging_cd:
     name: docker_staging_cd
     needs: [docker_changes, ci]
-    if: needs.changes.outputs.services != '[]'
+    if: needs.docker_changes.outputs.services != '[]'
     runs-on: ubuntu-latest
     permissions:
       # wif
