@@ -1,7 +1,7 @@
 [[toc]]
 
 
-[![ci](https://github.com/mplibunao/readit/actions/workflows/ci.yml/badge.svg)](https://github.com/mplibunao/readit/actions/workflows/ci.yml) [![staging](https://github.com/mplibunao/readit/actions/workflows/deploy_staging.yml/badge.svg)](https://github.com/mplibunao/readit/actions/workflows/deploy_staging.yml) [![production](https://github.com/mplibunao/readit/actions/workflows/release.yml/badge.svg)](https://github.com/mplibunao/readit/actions/workflows/release.yml)
+[![ci](https://github.com/mplibunao/readit/actions/workflows/ci.yml/badge.svg)](https://github.com/mplibunao/readit/actions/workflows/ci.yml) [![staging](https://github.com/mplibunao/readit/actions/workflows/staging.yml/badge.svg)](https://github.com/mplibunao/readit/actions/workflows/staging.yml) [![production](https://github.com/mplibunao/readit/actions/workflows/production.yml/badge.svg)](https://github.com/mplibunao/readit/actions/workflows/production.yml)
 
 # Reddit Clone v2
 
