@@ -5,12 +5,10 @@ defaults:
     shell: bash
 
 on:
-  pull_request:
+  push:
     branches:
       - main
       - master
-    types:
-      - closed
   workflow_dispatch:
 
 env:
