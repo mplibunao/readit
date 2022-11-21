@@ -74,33 +74,9 @@ jobs:
         run: |
           pnpm ci
 
-  docker_changes:
-    name: docker_changes
-    runs-on: ubuntu-latest
-    permissions:
-      # checkout
-      contents: read
-      id-token: write
-      # xt0rted/slash-command
-      issues: 'write'
-      pull-requests: 'write'
-    # Set job outputs to values from filter step
-    outputs:
-      services: ${{ steps.filter.outputs.changes }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - uses: dorny/paths-filter@v2
-        id: filter
-        with:
-          filters: |
-            'api': 'apps/api/**'
-
   docker_prod_cd:
     name: docker_prod_cd
-    needs: [docker_changes, ci]
-    if: needs.changes.outputs.services != '[]'
+    needs: [ci]
     runs-on: ubuntu-latest
     permissions:
       # wif
@@ -108,7 +84,7 @@ jobs:
       id-token: write
     strategy:
       matrix:
-        service: ${{ fromJSON(needs.docker_changes.outputs.services) }}
+        service: [api]
     steps:
       - name: Checkout
         uses: actions/checkout@v3
