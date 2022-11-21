@@ -1,5 +1,8 @@
 [[toc]]
 
+
+[![ci](https://github.com/mplibunao/readit/actions/workflows/ci.yml/badge.svg)](https://github.com/mplibunao/readit/actions/workflows/ci.yml) [![staging](https://github.com/mplibunao/readit/actions/workflows/deploy_staging.yml/badge.svg)](https://github.com/mplibunao/readit/actions/workflows/deploy_staging.yml) [![production](https://github.com/mplibunao/readit/actions/workflows/release.yml/badge.svg)](https://github.com/mplibunao/readit/actions/workflows/release.yml)
+
 # Reddit Clone v2
 
 This is a more production-ready rewrite of [reddit clone](https://github.com/mplibunao/reddit-clone) based on the things that I've learned in the past year or so
