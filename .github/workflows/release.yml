@@ -76,7 +76,6 @@ jobs:
 
   docker_changes:
     name: docker_changes
-    if: ${{ contains(github.event.comment.body, '/deploy') && github.event.issue.pull_request }}
     runs-on: ubuntu-latest
     permissions:
       # checkout
