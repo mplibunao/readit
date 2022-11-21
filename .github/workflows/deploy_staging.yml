@@ -5,10 +5,12 @@ defaults:
     shell: bash
 
 on:
-  push:
-  issue_comment:
+  pull_request:
+    branches:
+      - main
+      - master
     types:
-      - created
+      - closed
   workflow_dispatch:
 
 env:
@@ -72,7 +74,6 @@ jobs:
           pnpm ci
 
   docker_changes:
-    if: ${{ contains(github.event.comment.body, '/deploy') && github.event.issue.pull_request }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -92,16 +93,6 @@ jobs:
         with:
           filters: |
             'api': 'apps/api/**'
-
-      - name: Check command
-        id: command
-        uses: xt0rted/slash-command-action@v2.0.0
-        with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          command: deploy
-          reaction: 'true'
-          reaction-type: 'rocket'
-          permission-level: 'write'
 
   docker_staging_cd:
     name: docker_staging_cd
