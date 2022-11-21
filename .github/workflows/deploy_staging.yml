@@ -167,29 +167,3 @@ jobs:
           target: production
           cache-from: type=registry,ref=${{ env.IMAGE_TAG }}:buildcache
           cache-to: type=registry,ref=${{ env.IMAGE_TAG }}:buildcache,mode=max
-
-  vercel_preview:
-    needs: [ci]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Install Vercel CLI
-        run: npm install --global vercel@latest
-
-      - uses: pnpm/action-setup@v2.2.4
-        name: Install pnpm
-        id: pnpm-install
-        with:
-          version: ${{ env.PNPM_VERSION }}
-          run_install: false
-
-      - name: Pull Vercel Environment Information
-        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
-
-      - name: Build Project Artifacts
-        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
-
-      - name: Deploy Project Artifacts to Vercel
-        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
