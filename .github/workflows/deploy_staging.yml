@@ -12,8 +12,8 @@ on:
   workflow_dispatch:
 
 env:
-  REGISTRY: asia-southeast1-docker.pkg.dev
-  IMAGE_TAG_PREFIX: asia-southeast1-docker.pkg.dev/prj-c-readit-shared-infra-de69/container-repo-c-readit
+  REGISTRY: ${{ secrets.CONTAINER_REGISTRY }}
+  IMAGE_TAG_PREFIX: ${{ secrets.CONTAINER_IMAGE_TAG_PREFIX }}
   COMPOSE_DOCKER_CLI_BUILD: 1
   DOCKER_BUILDKIT: 1
   APP_NAME: readit
@@ -114,7 +114,7 @@ jobs:
       id-token: write
     strategy:
       matrix:
-        service: ${{ fromJSON(needs.changes.outputs.services) }}
+        service: ${{ fromJSON(needs.docker_changes.outputs.services) }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
