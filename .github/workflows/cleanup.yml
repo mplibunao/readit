@@ -1,0 +1,83 @@
+name: cleanup
+
+on:
+  schedule:
+    - cron: '0 0 */1 * *' # runs daily
+  workflow_dispatch: # allows for manual invocation
+
+env:
+  REGISTRY: ${{ secrets.CONTAINER_REGISTRY }}
+  APP_NAME: readit
+  REGION: 'asia-southeeast1'
+  PROJECT_ID: ''
+  PROJECT_NUMBER: ''
+
+jobs:
+  gcr-cleaner:
+    runs-on: 'ubuntu-latest'
+    permissions:
+      # wif
+      contents: read
+      id-token: write
+    steps:
+      - name: Auth GCP Service Account
+        id: auth-gcp
+        uses: google-github-actions/auth@v1
+        with:
+          workload_identity_provider: '${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}'
+          service_account: '${{ secrets.GCP_SERVICE_ACCOUNT }}'
+          token_format: 'access_token'
+          access_token_lifetime: '1200s'
+
+      - name: Log into registry ${{ env.REGISTRY }}
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: oauth2accesstoken
+          password: ${{ steps.auth-gcp.outputs.access_token }}
+
+      - uses: 'docker://asia-docker.pkg.dev/gcr-cleaner/gcr-cleaner/gcr-cleaner-cli'
+        with:
+          args: >-
+            -repo="${{ secrets.CONTAINER_IMAGE_TAG_PREFIX }}/${{ env.APP_NAME }}-api"
+            -grace=12h
+
+  # cleanup_cloudrun_services deletes all Cloud Run services that are more than
+  # 5 days old, since sometimes services are not deleted during integration
+  # tests.
+  cleanup_cloudrun_services:
+    runs-on: 'ubuntu-latest'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Auth GCP Service Account
+        id: auth-gcp
+        uses: google-github-actions/auth@v1
+        with:
+          workload_identity_provider: '${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}'
+          service_account: '${{ secrets.GCP_SERVICE_ACCOUNT }}'
+          token_format: 'access_token'
+          access_token_lifetime: '600s'
+
+      #- name: 'Install and configure gcloud'
+      #uses: 'google-github-actions/setup-gcloud@877d4953d2c70a0ba7ef3290ae968eb24af233bb' # ratchet:google-github-actions/setup-gcloud@v0
+
+      #- name: 'Remove old Cloud Run services'
+      #shell: 'bash'
+      #run: |-
+      #SINCE=$(date --date="5 days ago" +"%Y-%m-%d")
+      #echo "Fetching services to delete older than ${SINCE}..."
+      #TO_DELETE=( $(gcloud run services list \
+      #--quiet \
+      #--project="${{ env.PROJECT_ID }}" \
+      #--region="${{ env.REGION }}" \
+      #--filter="metadata.creationTimestamp<${SINCE}" \
+      #--format="value(SERVICE)") )
+      #for SERVICE in "${TO_DELETE[@]}"; do
+      #echo "Deleting ${SERVICE}..."
+      #gcloud run services delete ${SERVICE} \
+      #--quiet \
+      #--project="${{ env.PROJECT_ID }}" \
+      #--region="${{ env.REGION }}"
+      #done
