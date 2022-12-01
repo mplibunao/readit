@@ -151,6 +151,8 @@ jobs:
         with:
           image: '${{ env.IMAGE_TAG }}@${{ steps.push.outputs.digest }}'
           service: readit-api
+          region: asia-southeast1
+          project_id: prj-s-readit-a2b9
 
   vercel_staging:
     needs: [ci]
