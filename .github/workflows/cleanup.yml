@@ -6,7 +6,7 @@ on:
   workflow_dispatch: # allows for manual invocation
 
 env:
-  REGISTRY: ${{ secrets.CONTAINER_REGISTRY }}
+  REGISTRY: asia-southeast1-docker.pkg.dev
   APP_NAME: readit
   REGION: 'asia-southeeast1'
   PROJECT_ID: ''
