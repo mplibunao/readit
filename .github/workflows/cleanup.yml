@@ -1,8 +1,8 @@
 name: cleanup
 
 on:
-  schedule:
-    - cron: '0 0 */1 * *' # runs daily
+  #schedule:
+  #- cron: '0 0 */1 * *' # runs daily
   workflow_dispatch: # allows for manual invocation
 
 env:
@@ -10,7 +10,7 @@ env:
   APP_NAME: readit
 
 jobs:
-  gcr-cleaner:
+  docker-clean-untagged:
     runs-on: 'ubuntu-latest'
     permissions:
       # wif
@@ -38,3 +38,36 @@ jobs:
           args: >-
             -repo="${{ secrets.CONTAINER_IMAGE_TAG_PREFIX }}/${{ env.APP_NAME }}-api"
             -grace=12h
+
+  docker-clean:
+    runs-on: 'ubuntu-latest'
+    permissions:
+      # wif
+      contents: read
+      id-token: write
+    steps:
+      - name: Auth GCP Service Account
+        id: auth-gcp
+        uses: google-github-actions/auth@v1
+        with:
+          workload_identity_provider: '${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}'
+          service_account: '${{ secrets.GCP_SERVICE_ACCOUNT }}'
+          token_format: 'access_token'
+          access_token_lifetime: '1200s'
+
+      - name: Log into registry ${{ env.REGISTRY }}
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: oauth2accesstoken
+          password:
+            ${{ steps.auth-gcp.outputs.access_token }}
+
+            # Filter docker images with x.x.x format
+      - uses: 'docker://asia-docker.pkg.dev/gcr-cleaner/gcr-cleaner/gcr-cleaner-cli'
+        with:
+          args: >-
+            -repo="${{ secrets.CONTAINER_IMAGE_TAG_PREFIX }}/${{ env.APP_NAME }}-api"
+            -grace=12h
+            -tag_filter_any=
+            -keep=
