@@ -12,6 +12,7 @@ on:
 env:
   REGISTRY: asia-southeast1-docker.pkg.dev
   IMAGE_TAG_PREFIX: asia-southeast1-docker.pkg.dev/prj-c-readit-cicd-725e/container-repo-c-readit
+  IMAGE_TAG_PREFIX: asia-southeast1-docker.pkg.dev/prj-c-readit-shared-infra-de69/container-repo-c-readit
   COMPOSE_DOCKER_CLI_BUILD: 1
   DOCKER_BUILDKIT: 1
   APP_NAME: readit
