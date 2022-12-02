@@ -141,9 +141,10 @@ jobs:
           cache-to: type=registry,ref=${{ env.IMAGE_TAG }}:buildcache,mode=max
 
       - name: Troubleshooting
-        #env:
-        #GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: echo "${{ steps.meta.outputs.tag }}"
+        env:
+          GITHUB_CONTEXT: ${{ toJson(steps.meta.outputs) }}
+        run: echo "$GITHUB_CONTEXT"
+
       - name: Deploy to Cloud Run
         uses: google-github-actions/deploy-cloudrun@v1
         with:
