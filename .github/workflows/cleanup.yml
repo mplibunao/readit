@@ -40,5 +40,5 @@ jobs:
         with:
           args: >-
             -repo="${{ env.IMAGE_TAG_PREFIX }}/${{ env.APP_NAME }}-api"
-            -tag_filter_any="^(\d+).(\d+).(\d+)$"
+            -tag_filter_any=^(\d+).(\d+).(\d+)$
             -keep=3
