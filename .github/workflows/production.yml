@@ -148,10 +148,12 @@ jobs:
       - name: Deploy to Cloud Run
         uses: google-github-actions/deploy-cloudrun@v1
         with:
-          image: '${{ env.IMAGE_TAG }}@${{ steps.push.outputs.digest }}'
+          image: '${{ env.IMAGE_TAG }}:${{ steps.meta.outputs.version }}'
           service: readit-api
           region: asia-southeast1
           project_id: prj-p-readit-5ae4
+          env_vars: |
+            APP_VERSION=${{ steps.meta.outputs.version }}
 
   vercel_prod:
     needs: [ci]
