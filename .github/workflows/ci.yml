@@ -19,17 +19,17 @@ env:
   PNPM_VERSION: 7.14.1
   NODE_VERSION: 18.12.0
   TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-  TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+  TURBO_TEAM: mplibunao
   TURBO_REMOTE_ONLY: true
 
-  API_HOST: ${{ secrets.API_HOST }}
-  DATABASE_URL: ${{ secrets.DATABASE_URL }}
-  FRONTEND_URL: ${{ secrets.FRONTEND_URL }}
-  IS_PROD: ${{ secrets.IS_PROD }}
-  LOGGING_LEVEL: ${{ secrets.LOGGING_LEVEL }}
-  NODE_ENV: ${{ secrets.NODE_ENV }}
-  PORT: ${{ secrets.PORT }}
-  REDIS_URL: ${{ secrets.REDIS_URL }}
+  API_HOST: 127.0.0.1
+  DATABASE_URL: postgres://readit:postgres@localhost:5432/readit
+  FRONTEND_URL: http://localhost:3000
+  IS_PROD: false
+  LOGGING_LEVEL: INFO
+  NODE_ENV: test
+  PORT: 4000
+  REDIS_URL: redis://:redis_password@localhost:6379
 
 jobs:
   ci:
