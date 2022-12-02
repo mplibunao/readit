@@ -137,13 +137,8 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           builder: ${{ steps.buildx.outputs.name }}
           target: production
-          cache-from: type=registry,ref=${{ env.IMAGE_TAG }}:buildcache
-          cache-to: type=registry,ref=${{ env.IMAGE_TAG }}:buildcache,mode=max
-
-      - name: Troubleshooting
-        env:
-          GITHUB_CONTEXT: ${{ toJson(steps.meta.outputs) }}
-        run: echo "$GITHUB_CONTEXT"
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: Deploy to Cloud Run
         uses: google-github-actions/deploy-cloudrun@v1
