@@ -8,9 +8,6 @@ on:
   release:
     types:
       - published
-  push:
-    tags:
-      - '*'
 
 env:
   REGISTRY: asia-southeast1-docker.pkg.dev
@@ -124,7 +121,6 @@ jobs:
             name=${{ env.IMAGE_TAG }},enable=true
           tags: |
             type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
           flavor: |
             latest=auto
             prefix=
