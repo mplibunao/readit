@@ -140,6 +140,10 @@ jobs:
           cache-from: type=registry,ref=${{ env.IMAGE_TAG }}:buildcache
           cache-to: type=registry,ref=${{ env.IMAGE_TAG }}:buildcache,mode=max
 
+      - name: Troubleshooting
+        #env:
+        #GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo ${{ steps.meta.outputs.tag }}
       - name: Deploy to Cloud Run
         uses: google-github-actions/deploy-cloudrun@v0
         with:
