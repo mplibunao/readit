@@ -1,8 +1,8 @@
 import { routeResponseSchemaOpts, UnderPressure } from '@/infra/healthcheck'
+import { LoggerOpts, getLoggerConfig } from '@/infra/logger/logger'
 import { Static, Type } from '@sinclair/typebox'
 import envSchema from 'env-schema'
 import { PinoLoggerOptions } from 'fastify/types/logger'
-import { getLoggerConfig } from './logger'
 
 const envJsonSchema = Type.Object({
 	NODE_ENV: Type.Union([
@@ -78,11 +78,22 @@ const envJsonSchema = Type.Object({
 
 export type Env = Static<typeof envJsonSchema>
 
+const getDotEnv = () => {
+	if (Boolean(process.env.CI) || process.env.NODE_ENV === 'production') {
+		return false
+	}
+
+	if (process.env.NODE_ENV === 'test') {
+		return {
+			path: '.env.test',
+		}
+	}
+
+	return true
+}
+
 const env = envSchema<Env>({
-	dotenv:
-		Boolean(process.env.CI) || process.env.NODE_ENV === 'production'
-			? false
-			: true,
+	dotenv: getDotEnv(),
 	schema: envJsonSchema,
 	data: {
 		...process.env,
@@ -100,12 +111,12 @@ export interface Config {
 		http2?: boolean
 		trustProxy: boolean
 		logger: PinoLoggerOptions
-		disableRequestLogging: boolean
 	}
 	server: {
 		host?: string
 		port: number
 	}
+	loggerOpts: LoggerOpts
 	//pg: PostgresjsPluginOptions
 	//redis: FastifyRedisPluginOptions
 	underPressure: UnderPressure
@@ -121,12 +132,16 @@ export const config: Config = {
 		http2: env.ENABLE_HTTP2,
 		trustProxy: true,
 		logger: getLoggerConfig(env),
-		disableRequestLogging: true,
 	},
 	server: {
 		port: env.PORT,
 		// listen to all ipv4 addresses in cloud run
 		host: env.IS_GCP_CLOUD_RUN ? '0.0.0.0' : env.API_HOST,
+	},
+	loggerOpts: {
+		IS_GCP_CLOUD_RUN: env.IS_GCP_CLOUD_RUN,
+		LOGGING_LEVEL: env.LOGGING_LEVEL,
+		IS_PROD: env.IS_PROD,
 	},
 	//pg: {
 	//host: env.PG_HOST,

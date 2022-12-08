@@ -1,8 +1,14 @@
+import { Env } from '@/config'
 import { PinoLoggerOptions } from 'fastify/types/logger'
-import { Env } from '.'
 
-export const getLoggerConfig = (env: Env): PinoLoggerOptions => {
-	if (env.IS_GCP_CLOUD_RUN) {
+export type LoggerOpts = {
+	IS_GCP_CLOUD_RUN: Env['IS_GCP_CLOUD_RUN']
+	LOGGING_LEVEL: Env['LOGGING_LEVEL']
+	IS_PROD: Env['IS_PROD']
+}
+
+export const getLoggerConfig = (opts: LoggerOpts): PinoLoggerOptions => {
+	if (opts.IS_GCP_CLOUD_RUN) {
 		return {
 			level: 'info',
 			messageKey: 'message',
@@ -50,14 +56,14 @@ export const getLoggerConfig = (env: Env): PinoLoggerOptions => {
 		}
 	}
 
-	if (env.IS_PROD) {
+	if (opts.IS_PROD) {
 		return {
-			level: env.LOGGING_LEVEL,
+			level: opts.LOGGING_LEVEL,
 		}
 	}
 
 	return {
-		level: env.LOGGING_LEVEL,
+		level: opts.LOGGING_LEVEL,
 		transport: {
 			target: 'pino-pretty',
 			options: {
