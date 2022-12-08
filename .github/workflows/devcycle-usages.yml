@@ -15,4 +15,4 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           client-id: ${{ secrets.DVC_CLIENT_ID }}
           client-secret: ${{ secrets.DVC_CLIENT_SECRET }}
-          project-key: app-devcycle-com
+          project-key: readit-devcycle-project
