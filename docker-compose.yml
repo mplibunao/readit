@@ -13,8 +13,8 @@ services:
       POSTGRES_PASSWORD: postgres
       # User with the same name as the db is created
       POSTGRES_MULTIPLE_DATABASES: readit,readit_test
-    env_file:
-      - .env
+    #env_file:
+    #- .env
     deploy:
       resources:
         limits:
