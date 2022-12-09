@@ -60,14 +60,14 @@
 		},
 		"ci": {
 			"dependsOn": [
-				"docker:up",
+				"//#docker:up",
 				"typecheck",
 				"lint:check",
 				"format:check",
 				"test"
 			]
 		},
-		"docker:up": {
+		"//#docker:up": {
 			"outputs": []
 		}
 	}
