@@ -1,4 +1,4 @@
-import { getLoggerConfig } from './logger'
+import { getLoggerConfig } from './loggerConfig'
 import pino from 'pino'
 import { config } from '@/config'
 
