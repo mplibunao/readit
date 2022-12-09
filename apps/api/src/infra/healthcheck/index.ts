@@ -7,6 +7,7 @@ import underPressure, {
 } from '@fastify/under-pressure'
 import { FastifyInstance, FastifyPluginAsync } from 'fastify'
 import { Config } from '@/config'
+import { sql } from 'kysely'
 
 /*
  *This plugin is especially useful if you expect an high load
@@ -18,7 +19,7 @@ import { Config } from '@/config'
 export const routeResponseSchemaOpts = {
 	version: { type: 'string' },
 	timestamp: { type: 'string', format: 'date-time' },
-	//db: { type: 'string' },
+	db: { type: 'string' },
 	//redis: { type: 'string' },
 	metrics: {
 		type: 'object',
@@ -70,7 +71,7 @@ export const healthCheck: FastifyPluginAsync<Config> = async (
 				timestamp: new Date().toISOString(),
 				status: 'ok',
 				metrics: parent?.memoryUsage(),
-				//db: await dbCheck(parent),
+				db: await dbCheck(parent),
 				//redis: await redisCheck(parent),
 			}
 		},
@@ -79,21 +80,22 @@ export const healthCheck: FastifyPluginAsync<Config> = async (
 
 export default fp(healthCheck, {
 	name: 'healthCheck',
-	//dependencies: ['pg'],
+	dependencies: ['pg'],
 })
 
-//async function dbCheck(server: FastifyInstance) {
-//try {
-//const result = await server.pg.sql<
-//{ message: string }[]
-//>`SELECT 'Hello world!'::TEXT AS message`
+async function dbCheck(server: FastifyInstance) {
+	try {
+		const result =
+			await sql<string>`select 'Hello world!'::TEXT AS message`.execute(
+				server.pg
+			)
 
-//if (result.length === 1) return 'ok'
-//} catch (err) {
-//server.log.debug({ err }, 'failed to read DB during health check')
-//}
-//return 'fail'
-//}
+		if (result.rows.length === 1) return 'ok'
+	} catch (err) {
+		server.log.error({ err }, 'failed to read DB during health check')
+	}
+	return 'fail'
+}
 
 //async function redisCheck(server: FastifyInstance) {
 //try {

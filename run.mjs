@@ -46,8 +46,8 @@ async function migrateCreate({ action, args }) {
 		throw new Error('Migration name is required')
 	}
 
-	echo`pnpm -F api migrate new ${args} --timestamp`
-	await $`pnpm -F api migrate new ${args} --timestamp`
+	echo`pnpm -F api migrate create ${args}`
+	await $`pnpm -F api migrate create ${args}`
 }
 
 function secret({ flags }) {

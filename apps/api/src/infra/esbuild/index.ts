@@ -26,6 +26,7 @@ import fs from 'fs'
  *			--saveAnalyze						 Save analyze instead of printing it to console (scrollback buffer may not be able to handle console.log-ing for big projects)
  *	-w  --watch									 Watch for changes and rebuild
  *	-m	--minify								 Minify the bundle.
+ *	-d	--directory							 Directory to output the bundle to. Defaults to `dist`
  */
 async function main() {
 	const getPlugins = (
@@ -68,6 +69,7 @@ async function main() {
 	const entrypoint = argv.e || argv.entrypoint || 'src/index.ts'
 	const watch = argv.w || argv.watch
 	const minify = argv.m || argv.minify
+	const directory = argv.d || argv.directory || 'dist'
 
 	const entryPoints = await globby(entrypoint)
 	const plugins = getPlugins(isProduction, entryPoints, isServer)
@@ -76,7 +78,7 @@ async function main() {
 		entryPoints,
 		bundle: true,
 		[entryPoints.length > 1 ? 'outdir' : 'outfile']:
-			entryPoints.length > 1 ? 'dist' : 'dist/index.js',
+			entryPoints.length > 1 ? directory : `${directory}/index.js`,
 		platform: 'node',
 		target: ['esnext'],
 		format: 'esm',

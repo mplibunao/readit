@@ -1,5 +1,6 @@
 import { routeResponseSchemaOpts, UnderPressure } from '@/infra/healthcheck'
-import { LoggerOpts, getLoggerConfig } from '@/infra/logger/logger'
+import { LoggerOpts, getLoggerConfig } from '@/infra/logger/loggerConfig'
+import { PgOpts } from '@/infra/pg'
 import { Static, Type } from '@sinclair/typebox'
 import envSchema from 'env-schema'
 import { PinoLoggerOptions } from 'fastify/types/logger'
@@ -21,8 +22,10 @@ const envJsonSchema = Type.Object({
 	REDIS_ENABLE_AUTO_PIPELINING: Type.Optional(Type.Boolean({ default: true })),
 	REDIS_MAX_RETRIES_PER_REQ: Type.Optional(Type.Number({ default: 1 })),
 	REDIS_CONNECT_TIMEOUT: Type.Optional(Type.Number({ default: 500 })),
-	// Change to required later
-	DATABASE_URL: Type.Optional(Type.String()),
+
+	PG_IDLE_TIMEOUT_MS: Type.Optional(Type.Number({ default: 60_000 })),
+	DATABASE_URL: Type.String(),
+
 	//Derived from K_SERVICE env passed by cloud run
 	IS_GCP_CLOUD_RUN: Type.Boolean(),
 	APP_NAME: Type.String({ default: 'readit-api' }),
@@ -117,7 +120,7 @@ export interface Config {
 		port: number
 	}
 	loggerOpts: LoggerOpts
-	//pg: PostgresjsPluginOptions
+	pg: PgOpts
 	//redis: FastifyRedisPluginOptions
 	underPressure: UnderPressure
 }
@@ -143,16 +146,12 @@ export const config: Config = {
 		LOGGING_LEVEL: env.LOGGING_LEVEL,
 		IS_PROD: env.IS_PROD,
 	},
-	//pg: {
-	//host: env.PG_HOST,
-	//port: env.PG_PORT,
-	//database: env.PG_DB,
-	//username: env.PG_USER,
-	//// Idle connection timeout in seconds
-	//idle_timeout: 60,
-	//// Max number of connections
-	//max: 10,
-	//},
+	pg: {
+		connectionString: env.DATABASE_URL,
+		application_name: `${env.APP_NAME}-api`,
+		idleTimeoutMillis: env.PG_IDLE_TIMEOUT_MS,
+		isProd: env.IS_PROD,
+	},
 	//redis: {
 	//enableAutoPipelining: true,
 	//connectTimeout: 500,

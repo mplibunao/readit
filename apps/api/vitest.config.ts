@@ -6,6 +6,7 @@ export default defineConfig({
 	test: {
 		testTimeout: 2000,
 		setupFiles: [],
+		//globalSetup: ['./src/infra/pg/migration.ts'],
 		coverage: {
 			reporter: ['text', 'json', 'html'],
 		},
