@@ -28,8 +28,8 @@ export const createPgClient = (opts: PgOpts, logger: FastifyBaseLogger) => {
 				}
 			} else {
 				if (event.level === 'query') {
-					logger.info(`pg query: ${event.query.sql}`)
-					logger.info(`pg query: ${event.query.parameters}`)
+					logger.info(`pg query sql: ${event.query.sql}`)
+					logger.info(`pg query params: ${event.query.parameters}`)
 				}
 				if (event.level === 'error') {
 					logger.error(`pg error: ${event.error}`)
