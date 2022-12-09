@@ -27,7 +27,6 @@ env:
   DATABASE_URL: postgres://readit:postgres@localhost:5432/readit
   FRONTEND_URL: http://localhost:3000
   IS_PROD: false
-  LOGGING_LEVEL: info
   NODE_ENV: test
   PORT: 4000
   REDIS_URL: redis://:redis_password@localhost:6379
