@@ -29,11 +29,7 @@ import fs from 'fs'
  *	-d	--directory							 Directory to output the bundle to. Defaults to `dist`
  */
 async function main() {
-	const getPlugins = (
-		isProduction: boolean,
-		entryPoints: Array<string>,
-		_isServer: boolean
-	) => {
+	const getPlugins = (isProduction, entryPoints, _isServer) => {
 		if (entryPoints.length > 1 || isProduction) {
 			return []
 		}
@@ -48,7 +44,7 @@ async function main() {
 		]
 	}
 
-	const getExternal = (): Array<string> => {
+	const getExternal = () => {
 		//const packageJson = JSON.parse(fs.readFileSync('./package.json', 'utf-8'))
 
 		//const included = new Set(['validation'])
