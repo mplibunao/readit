@@ -74,7 +74,7 @@ describe('health check', () => {
 		expect(res.db).toEqual('ok')
 	})
 
-	test('should return 503 if the db is not responsive', async () => {
+	test('should return fail on db property if the db is not responsive', async () => {
 		const healthOpts = {
 			version: '1.0.0',
 			maxHeapUsedBytes: 1_000_000_000,
@@ -108,6 +108,8 @@ describe('health check', () => {
 			url: healthOpts.exposeStatusRoute.url,
 		})
 
-		expect(response.statusCode).toEqual(503)
+		const res = response.json()
+
+		expect(res.db).toEqual('fail')
 	})
 })
