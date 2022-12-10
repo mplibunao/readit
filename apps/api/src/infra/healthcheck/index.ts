@@ -66,14 +66,16 @@ export const healthCheck: FastifyPluginAsync<Config> = async (
 			//rep.send('out of memory');
 		},
 		healthCheck: async (parent: FastifyInstance) => {
-			// You can return a boolean here as well. Returning false will probably return an unhealthy status code.
-			// Cool but I prefer strings so that I can add multiple alerting policies for server, db, redis and not have everything notifying when 1 component goes down
+			const db = await dbCheck(parent)
+
+			if (db === 'fail') return false
+
 			return {
 				version: opts.underPressure.version,
 				timestamp: new Date().toISOString(),
 				status: 'ok',
 				metrics: parent?.memoryUsage(),
-				db: await dbCheck(parent),
+				db,
 				//redis: await redisCheck(parent),
 			}
 		},
@@ -95,7 +97,6 @@ async function dbCheck(server: FastifyInstance) {
 		if (result.rows.length === 1) return 'ok'
 	} catch (err) {
 		server.log.error({ err }, 'failed to read DB during health check')
-		throw err
 	}
 	return 'fail'
 }
