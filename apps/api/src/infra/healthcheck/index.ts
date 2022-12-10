@@ -95,6 +95,7 @@ async function dbCheck(server: FastifyInstance) {
 		if (result.rows.length === 1) return 'ok'
 	} catch (err) {
 		server.log.error({ err }, 'failed to read DB during health check')
+		throw err
 	}
 	return 'fail'
 }
