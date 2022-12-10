@@ -59,16 +59,7 @@
 			"inputs": ["src/**/*.{js,jsx,ts,tsx,md,mdx,graphql,css,scss,yaml,json}"]
 		},
 		"ci": {
-			"dependsOn": [
-				"//#docker:up",
-				"typecheck",
-				"lint:check",
-				"format:check",
-				"test"
-			]
-		},
-		"//#docker:up": {
-			"outputs": []
+			"dependsOn": ["typecheck", "lint:check", "format:check", "test"]
 		}
 	}
 }

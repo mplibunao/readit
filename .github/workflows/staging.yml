@@ -70,6 +70,7 @@ jobs:
 
       - name: Run CI
         run: |
+          docker-compose up -d
           pnpm ci
 
   docker_staging_cd:

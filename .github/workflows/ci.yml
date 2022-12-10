@@ -67,4 +67,5 @@ jobs:
 
       - name: Run CI
         run: |
+          docker-compose up -d
           pnpm ci
