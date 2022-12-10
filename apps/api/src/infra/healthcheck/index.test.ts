@@ -74,41 +74,41 @@ describe('health check', () => {
 		expect(res.db).toEqual('ok')
 	})
 
-	test('should return fail for the db field if db is not responsive', async () => {
-		const healthOpts = {
-			version: '1.0.0',
-			maxHeapUsedBytes: 1_000_000_000,
-			maxRssBytes: 1_000_000_000,
-			maxEventLoopUtilization: 0.98,
-			maxEventLoopDelay: 1_000,
-			exposeStatusRoute: {
-				routeResponseSchemaOpts,
-				url: '/health',
-				routeOpts: {
-					logLevel: 'debug',
-				},
-			},
-		}
+	//test('should return fail for the db field if db is not responsive', async () => {
+	//const healthOpts = {
+	//version: '1.0.0',
+	//maxHeapUsedBytes: 1_000_000_000,
+	//maxRssBytes: 1_000_000_000,
+	//maxEventLoopUtilization: 0.98,
+	//maxEventLoopDelay: 1_000,
+	//exposeStatusRoute: {
+	//routeResponseSchemaOpts,
+	//url: '/health',
+	//routeOpts: {
+	//logLevel: 'debug',
+	//},
+	//},
+	//}
 
-		const pgOpts = {
-			connectionString:
-				'postgres://postgres:postgress@localhost:5432/doesnotexist',
-			isProd: false,
-		}
+	//const pgOpts = {
+	//connectionString:
+	//'postgres://postgres:postgress@localhost:5432/doesnotexist',
+	//isProd: false,
+	//}
 
-		const fastify = await build({
-			config: {
-				underPressure: healthOpts,
-				pg: pgOpts,
-			},
-		})
+	//const fastify = await build({
+	//config: {
+	//underPressure: healthOpts,
+	//pg: pgOpts,
+	//},
+	//})
 
-		const response = await fastify.inject({
-			method: 'GET',
-			url: healthOpts.exposeStatusRoute.url,
-		})
+	//const response = await fastify.inject({
+	//method: 'GET',
+	//url: healthOpts.exposeStatusRoute.url,
+	//})
 
-		const res = response.json()
-		expect(res.db).toEqual('fail')
-	})
+	//const res = response.json()
+	//expect(res.db).toEqual('fail')
+	//})
 })
