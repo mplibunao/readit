@@ -24,6 +24,7 @@ const envJsonSchema = Type.Object({
 	REDIS_CONNECT_TIMEOUT: Type.Optional(Type.Number({ default: 500 })),
 
 	PG_IDLE_TIMEOUT_MS: Type.Optional(Type.Number({ default: 60_000 })),
+	PG_SSL: Type.Optional(Type.Boolean({ default: false })),
 	DATABASE_URL: Type.String(),
 
 	//Derived from K_SERVICE env passed by cloud run
@@ -151,7 +152,7 @@ export const config: Config = {
 		application_name: `${env.APP_NAME}-api`,
 		idleTimeoutMillis: env.PG_IDLE_TIMEOUT_MS,
 		isProd: env.IS_PROD,
-		ssl: env.IS_PROD,
+		ssl: env.PG_SSL,
 	},
 	//redis: {
 	//enableAutoPipelining: true,
