@@ -108,7 +108,6 @@ describe('health check', () => {
 			url: healthOpts.exposeStatusRoute.url,
 		})
 
-		const res = response.json()
 		expect(response.statusCode).toEqual(503)
 	})
 })

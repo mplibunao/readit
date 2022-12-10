@@ -151,6 +151,7 @@ export const config: Config = {
 		application_name: `${env.APP_NAME}-api`,
 		idleTimeoutMillis: env.PG_IDLE_TIMEOUT_MS,
 		isProd: env.IS_PROD,
+		ssl: env.IS_PROD,
 	},
 	//redis: {
 	//enableAutoPipelining: true,
