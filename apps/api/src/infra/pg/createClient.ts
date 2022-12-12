@@ -1,5 +1,5 @@
 import { FastifyBaseLogger } from 'fastify'
-import { CamelCasePlugin, Kysely, PostgresDialect } from 'kysely'
+import { CamelCasePlugin, Kysely, PostgresDialect, Selectable } from 'kysely'
 import pg, { PoolConfig } from 'pg'
 import { DB } from './pg.generated'
 
@@ -37,4 +37,8 @@ export const createPgClient = (opts: PgOpts, logger: FastifyBaseLogger) => {
 			}
 		},
 	})
+}
+
+export type Row = {
+	[Key in keyof DB]: Selectable<DB[Key]>
 }

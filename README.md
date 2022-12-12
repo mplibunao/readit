@@ -2,6 +2,13 @@
 
 [![ci](https://github.com/mplibunao/readit/actions/workflows/ci.yml/badge.svg)](https://github.com/mplibunao/readit/actions/workflows/ci.yml) [![staging](https://github.com/mplibunao/readit/actions/workflows/staging.yml/badge.svg)](https://github.com/mplibunao/readit/actions/workflows/staging.yml) [![production](https://github.com/mplibunao/readit/actions/workflows/production.yml/badge.svg)](https://github.com/mplibunao/readit/actions/workflows/production.yml)
 
+
+# Domains
+
+- Accounts: Users
+- Moderation: Owners and Moderators
+- Subreddit: Community/Groups
+
 # Reddit Clone v2
 
 This is a more production-ready rewrite of [reddit clone](https://github.com/mplibunao/reddit-clone) based on the things that I've learned in the past year or so
