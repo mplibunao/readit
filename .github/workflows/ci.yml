@@ -29,7 +29,7 @@ env:
   NODE_ENV: test
   PORT: 4000
   REDIS_URL: redis://:redis_password@localhost:6379
-  TRPC_ENDPOIND: /trpc
+  TRPC_ENDPOINT: /trpc
   TRPC_PLAYGROUND_ENDPOINT: /trpc-playground
 
 jobs:
