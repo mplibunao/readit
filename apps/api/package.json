@@ -22,7 +22,7 @@
 		"ts-node": "node --no-warnings --experimental-loader ../../esbuild-register-loader.mjs -r @cspotcode/source-map-support/register -r esbuild-register",
 		"kysely-codegen": "kysely-codegen --dialect postgres --camel-case --out-file ./src/infra/pg/pg.generated.ts && pnpm format:fix",
 		"migrate": "pnpm ts-node src/infra/pg/cliMigrate.ts",
-		"migrate:up": "pnpm migrate up && pnpm kysely-codegen"
+		"migrate:up": "run-s 'migrate up' kysely-codegen format:fix"
 	},
 	"dependencies": {
 		"@cspotcode/source-map-support": "^0.8.1",
