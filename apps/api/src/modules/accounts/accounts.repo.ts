@@ -1,6 +1,6 @@
 import { InsertableUser, PG, User } from '@/infra/pg'
 import { ResultAsync } from 'neverthrow'
-import { DatabaseError as DBError } from 'pg'
+import Pg from 'pg'
 import { DatabaseError } from '@/helpers/errors'
 import {
 	FindUserByIdError,
@@ -21,7 +21,7 @@ export const create = (
 			.returning(['id', 'email', 'firstName', 'lastName'])
 			.executeTakeFirstOrThrow(),
 		(error) => {
-			if (error instanceof DBError) {
+			if (error instanceof Pg.DatabaseError) {
 				if (error.code === '23505') {
 					return new UserAlreadyExists(error)
 				}
