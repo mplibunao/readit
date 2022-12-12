@@ -14,9 +14,9 @@
 		"ladle:serve": "ladle serve",
 		"ladle:build": "ladle build",
 		"ladle:preview": "ladle preview",
-		"test:watch": "pnpm run test --watch",
-		"test": "wireit",
-		"icons:build": "wireit"
+		"test:watch": "echo 'Coming soon'",
+		"test": "echo 'Coming soon'",
+		"icons:build": "echo 'Coming soon'"
 	},
 	"dependencies": {
 		"@adaptui/react": "1.0.0-0",
