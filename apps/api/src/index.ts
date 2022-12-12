@@ -28,8 +28,6 @@ const main = async () => {
 
 			server.log.info({ signal, manual }, 'closing application')
 			await server.close()
-			// close other connections here if you don't want to use plugin for closing connections
-			// DB.close()
 		}
 	)
 

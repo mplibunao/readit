@@ -7,7 +7,7 @@
 		"packages/*"
 	],
 	"scripts": {
-		"migrate": "pnpm -F api migrate",
+		"migrate:up": "pnpm -F api migrate:up",
 		"build": "turbo run build",
 		"dev": "turbo run dev --parallel",
 		"lint:check": "turbo run lint:check",
@@ -25,7 +25,7 @@
 	},
 	"engines": {
 		"npm": ">=8.15.0",
-		"node": ">=18.12.0"
+		"node": ">=18.12.1"
 	},
 	"packageManager": "pnpm@7.14.1"
 }

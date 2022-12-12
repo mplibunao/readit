@@ -11,14 +11,14 @@ export type Timestamp = ColumnType<
 >
 
 export interface Users {
-	created_at: Generated<Timestamp>
-	deactivated_at: Timestamp | null
+	createdAt: Generated<Timestamp>
+	deactivatedAt: Timestamp | null
 	email: string
-	first_name: string
-	hashed_password: string
+	firstName: string
+	hashedPassword: string
 	id: Generated<string>
-	last_name: string
-	updated_at: Generated<Timestamp>
+	lastName: string
+	updatedAt: Generated<Timestamp>
 }
 
 export interface DB {

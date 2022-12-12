@@ -27,6 +27,10 @@ const envJsonSchema = Type.Object({
 	PG_SSL: Type.Optional(Type.Boolean({ default: false })),
 	DATABASE_URL: Type.String(),
 
+	TRPC_ENDPOINT: Type.String(),
+	TRPC_PLAYGROUND_ENDPOINT: Type.String(),
+	TRPC_ENABLE_PLAYGROUND: Type.Optional(Type.Boolean({ default: false })),
+
 	//Derived from K_SERVICE env passed by cloud run
 	IS_GCP_CLOUD_RUN: Type.Boolean(),
 	APP_NAME: Type.String({ default: 'readit-api' }),
@@ -115,12 +119,18 @@ export interface Config {
 		http2?: boolean
 		trustProxy: boolean
 		logger: PinoLoggerOptions
+		maxParamLength?: number
 	}
 	server: {
 		host?: string
 		port: number
 	}
 	loggerOpts: LoggerOpts
+	trpc: {
+		endpoint: string
+		playgroundEndpoint: string
+		enablePlayground?: boolean
+	}
 	pg: PgOpts
 	//redis: FastifyRedisPluginOptions
 	underPressure: UnderPressure
@@ -136,6 +146,8 @@ export const config: Config = {
 		http2: env.ENABLE_HTTP2,
 		trustProxy: true,
 		logger: getLoggerConfig(env),
+		// for trpc
+		maxParamLength: 5000,
 	},
 	server: {
 		port: env.PORT,
@@ -146,6 +158,11 @@ export const config: Config = {
 		IS_GCP_CLOUD_RUN: env.IS_GCP_CLOUD_RUN,
 		LOGGING_LEVEL: env.LOGGING_LEVEL,
 		IS_PROD: env.IS_PROD,
+	},
+	trpc: {
+		endpoint: env.TRPC_ENDPOINT,
+		playgroundEndpoint: env.TRPC_PLAYGROUND_ENDPOINT,
+		enablePlayground: env.TRPC_ENABLE_PLAYGROUND,
 	},
 	pg: {
 		connectionString: env.DATABASE_URL,
