@@ -34,7 +34,7 @@ module.exports = {
 	theme: {
 		extend: {
 			fontFamily: {
-				sans: ['InterVariable', ...defaultTheme.fontFamily.sans],
+				sans: ['var(--font-inter)', ...defaultTheme.fontFamily.sans],
 			},
 			colors: {
 				primary: withPalette('primary'),

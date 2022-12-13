@@ -101,6 +101,7 @@ importers:
       '@hookform/resolvers': ^2.9.10
       '@ladle/react': ^2.4.5
       '@next/bundle-analyzer': ^13.0.6
+      '@next/font': ^13.0.6
       '@radix-ui/react-accessible-icon': ^1.0.1
       '@radix-ui/react-toggle': ^1.0.1
       '@tailwindcss/forms': ^0.5.3
@@ -133,6 +134,7 @@ importers:
       zod: ^3.19.1
     dependencies:
       '@hookform/resolvers': 2.9.10_react-hook-form@7.40.0
+      '@next/font': 13.0.6
       '@radix-ui/react-accessible-icon': 1.0.1_biqbaboplfbrettd7655fr4n2y
       '@radix-ui/react-toggle': 1.0.1_biqbaboplfbrettd7655fr4n2y
       cva: /class-variance-authority/0.4.0_typescript@4.8.4
@@ -2046,6 +2048,10 @@ packages:
     resolution: {integrity: sha512-z+gnX4Zizatqatc6f4CQrcC9oN8Us3Vrq/OLyc98h7K/eWctrnV91zFZodmJHUjx0cITY8uYM7LXD7IdYkg3kg==}
     dependencies:
       glob: 7.1.7
+    dev: false
+
+  /@next/font/13.0.6:
+    resolution: {integrity: sha512-5vxNmvnV0CbYjQGtztD5Axft9C7npKihbQpiFhnDwdb99f9K/QSFfcJqxz0E5QBkf67O2niVGJ5lApJDu78w0w==}
     dev: false
 
   /@next/swc-android-arm-eabi/13.0.0:
