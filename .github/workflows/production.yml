@@ -25,7 +25,7 @@ env:
   DATABASE_URL: postgres://readit:postgres@localhost:5432/readit
   FRONTEND_URL: http://localhost:3000
   IS_PROD: false
-  NODE_ENV: test
+  NODE_ENV: production
   PORT: 4000
   REDIS_URL: redis://:redis_password@localhost:6379
   TRPC_ENDPOINT: /trpc
