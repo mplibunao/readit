@@ -10,6 +10,16 @@
 				"tsconfig.json"
 			]
 		},
+		"web#build": {
+			"dependsOn": ["^build"],
+			"outputs": ["dist/**", ".next/**"],
+			"inputs": [
+				"src/**/*.{tsx,ts}",
+				"!src/**/*.test.{tsx,ts}",
+				"tsconfig.json"
+			],
+			"env": ["VERCEL_URL", "PORT", "NODE_ENV"]
+		},
 		"build:analyze": {
 			"dependsOn": ["^build:analyze"],
 			"outputs": ["analyze", "dist/**"],
