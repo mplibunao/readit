@@ -40,7 +40,12 @@
 		"test": {
 			"outputs": ["coverage/**"],
 			"dependsOn": [],
-			"inputs": ["src/**/*.{tsx,ts}"]
+			"inputs": [
+				"src/**/*.{tsx,ts}",
+				"!src/**/*.stories.tsx",
+				"vitest.config.ts",
+				"jest.config.js"
+			]
 		},
 		"dev": {
 			"cache": false

@@ -14,8 +14,8 @@
 		"ladle:serve": "ladle serve",
 		"ladle:build": "ladle build",
 		"ladle:preview": "ladle preview",
-		"test:watch": "echo 'Coming soon'",
-		"test": "echo 'Coming soon'",
+		"test:watch": "jest --watch",
+		"test": "jest",
 		"icons:build": "echo 'Coming soon'"
 	},
 	"dependencies": {
