@@ -6,7 +6,7 @@ import underPressure, {
 	TYPE_EVENT_LOOP_DELAY,
 } from '@fastify/under-pressure'
 import { FastifyInstance, FastifyPluginAsync } from 'fastify'
-import { Config } from '@/config'
+import { Config } from '../../config'
 import { sql } from 'kysely'
 
 /*

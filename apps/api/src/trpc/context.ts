@@ -1,4 +1,4 @@
-import { PG } from '@/infra/pg'
+import { PG } from '../infra/pg'
 import { inferAsyncReturnType } from '@trpc/server'
 import { CreateFastifyContextOptions } from '@trpc/server/adapters/fastify'
 

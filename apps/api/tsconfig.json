@@ -3,11 +3,12 @@
 	"compilerOptions": {
 		"outDir": "./dist",
 		"rootDir": "./src",
-		"importHelpers": true,
-		"baseUrl": ".",
-		"paths": {
-			"@/*": ["src/*"]
-		}
+		"noEmit": false,
+		"importHelpers": true
+		//"baseUrl": ".",
+		//"paths": {
+			//"@/*": ["src/*"]
+		//}
 		//"noImplicitAny": false
 	},
 	"include": ["src"],

@@ -1,8 +1,8 @@
 import {
 	registerSchema,
 	userByIdInput,
-} from '@/modules/accounts/accounts.validation'
-import { Accounts } from '@/modules/accounts/accounts.service'
+} from '../../modules/accounts/accounts.validation'
+import { Accounts } from '../../modules/accounts/accounts.service'
 import { publicProcedure, router } from '../trpc'
 
 export const userRouter = router({

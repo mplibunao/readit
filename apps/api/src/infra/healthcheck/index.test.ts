@@ -1,5 +1,5 @@
 import { routeResponseSchemaOpts } from '.'
-import { build } from '@/helpers/test/build'
+import { build } from '../../helpers/test/build'
 import { describe, test, expect } from 'vitest'
 
 describe('health check', () => {

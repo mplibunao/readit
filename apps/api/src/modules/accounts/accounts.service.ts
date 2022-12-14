@@ -1,4 +1,4 @@
-import { PG } from '@/infra/pg'
+import { PG } from '../../infra/pg'
 import { AccountsRepo } from './accounts.repo'
 import { RegisterSchema } from './accounts.validation'
 import argon2 from 'argon2'

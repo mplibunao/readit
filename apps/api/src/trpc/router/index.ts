@@ -1,17 +1,17 @@
-import { publicProcedure, router } from '../trpc'
+import { publicProcedure, t } from '../trpc'
 import { userRouter } from './user.router'
 
-export const uptimeRouter = router({
+export const uptimeRouter = t.router({
 	uptime: publicProcedure.query(() => {
 		return {
-			uptime: process.uptime(),
+			uptime: 1,
 		}
 	}),
 })
 
-export const appRouter = router({
+export const appRouter = t.router({
 	user: userRouter,
 	uptime: uptimeRouter,
 })
 
-export type Router = typeof appRouter
+export type AppRouter = typeof appRouter

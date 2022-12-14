@@ -4,15 +4,11 @@ import { globby } from 'globby'
 import fs from 'fs'
 
 /*
- *Usage: node ./esbuild.script.js --prod --app server
+ *Usage: node ./esbuild.script.js --watch --minify --types
  *			 node ./esbuild.script.js -e 'src/**\/*.ts' -e '!src/**\/*.test.ts'
- *			 node ./esbuild.script.js --app server --analyze --saveAnalyze
+ *			 node ./esbuild.script.js --analyze --saveAnalyze
+ *
  *Options:
- *  -p, --production, --prod	   Builds a production bundle. Defaults to false
- *
- *  -a, --app <app-type>			   Type of application. Defaults to `server`
- *                               Options: `server`
- *
  *  -e, --entrypoint <file/glob> Defaults to `src/index.ts`, but you can use globs too
  *															 Using globs for the entrypoint will result in multiple files vs using a single entrypoint which results in a single index.js file
  *															 I think single file is generally preferred as only code used from entrypoint is included resulting in smaller bundle size
@@ -29,19 +25,10 @@ import fs from 'fs'
  *	-d	--directory							 Directory to output the bundle to. Defaults to `dist`
  */
 async function main() {
-	const getPlugins = (isProduction, entryPoints, _isServer) => {
-		if (entryPoints.length > 1 || isProduction) {
-			return []
-		}
+	const getPlugins = () => {
+		const plugins = []
 
-		return [
-			//esbuildPluginFileSize({
-			//showMinifiedSize: true,
-			//showPluginTitle: true,
-			//showBrotliSize: !isServer,
-			//showGzippedSize: !isServer,
-			//}),
-		]
+		return plugins
 	}
 
 	const getExternal = () => {
@@ -58,17 +45,14 @@ async function main() {
 
 	const argv = minimist(process.argv.slice(2))
 
-	const isProduction = argv.p || argv.prod || argv.production
 	const analyze = argv.analyze
-	const app = argv.a || argv.app || 'server'
-	const isServer = app === 'server'
 	const entrypoint = argv.e || argv.entrypoint || 'src/index.ts'
 	const watch = argv.w || argv.watch
 	const minify = argv.m || argv.minify
 	const directory = argv.d || argv.directory || 'dist'
 
 	const entryPoints = await globby(entrypoint)
-	const plugins = getPlugins(isProduction, entryPoints, isServer)
+	const plugins = getPlugins()
 
 	const result = await build({
 		entryPoints,

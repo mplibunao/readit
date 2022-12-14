@@ -1,4 +1,4 @@
-import { Env } from '@/config'
+import { Env } from '../../config'
 import { PinoLoggerOptions } from 'fastify/types/logger'
 
 export type LoggerOpts = {
