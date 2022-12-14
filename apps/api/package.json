@@ -1,7 +1,11 @@
 {
 	"name": "api",
 	"version": "0.0.0",
-	"main": "index.ts",
+	"main": "src/exports.ts",
+	"types": "src/exports.ts",
+	"files": [
+		"src/**"
+	],
 	"type": "module",
 	"scripts": {
 		"test:migrate": "NODE_ENV=test pnpm migrate latest",
