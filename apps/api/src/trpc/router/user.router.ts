@@ -1,7 +1,7 @@
 import {
 	registerSchema,
 	userByIdInput,
-} from '@/modules/accounts/accounts.schema'
+} from '@/modules/accounts/accounts.validation'
 import { Accounts } from '@/modules/accounts/accounts.service'
 import { publicProcedure, router } from '../trpc'
 
