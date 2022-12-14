@@ -64,6 +64,8 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --prefer-offline
+        env:
+          NODE_ENV: development
 
       - name: Run CI
         run: |
