@@ -18,7 +18,14 @@
 				"!src/**/*.test.{tsx,ts}",
 				"tsconfig.json"
 			],
-			"env": ["VERCEL_URL", "PORT", "NODE_ENV"]
+			"env": [
+				"VERCEL_URL",
+				"PORT",
+				"NODE_ENV",
+				"ANALYZE",
+				"API_URL",
+				"NEXT_PUBLIC_API_URL"
+			]
 		},
 		"build:analyze": {
 			"dependsOn": ["^build:analyze"],
