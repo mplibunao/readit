@@ -5,6 +5,7 @@ import pg from './infra/pg/plugin'
 import { fastifyTRPCPlugin } from '@trpc/server/adapters/fastify'
 import { appRouter, Context, createContext } from './trpc'
 import { ProcedureType, TRPCError } from '@trpc/server'
+import cors from '@fastify/cors'
 
 type OnErrorParams = {
 	error: TRPCError
@@ -21,6 +22,10 @@ export const app: FastifyPluginAsync<Config> = async (
 ): Promise<void> => {
 	fastify.register(pg, config.pg)
 	fastify.register(healthcheck, config)
+
+	fastify.register(cors, {
+		origin: '*',
+	})
 
 	fastify.register(fastifyTRPCPlugin, {
 		prefix: config.trpc.endpoint,
