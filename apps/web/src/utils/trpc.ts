@@ -1,19 +1,16 @@
-//import { createTRPCReact } from '@trpc/react-query'
 import { httpBatchLink, loggerLink } from '@trpc/client'
 import { createTRPCNext } from '@trpc/next'
 import superjson from 'superjson'
-//import type { GetInferenceHelpers } from '@trpc/server'
 import { isServer } from './ssr'
-//import { AppRouter } from 'api/src/trpc'
-//import type { ApiRouter as AppRouter } from 'api'
 import type { AppRouter } from 'api'
-//import { createTRPCReact, httpBatchLink, loggerLink } from '@trpc/react-query'
-//import type { AppRouter as ApiRouter } from 'api/src/trpc/router'
+import type { inferRouterInputs, inferRouterOutputs } from '@trpc/server'
+import type { inferReactQueryProcedureOptions } from '@trpc/react-query'
+import { env } from '@/env/server.mjs'
+import { env as clientEnv } from '@/env/client.mjs'
 
 export function getBaseUrl() {
-	if (!isServer()) return process.env.NEXT_PUBLIC_API_URL // csr should use relative path
-	return process.env.API_URL
-	//return `https://${process.env.API_URL}` // ssr on vercel should use vercel url
+	if (!isServer()) return env.API_URL // csr should use relative path
+	return clientEnv.NEXT_PUBLIC_API_URL
 }
 
 const url = `${getBaseUrl()}`
@@ -37,12 +34,6 @@ export const trpc = createTRPCNext<AppRouter>({
 	ssr: false,
 })
 
-//export const trpc = createTRPCReact<AppRouter>()
-
-//export const initTrpcClient = () =>
-//trpc.createClient({
-//links,
-//transformer: superjson,
-//})
-
-//export type AppRouterTypes = GetInferenceHelpers<AppRouter>
+export type RouterInput = inferRouterInputs<AppRouter>
+export type RouterOutput = inferRouterOutputs<AppRouter>
+export type ReactQueryOptions = inferReactQueryProcedureOptions<AppRouter>
