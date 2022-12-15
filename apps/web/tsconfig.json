@@ -3,6 +3,12 @@
 	"compilerOptions": {
 		"baseUrl": ".",
 		"types": ["node", "jest", "@testing-library/jest-dom"],
+		// Fixes types likely not portable error
+		"declaration": false,
+		"declarationMap": false,
+		// Solution to: The inferred type of 'trpc' cannot be named without a reference to '.pnpm/some-path'. This is likely not portable.
+		// https://github.com/microsoft/TypeScript/issues/42873
+		// Causes types to be lost for trpc in monorepos
 		//"preserveSymlinks": true,
 		"paths": {
 			"@/*": ["src/*"]
