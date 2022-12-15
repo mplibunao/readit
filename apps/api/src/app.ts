@@ -48,23 +48,21 @@ export const app: FastifyPluginAsync<Config> = async (
 		},
 	})
 
-	/*
-	 * main branch has the fastify fix but uses v9 trpc
-	 * @next branch works with v10 but doesn't have the fix for a fastify bug
-	 *if (config.trpc.enablePlayground) {
-	 *  const { getFastifyPlugin } = await import(
-	 *    'trpc-playground/handlers/fastify'
-	 *  )
-	 *  fastify.register(
-	 *    await getFastifyPlugin({
-	 *      playgroundEndpoint: config.trpc.playgroundEndpoint,
-	 *      trpcApiEndpoint: config.trpc.endpoint,
-	 *      router: appRouter,
-	 *    }),
-	 *    { prefix: config.trpc.playgroundEndpoint }
-	 *  )
-	 *}
-	 */
+	//main branch has the fastify fix but uses v9 trpc
+	//@next branch works with v10 but doesn't have the fix for a fastify bug
+	//if (config.trpc.enablePlayground) {
+	//const { getFastifyPlugin } = await import(
+	//'trpc-playground/handlers/fastify'
+	//)
+	//fastify.register(
+	//await getFastifyPlugin({
+	//playgroundEndpoint: config.trpc.playgroundEndpoint,
+	//trpcApiEndpoint: config.trpc.endpoint,
+	//router: appRouter,
+	//}),
+	//{ prefix: config.trpc.playgroundEndpoint }
+	//)
+	//}
 }
 
 export default app

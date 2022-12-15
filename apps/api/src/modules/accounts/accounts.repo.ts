@@ -1,7 +1,7 @@
-import { InsertableUser, PG, User } from '../../infra/pg'
+import { DatabaseError } from '@api/helpers/errors'
+import { InsertableUser, PG, User } from '@api/infra/pg'
 import { ResultAsync } from 'neverthrow'
 import Pg from 'pg'
-import { DatabaseError } from '../../helpers/errors'
 import {
 	FindUserByIdError,
 	RegistrationError,

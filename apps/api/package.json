@@ -2,10 +2,6 @@
 	"name": "api",
 	"version": "0.0.0",
 	"main": "src/trpc",
-	"types": "src/trpc",
-	"files": [
-		"src/**"
-	],
 	"type": "module",
 	"scripts": {
 		"test:migrate": "NODE_ENV=test pnpm migrate latest",
@@ -19,7 +15,7 @@
 		"dev:start": "node --watch dist/index.js -r @cspotcode/source-map-support/register",
 		"_dev:start": "nodemon --watch src -r @cspotcode/source-map-support/register dist/index.js",
 		"dev:build": "node ./scripts/esbuild.mjs --watch --minify",
-		"_dev:types": "tsc --emitDeclarationOnly --watch --declaration --project tsconfig.json",
+		"_dev:types": "tsc --emitDeclarationOnly --watch --declaration --project tsconfig.json --outDir types",
 		"format:fix": "prettier --config ../../prettier.config.cjs --ignore-path ../../.prettierignore --write 'src/**/*.{js,jsx,ts,tsx,md,mdx,graphql,css,scss,yaml,json}'",
 		"format:check": "prettier --config ../../prettier.config.cjs --ignore-path ../../.prettierignore --list-different 'src/**/*.{js,jsx,ts,tsx,md,mdx,graphql,css,scss,yaml,json}'",
 		"lint:check": "TIMING=1 eslint --color --cache --cache-location .eslintcache --ignore-path ../../.eslintignore ./src --ext .js,.jsx,.ts,.tsx",

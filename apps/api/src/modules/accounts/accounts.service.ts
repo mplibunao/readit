@@ -1,7 +1,7 @@
-import { PG } from '../../infra/pg'
 import { AccountsRepo } from './accounts.repo'
 import { RegisterSchema } from './accounts.validation'
 import argon2 from 'argon2'
+import { PG } from '@api/infra/pg'
 
 export * as Accounts from './accounts.service'
 

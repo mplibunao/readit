@@ -11,7 +11,8 @@
 		// Causes types to be lost for trpc in monorepos
 		//"preserveSymlinks": true,
 		"paths": {
-			"@/*": ["src/*"]
+			"@/*": ["src/*"],
+			"@api/*": ["../api/src/*"]
 		}
 	},
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "**/*.cjs", "**/*.mjs"],
