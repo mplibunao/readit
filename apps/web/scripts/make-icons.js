@@ -32,7 +32,7 @@ async function makeIcons() {
 const generateIdTypes = (iconData) => {
 	const type = `export type IconId = ${Object.keys(iconData.iconMap)
 		.map((key) => `'${key}'`)
-		.join(' | ')}`
+		.join(' | ')}\n`
 
 	fs.writeFile(listPath, type, (err) => {
 		if (err) {
