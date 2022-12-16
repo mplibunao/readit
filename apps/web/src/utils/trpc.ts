@@ -5,12 +5,10 @@ import { isServer } from './ssr'
 import type { AppRouter } from 'api'
 import type { inferRouterInputs, inferRouterOutputs } from '@trpc/server'
 import type { inferReactQueryProcedureOptions } from '@trpc/react-query'
-import { env } from '@/env/server.mjs'
-import { env as clientEnv } from '@/env/client.mjs'
 
 export function getBaseUrl() {
-	if (!isServer()) return env.API_URL // csr should use relative path
-	return clientEnv.NEXT_PUBLIC_API_URL
+	if (!isServer()) return process.env.NEXT_PUBLIC_API_URL // csr should use relative path
+	return process.env.API_URL
 }
 
 const url = `${getBaseUrl()}`
