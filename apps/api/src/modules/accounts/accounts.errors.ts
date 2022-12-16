@@ -1,4 +1,4 @@
-import { ApplicationError, DatabaseError } from '@/helpers/errors'
+import { ApplicationError, DatabaseError } from '@api/helpers/errors'
 
 export type RegistrationError = UserAlreadyExists | DatabaseError
 

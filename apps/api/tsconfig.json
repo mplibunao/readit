@@ -3,10 +3,11 @@
 	"compilerOptions": {
 		"outDir": "./dist",
 		"rootDir": "./src",
+		"noEmit": false,
 		"importHelpers": true,
 		"baseUrl": ".",
 		"paths": {
-			"@/*": ["src/*"]
+			"@api/*": ["src/*"]
 		}
 		//"noImplicitAny": false
 	},

@@ -1,9 +1,9 @@
-import { clearDatabase } from '@/helpers/test/clearDatabase'
-import { db } from '@/infra/pg/client'
-import { createContextInner } from '@/trpc/context'
+import { clearDatabase } from '@api/helpers/test/clearDatabase'
+import { db } from '@api/infra/pg/client'
+import { createContextInner } from '@api/trpc'
 import { inferProcedureInput } from '@trpc/server'
 import { test, describe, beforeEach, expect } from 'vitest'
-import { appRouter, Router } from '..'
+import { appRouter, AppRouter } from '..'
 
 beforeEach(async () => {
 	await clearDatabase()
@@ -14,7 +14,7 @@ describe('TRPC user router', () => {
 		const ctx = await createContextInner({ pg: db })
 		const caller = appRouter.createCaller(ctx)
 
-		const input: inferProcedureInput<Router['user']['register']> = {
+		const input: inferProcedureInput<AppRouter['user']['register']> = {
 			email: 'john@example.com',
 			firstName: 'John',
 			lastName: 'Doe',

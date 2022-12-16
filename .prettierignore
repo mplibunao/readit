@@ -46,3 +46,7 @@ docker-compose.override.yml
 
 # Lock files
 pnpm-lock.yaml
+
+**/icons/**
+**/Icon/types.ts
+

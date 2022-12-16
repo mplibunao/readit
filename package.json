@@ -10,6 +10,8 @@
 		"migrate:up": "pnpm -F api migrate:up",
 		"build": "turbo run build",
 		"dev": "turbo run dev --parallel",
+		"test": "turbo run test",
+		"test:watch": "turbo run test:watch",
 		"lint:check": "turbo run lint:check",
 		"lint:fix": "turbo run lint:fix",
 		"format:fix": "turbo format:fix",

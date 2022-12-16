@@ -1,6 +1,6 @@
 import { routeResponseSchemaOpts } from '.'
-import { build } from '@/helpers/test/build'
 import { describe, test, expect } from 'vitest'
+import { build } from '@api/helpers/test/build'
 
 describe('health check', () => {
 	test('should return response status of 200 with the correct payload', async () => {

@@ -1,6 +1,7 @@
 import { FastifyBaseLogger } from 'fastify'
 import { CamelCasePlugin, Kysely, PostgresDialect, Selectable } from 'kysely'
 import pg, { PoolConfig } from 'pg'
+import pino, { Logger } from 'pino'
 import { DB } from './pg.generated'
 
 export type PG = Kysely<DB>
@@ -9,7 +10,10 @@ export interface PgOpts extends PoolConfig {
 	isProd: boolean
 }
 
-export const createPgClient = (opts: PgOpts, logger: FastifyBaseLogger) => {
+export const createPgClient = (
+	opts: PgOpts,
+	logger?: FastifyBaseLogger | Logger<pino.LoggerOptions> | Console
+) => {
 	return new Kysely<DB>({
 		dialect: new PostgresDialect({
 			pool: new pg.Pool(opts),
@@ -24,15 +28,15 @@ export const createPgClient = (opts: PgOpts, logger: FastifyBaseLogger) => {
 		log(event): void {
 			if (opts.isProd) {
 				if (event.level === 'error') {
-					logger.error(`pg error: ${event.error}`)
+					logger?.error(`pg error: ${event.error}`)
 				}
 			} else {
 				if (event.level === 'query') {
-					logger.info(`pg query sql: ${event.query.sql}`)
-					logger.info(`pg query params: ${event.query.parameters}`)
+					logger?.info(`pg query sql: ${event.query.sql}`)
+					logger?.info(`pg query params: ${event.query.parameters}`)
 				}
 				if (event.level === 'error') {
-					logger.error(`pg error: ${event.error}`)
+					logger?.error(`pg error: ${event.error}`)
 				}
 			}
 		},

@@ -1,4 +1,4 @@
-import { build } from '@/helpers/test/build'
+import { build } from '@api/helpers/test/build'
 import { sql } from 'kysely'
 import { test, describe, expect } from 'vitest'
 
