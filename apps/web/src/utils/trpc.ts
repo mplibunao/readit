@@ -11,7 +11,7 @@ export function getBaseUrl() {
 	return process.env.API_URL
 }
 
-const url = `${getBaseUrl()}`
+const url = `${getBaseUrl()}/trpc`
 const links = [
 	loggerLink({
 		enabled: (opts) =>
