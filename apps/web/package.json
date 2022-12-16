@@ -6,7 +6,6 @@
 		"dev": "run-p dev:*",
 		"dev:start": "next dev",
 		"dev:icons": "node --watch ./scripts/make-icons.js",
-		"_dev:ladle": "ladle serve",
 		"build": "next build",
 		"start": "next start",
 		"lint:check": "TIMING=1 next lint --cache --cache-location .eslintcache --ignore-path ../../.eslintignore",
@@ -14,12 +13,14 @@
 		"format:fix": "prettier --config ../../prettier.config.cjs --ignore-path ../../.prettierignore --write 'src/**/*.{js,jsx,ts,tsx,md,mdx,graphql,css,scss,yaml,json}'",
 		"format:check": "prettier --config ../../prettier.config.cjs --ignore-path ../../.prettierignore --list-different 'src/**/*.{js,jsx,ts,tsx,md,mdx,graphql,css,scss,yaml,json}'",
 		"analyze": "ANALYZE=true next build",
+		"ladle": "ladle serve",
 		"ladle:build": "ladle build",
 		"ladle:preview": "ladle preview",
 		"test:watch": "jest --watch",
 		"test": "jest"
 	},
 	"dependencies": {
+		"@headlessui/react": "^1.7.5",
 		"@hookform/resolvers": "^2.9.10",
 		"@next/font": "^13.0.6",
 		"@radix-ui/react-accessible-icon": "^1.0.1",
