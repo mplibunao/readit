@@ -29,7 +29,7 @@ const envJsonSchema = Type.Object({
 	DATABASE_URL: Type.String(),
 
 	TRPC_ENDPOINT: Type.String(),
-	TRPC_PLAYGROUND_ENDPOINT: Type.String(),
+	TRPC_PLAYGROUND_ENDPOINT: Type.Optional(Type.String()),
 	TRPC_ENABLE_PLAYGROUND: Type.Optional(Type.Boolean({ default: false })),
 
 	//Derived from K_SERVICE env passed by cloud run
@@ -162,7 +162,7 @@ export const config: Config = {
 	},
 	trpc: {
 		endpoint: env.TRPC_ENDPOINT,
-		playgroundEndpoint: env.TRPC_PLAYGROUND_ENDPOINT,
+		playgroundEndpoint: env.TRPC_PLAYGROUND_ENDPOINT ?? '/trpc-playground',
 		enablePlayground: env.TRPC_ENABLE_PLAYGROUND,
 	},
 	pg: {
