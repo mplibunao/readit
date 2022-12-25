@@ -18,6 +18,8 @@ export async function getAllConfig(keys: string[], fallback: unknown[]) {
 		)
 		return flags.reduce((acc, curr) => ({ ...acc, ...curr }), {})
 	} catch (error) {
-		return fallback
+		return keys
+			.map((key, index) => ({ [key]: fallback[index] }))
+			.reduce((acc, curr) => ({ ...acc, ...curr }), {})
 	}
 }

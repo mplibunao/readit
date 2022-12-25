@@ -127,6 +127,7 @@ importers:
       ariakit: 2.0.0-next.41
       autoprefixer: ^10.4.13
       cva: npm:class-variance-authority@^0.4.0
+      edge-config: workspace:*
       eslint: 7.32.0
       eslint-config-custom: workspace:*
       icon-pipeline: ^0.1.3
@@ -160,6 +161,7 @@ importers:
       api: link:../api
       ariakit: 2.0.0-next.41_biqbaboplfbrettd7655fr4n2y
       cva: /class-variance-authority/0.4.0_typescript@4.8.4
+      edge-config: link:../../packages/edge-config
       next: 13.0.0_mqvh5p7ejg4taogoj6tpk3gd5a
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
@@ -193,6 +195,12 @@ importers:
       tailwindcss: 3.2.4_postcss@8.4.19
       tsconfig: link:../../packages/tsconfig
       typescript: 4.8.4
+
+  packages/edge-config:
+    specifiers:
+      '@vercel/edge-config': ^0.1.0
+    dependencies:
+      '@vercel/edge-config': 0.1.0
 
   packages/eslint-config-custom:
     specifiers:

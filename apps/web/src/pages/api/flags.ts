@@ -1,4 +1,4 @@
-import { getAllConfig } from '@/utils/edgeConfig'
+import { getAllConfig } from 'edge-config'
 import { NextRequest } from 'next/server'
 
 export default async function getFlags(req: NextRequest) {
