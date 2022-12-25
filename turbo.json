@@ -24,7 +24,9 @@
 				"NODE_ENV",
 				"ANALYZE",
 				"API_URL",
-				"NEXT_PUBLIC_API_URL"
+				"NEXT_PUBLIC_API_URL",
+				"VERCEL_ENV",
+				"APP_NAME"
 			]
 		},
 		"build:analyze": {

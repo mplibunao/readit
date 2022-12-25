@@ -1,4 +1,3 @@
-import { FastifyBaseLogger } from 'fastify'
 import { CamelCasePlugin, Kysely, PostgresDialect, Selectable } from 'kysely'
 import pg, { PoolConfig } from 'pg'
 import pino, { Logger } from 'pino'
@@ -12,7 +11,7 @@ export interface PgOpts extends PoolConfig {
 
 export const createPgClient = (
 	opts: PgOpts,
-	logger?: FastifyBaseLogger | Logger<pino.LoggerOptions> | Console
+	logger: pino.BaseLogger | Logger<pino.LoggerOptions> | Console = console
 ) => {
 	return new Kysely<DB>({
 		dialect: new PostgresDialect({

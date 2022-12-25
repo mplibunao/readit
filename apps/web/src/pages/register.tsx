@@ -1,8 +1,20 @@
 import { Icon } from '@/components/Icon'
 import { styledLink } from '@/components/Link'
+import { useFeatureFlags } from '@/utils/useFeatureFlags'
 import Link from 'next/link'
 
 const Register = () => {
+	const { data, isLoading } = useFeatureFlags<{
+		ENABLE_REGISTER: boolean
+		ENABLE_REGISTER2: boolean
+	}>({
+		flag: ['ENABLE_REGISTER', 'ENABLE_REGISTER2'],
+		fallback: [true, false],
+	})
+
+	if (isLoading) return <div>Loading...</div>
+
+	Boolean(data?.ENABLE_REGISTER)
 	return (
 		<div className='flex min-h-full flex-col justify-center py-12 sm:px-6 lg:px-8'>
 			<div className='sm:mx-auto sm:w-full sm:max-w-md'>
@@ -23,6 +35,9 @@ const Register = () => {
 			</div>
 		</div>
 	)
+	//}
+
+	//return <div>Disabled</div>
 }
 
 export default Register
