@@ -9,7 +9,8 @@ const nextConfig = {
 // analyze
 const shouldAnalyzeBundle = process.env.ANALYZE === 'true'
 const withBundleAnalyzer = shouldAnalyzeBundle
-	? require('@next/bundle-analyzer')({
+	? // eslint-disable-next-line @typescript-eslint/no-var-requires
+	  require('@next/bundle-analyzer')({
 			enabled: true,
 	  })
 	: (config) => config
