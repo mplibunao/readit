@@ -32,15 +32,15 @@ async function main() {
 	}
 
 	const getExternal = () => {
-		//const packageJson = JSON.parse(fs.readFileSync('./package.json', 'utf-8'))
+		const packageJson = JSON.parse(fs.readFileSync('./package.json', 'utf-8'))
 
-		//const included = new Set(['validation'])
-		//const external = [...Object.keys(packageJson.dependencies)].filter(
-		//(deps) => !included.has(deps)
-		//)
-		//return external
+		const included = new Set(['edge-config'])
+		const external = [...Object.keys(packageJson.dependencies)].filter(
+			(deps) => !included.has(deps)
+		)
+		return external
 
-		return ['./node_modules/*']
+		//return ['./node_modules/*']
 	}
 
 	const argv = minimist(process.argv.slice(2))

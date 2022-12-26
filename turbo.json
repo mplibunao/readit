@@ -25,8 +25,9 @@
 				"ANALYZE",
 				"API_URL",
 				"NEXT_PUBLIC_API_URL",
-				"VERCEL_ENV",
-				"APP_NAME"
+				"EDGE_CONFIG",
+				"APP_NAME",
+				"VERCEL_ENV"
 			]
 		},
 		"build:analyze": {

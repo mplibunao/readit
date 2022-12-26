@@ -1,10 +1,18 @@
-import { getAllConfig } from 'edge-config'
+import { edgeConfig } from '@/server/infra/edgeConfig'
 import { NextRequest } from 'next/server'
 
 export default async function getFlags(req: NextRequest) {
-	const searchParams = new URL(req.url).searchParams
+	if (req.method !== 'POST') {
+		return new Response('Not a POST request', {
+			status: 405,
+			statusText: 'Method Not Allowed',
+		})
+	}
+	const body = await req.json()
+	const keys = body.flag
+	const fallback = body.fallback
 
-	if (!searchParams.has('flag')) {
+	if (!keys || !Array.isArray(keys)) {
 		return new Response(
 			JSON.stringify({
 				error:
@@ -17,7 +25,7 @@ export default async function getFlags(req: NextRequest) {
 		)
 	}
 
-	if (!searchParams.has('fallback')) {
+	if (!fallback || !Array.isArray(fallback)) {
 		return new Response(
 			JSON.stringify({
 				error: 'Invalid flag fallback',
@@ -28,9 +36,8 @@ export default async function getFlags(req: NextRequest) {
 			}
 		)
 	}
-	const keys = searchParams.getAll('flag')
-	const fallback = searchParams.getAll('fallback')
-	const flags = await getAllConfig(keys, fallback)
+
+	const flags = await edgeConfig.getAllConfig(keys, fallback)
 	return new Response(JSON.stringify({ ...flags }))
 }
 

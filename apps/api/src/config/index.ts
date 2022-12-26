@@ -4,6 +4,7 @@ import { Static, Type } from '@sinclair/typebox'
 import envSchema from 'env-schema'
 import { PinoLoggerOptions } from 'fastify/types/logger'
 import { PgOpts } from '@api/infra/pg'
+import { EdgeConfigOptions } from 'edge-config'
 
 const envJsonSchema = Type.Object({
 	NODE_ENV: Type.Union([
@@ -34,7 +35,7 @@ const envJsonSchema = Type.Object({
 
 	//Derived from K_SERVICE env passed by cloud run
 	IS_GCP_CLOUD_RUN: Type.Boolean(),
-	APP_NAME: Type.String({ default: 'readit-api' }),
+	APP_NAME: Type.String({ default: 'readit' }),
 	APP_VERSION: Type.String({ default: '0.0.0' }),
 	LOGGING_LEVEL: Type.Union(
 		[
@@ -83,6 +84,14 @@ const envJsonSchema = Type.Object({
 			description: "Note: You can't use this with websockets",
 		})
 	),
+	EDGE_CONFIG: Type.String({
+		description: 'Connection string for feature flags',
+	}),
+	VERCEL_ENV: Type.Union([
+		Type.Literal('development'),
+		Type.Literal('preview'),
+		Type.Literal('production'),
+	]),
 })
 
 export type Env = Static<typeof envJsonSchema>
@@ -135,6 +144,10 @@ export interface Config {
 	pg: PgOpts
 	//redis: FastifyRedisPluginOptions
 	underPressure: UnderPressure
+	edgeConfig: Omit<EdgeConfigOptions, 'client'> & {
+		connectionString: Env['EDGE_CONFIG']
+		env: Env['VERCEL_ENV']
+	}
 }
 
 export const config: Config = {
@@ -190,5 +203,10 @@ export const config: Config = {
 				logLevel: 'debug',
 			},
 		},
+	},
+	edgeConfig: {
+		connectionString: env.EDGE_CONFIG,
+		appName: env.APP_NAME,
+		env: env.VERCEL_ENV,
 	},
 }

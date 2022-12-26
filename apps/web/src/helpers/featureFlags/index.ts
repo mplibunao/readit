@@ -1,6 +1,5 @@
+import { nextApi } from '@/utils/wretch'
 import { useQuery } from '@tanstack/react-query'
-import { nextApi } from './wretch'
-import QueryStringAddon from 'wretch/addons/queryString'
 
 export function useFeatureFlags<T>({
 	flag,
@@ -12,10 +11,7 @@ export function useFeatureFlags<T>({
 	return useQuery({
 		queryKey: flag,
 		queryFn: async () => {
-			const flags = (await nextApi
-				.addon(QueryStringAddon)
-				.query({ flag, fallback })
-				.get('/flags')) as T
+			const flags = (await nextApi.url('/flags').post({ flag, fallback })) as T
 
 			return flags
 		},

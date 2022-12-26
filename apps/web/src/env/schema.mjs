@@ -10,8 +10,10 @@ export const serverSchema = z.object({
 	VERCEL_URL: z.optional(z.string().url()),
 	PORT: z.optional(z.number(z.number().int().positive())),
 	API_URL: z.string(),
-	VERCEL_ENV: z.enum(['development', 'preview', 'production']),
 	APP_NAME: z.string(),
+	VERCEL_ENV: z.enum(['development', 'preview', 'production']),
+	EDGE_CONFIG: z.string(),
+	ANALYZE: z.optional(z.string()),
 })
 
 /**

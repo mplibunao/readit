@@ -34,6 +34,7 @@
 		"@vercel/edge-config": "^0.1.0",
 		"argon2": "^0.30.2",
 		"close-with-grace": "^1.1.0",
+		"edge-config": "workspace:*",
 		"env-schema": "^5.1.0",
 		"fastify": "^4.9.2",
 		"fastify-plugin": "^4.3.0",

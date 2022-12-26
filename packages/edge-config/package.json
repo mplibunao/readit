@@ -4,12 +4,16 @@
 	"description": "",
 	"main": "index.ts",
 	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1"
+		"test": "vitest --run --coverage",
+		"test:watch": "vitest watch --coverage --ui"
 	},
 	"keywords": [],
 	"author": "",
 	"license": "ISC",
-	"dependencies": {
+	"dependencies": {},
+	"devDependencies": {
+		"vitest": "^0.24.5",
+		"pino": "^8.7.0",
 		"@vercel/edge-config": "^0.1.0"
 	}
 }

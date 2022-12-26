@@ -9,6 +9,7 @@ import superjson from 'superjson'
 import { trpcUrl } from '@/utils/url'
 
 const interVariable = Inter({
+	subsets: ['latin'],
 	variable: '--font-inter',
 })
 
