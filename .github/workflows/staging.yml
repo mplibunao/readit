@@ -34,6 +34,8 @@ env:
   TRPC_PLAYGROUND_ENDPOINT: /trpc-playground
   EDGE_CONFIG: ''
   VERCEL_ENV: development
+  API_URL: http://localhost:4000/api
+  NEXT_PUBLIC_API_URL: http://localhost:4000/api
 
 jobs:
   ci:
