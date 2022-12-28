@@ -5,9 +5,13 @@
 
 # Domains
 
-- Accounts: Users
-- Moderation: Owners and Moderators
-- Subreddit: Community/Groups
+- Accounts/User: User registration, login, profile management
+- Moderation/Admin: Owners and Moderators, Content moderation, NFSW flagging/blurring, lock thread, pin thread, user ban 
+- Subreddit: Community/Groups, Create, Manage
+- Notifications: Realtime, Email
+- Posts: Posts, Comments, Replies, upvotes, downvotes
+- Search: Search posts, subreddits. 
+- Discovery: Recommendation of content based on interests (posts and subreddits)
 
 # Reddit Clone v2
 

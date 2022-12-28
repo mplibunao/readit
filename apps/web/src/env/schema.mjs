@@ -6,10 +6,12 @@ import { z } from 'zod'
  */
 export const serverSchema = z.object({
 	//DATABASE_URL: z.string().url(),
-	//NODE_ENV: z.enum(['development', 'test', 'production']),
-	VERCEL_URL: z.optional(z.string().url()),
-	PORT: z.optional(z.number(z.number().int().positive())),
+	NODE_ENV: z.enum(['development', 'test', 'production']),
+	PORT: z.optional(z.union([z.number().int().positive(), z.string()])),
 	API_URL: z.string(),
+	APP_NAME: z.string(),
+	EDGE_CONFIG: z.string(),
+	ANALYZE: z.optional(z.string()),
 })
 
 /**
