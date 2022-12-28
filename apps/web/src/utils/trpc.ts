@@ -1,5 +1,5 @@
 import { createTRPCReact } from '@trpc/react-query'
-import type { AppRouter } from 'api'
+import type { AppRouter } from '@readit/api'
 import type { inferRouterInputs, inferRouterOutputs } from '@trpc/server'
 import type { inferReactQueryProcedureOptions } from '@trpc/react-query'
 

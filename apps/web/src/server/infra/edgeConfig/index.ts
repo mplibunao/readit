@@ -1,5 +1,5 @@
 import { createClient } from '@vercel/edge-config'
-import { EdgeConfig } from 'edge-config'
+import { EdgeConfig } from '@readit/edge-config'
 
 if (!process.env.EDGE_CONFIG) throw new Error('EDGE_CONFIG is not defined')
 if (!process.env.APP_NAME) throw new Error('APP_NAME is not defined')

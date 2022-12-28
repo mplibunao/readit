@@ -4,7 +4,7 @@ import { Static, Type } from '@sinclair/typebox'
 import envSchema from 'env-schema'
 import { PinoLoggerOptions } from 'fastify/types/logger'
 import { PgOpts } from '@api/infra/pg'
-import { EdgeConfigOptions } from 'edge-config'
+import { EdgeConfigOptions } from '@readit/edge-config'
 
 const envJsonSchema = Type.Object({
 	NODE_ENV: Type.Union([
