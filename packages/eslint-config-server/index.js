@@ -5,7 +5,7 @@ module.exports = {
 		browser: false,
 		jest: true,
 	},
-	plugins: ['@typescript-eslint'],
+	plugins: ['simple-import-sort', '@typescript-eslint'],
 	parser: '@typescript-eslint/parser',
 	parserOptions: {
 		ecmaVersion: 'latest',
@@ -13,7 +13,17 @@ module.exports = {
 	},
 	extends: ['plugin:@typescript-eslint/eslint-recommended', 'prettier'],
 	rules: {
-		'@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+		'simple-import-sort/imports': 'warn',
+		'simple-import-sort/exports': 'warn',
+		'@typescript-eslint/no-unused-vars': [
+			'error',
+			{
+				argsIgnorePattern: '^_',
+				varsIgnorePattern: '^_',
+				caughtErrorsIgnorePattern: '^_',
+			},
+		],
 		'@typescript-eslint/no-non-null-assertion': 'off',
+		'@typescript-eslint/no-empty-function': 'off',
 	},
 }
