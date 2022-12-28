@@ -11,7 +11,6 @@ export const serverSchema = z.object({
 	PORT: z.optional(z.union([z.number().int().positive(), z.string()])),
 	API_URL: z.string(),
 	APP_NAME: z.string(),
-	VERCEL_ENV: z.enum(['development', 'preview', 'production']),
 	EDGE_CONFIG: z.string(),
 	ANALYZE: z.optional(z.string()),
 })
