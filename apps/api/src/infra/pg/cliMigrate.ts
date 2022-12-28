@@ -1,7 +1,8 @@
-import { Migrator, FileMigrationProvider } from 'kysely'
-import { run } from 'kysely-migration-cli'
 import { promises as fs } from 'fs'
+import { FileMigrationProvider, Migrator } from 'kysely'
+import { run } from 'kysely-migration-cli'
 import * as path from 'path'
+
 import { db } from './client'
 
 /*

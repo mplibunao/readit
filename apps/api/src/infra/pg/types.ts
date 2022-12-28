@@ -1,4 +1,5 @@
 import { Insertable, Selectable, Updateable } from 'kysely'
+
 import { DB } from './pg.generated'
 
 export type UserTable = DB['users']

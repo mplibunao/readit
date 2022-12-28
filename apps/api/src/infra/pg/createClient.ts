@@ -1,6 +1,7 @@
 import { CamelCasePlugin, Kysely, PostgresDialect, Selectable } from 'kysely'
 import pg, { PoolConfig } from 'pg'
 import pino, { Logger } from 'pino'
+
 import { DB } from './pg.generated'
 
 export type PG = Kysely<DB>

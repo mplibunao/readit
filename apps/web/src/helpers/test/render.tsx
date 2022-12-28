@@ -1,7 +1,7 @@
 import { RenderOptions } from '@testing-library/react'
-import { FormProvider, useForm, UseFormProps } from 'react-hook-form'
 import { render } from '@testing-library/react'
 import * as React from 'react'
+import { FormProvider, useForm, UseFormProps } from 'react-hook-form'
 
 export async function renderWithReactHookForm(
 	ui: React.ReactElement,

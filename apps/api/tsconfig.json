@@ -1,5 +1,5 @@
 {
-	"extends": "tsconfig/esbuild-server.json",
+	"extends": "@readit/tsconfig/esbuild-server.json",
 	"compilerOptions": {
 		"outDir": "./dist",
 		"rootDir": "./src",

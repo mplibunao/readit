@@ -1,8 +1,8 @@
+import App from '@api/app'
+import { Config, config } from '@api/config'
 import Fastify from 'fastify'
 import fp from 'fastify-plugin'
 import { afterAll, beforeAll } from 'vitest'
-import App from '@api/app'
-import { config, Config } from '@api/config'
 
 //const clearDatabase = async (fastify: FastifyInstance) => {
 //await fastify.pg.sql`DELETE FROM users`

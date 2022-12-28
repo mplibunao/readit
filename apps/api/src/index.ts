@@ -1,5 +1,6 @@
-import Fastify from 'fastify'
 import closeWithGrace, { Signals } from 'close-with-grace'
+import Fastify from 'fastify'
+
 import app from './app'
 import { config } from './config'
 

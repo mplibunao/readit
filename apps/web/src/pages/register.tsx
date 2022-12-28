@@ -1,7 +1,8 @@
+import Link from 'next/link'
+
 import { Icon } from '@/components/Icon'
 import { styledLink } from '@/components/Link'
 import { useFeatureFlags } from '@/helpers/featureFlags'
-import Link from 'next/link'
 
 const Register = () => {
 	const { data, isLoading } = useFeatureFlags<{

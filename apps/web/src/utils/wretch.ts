@@ -1,4 +1,5 @@
 import wretch from 'wretch'
+
 import { clientUrl } from './url'
 
 export const nextApi = wretch(clientUrl)

@@ -1,10 +1,11 @@
 import { routeResponseSchemaOpts, UnderPressure } from '@api/infra/healthcheck'
-import { LoggerOpts, getLoggerConfig } from '../infra/logger/loggerConfig'
+import { PgOpts } from '@api/infra/pg'
+import { EdgeConfigOptions } from '@readit/edge-config'
 import { Static, Type } from '@sinclair/typebox'
 import envSchema from 'env-schema'
 import { PinoLoggerOptions } from 'fastify/types/logger'
-import { PgOpts } from '@api/infra/pg'
-import { EdgeConfigOptions } from 'edge-config'
+
+import { getLoggerConfig, LoggerOpts } from '../infra/logger/loggerConfig'
 
 const envJsonSchema = Type.Object({
 	NODE_ENV: Type.Union([

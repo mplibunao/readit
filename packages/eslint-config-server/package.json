@@ -1,17 +1,19 @@
 {
-	"name": "eslint-config-custom-server",
+	"name": "@readit/eslint-config-server",
 	"version": "0.0.0",
 	"main": "index.js",
-	"publishConfig": {
-		"access": "public"
-	},
+	"license": "MIT",
 	"dependencies": {
 		"@typescript-eslint/eslint-plugin": "^5.42.0",
 		"@typescript-eslint/parser": "^5.42.0",
 		"eslint": "^8.26.0",
-		"eslint-config-prettier": "^8.3.0"
+		"eslint-config-prettier": "^8.3.0",
+		"eslint-plugin-simple-import-sort": "^8.0.0"
 	},
 	"devDependencies": {
 		"typescript": "^4.8.4"
+	},
+	"publishConfig": {
+		"access": "public"
 	}
 }

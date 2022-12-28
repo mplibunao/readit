@@ -1,13 +1,13 @@
-import fp from 'fastify-plugin'
+import { Config } from '@api/config'
 import underPressure, {
+	TYPE_EVENT_LOOP_DELAY,
+	TYPE_EVENT_LOOP_UTILIZATION,
 	TYPE_HEAP_USED_BYTES,
 	TYPE_RSS_BYTES,
-	TYPE_EVENT_LOOP_UTILIZATION,
-	TYPE_EVENT_LOOP_DELAY,
 } from '@fastify/under-pressure'
 import { FastifyInstance, FastifyPluginAsync } from 'fastify'
+import fp from 'fastify-plugin'
 import { sql } from 'kysely'
-import { Config } from '@api/config'
 
 /*
  *This plugin is especially useful if you expect an high load
