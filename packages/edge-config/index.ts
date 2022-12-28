@@ -63,9 +63,8 @@ export class EdgeConfig {
 			const flags = await Promise.all(
 				keys.map(async (key, index) => {
 					const fullKey = this.getFullKey(key)
-					const value = (await this.has(fullKey))
-						? await this.get(fullKey)
-						: fallback[index]
+					const exists = await this.has(fullKey)
+					const value = exists ? await this.get(fullKey) : fallback[index]
 					return { [key]: value }
 				})
 			)

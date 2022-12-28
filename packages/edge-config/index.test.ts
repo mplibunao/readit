@@ -16,7 +16,7 @@ vi.mock('@vercel/edge-config', () => {
 
 describe('EdgeConfig', () => {
 	afterEach(() => {
-		vi.clearAllMocks()
+		vi.restoreAllMocks()
 	})
 
 	let edgeConfig: EdgeConfig
@@ -45,6 +45,36 @@ describe('EdgeConfig', () => {
 
 			const result = await edgeConfig.getConfig('SOME_FIELD', true)
 			expect(result).toBe(true)
+		})
+	})
+
+	describe('getAllConfig', () => {
+		it('should return all the keys if they all exist', async () => {
+			mock.has.mockResolvedValueOnce(true).mockResolvedValueOnce(true)
+			mock.get.mockResolvedValueOnce(true).mockResolvedValueOnce(false)
+
+			const result = await edgeConfig.getAllConfig(
+				['SOME_FIELD', 'SOME_OTHER_FIELD'],
+				[true, true]
+			)
+			expect(result).toEqual({
+				SOME_FIELD: true,
+				SOME_OTHER_FIELD: false,
+			})
+		})
+
+		it('should return the value for existing keys and the fallback for non-existing keys', async () => {
+			mock.has.mockResolvedValueOnce(true).mockResolvedValueOnce(false)
+			mock.get.mockResolvedValueOnce(true)
+
+			const result = await edgeConfig.getAllConfig(
+				['SOME_FIELD', 'SOME_OTHER_FIELD'],
+				[true, true]
+			)
+			expect(result).toEqual({
+				SOME_FIELD: true,
+				SOME_OTHER_FIELD: true,
+			})
 		})
 	})
 })
