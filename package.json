@@ -20,7 +20,7 @@
 		"docker:up": "docker-compose up -d"
 	},
 	"devDependencies": {
-		"eslint-config-custom": "workspace:*",
+		"@readit/eslint-config": "workspace:*",
 		"prettier": "latest",
 		"prettier-plugin-tailwindcss": "^0.1.13",
 		"turbo": "latest"

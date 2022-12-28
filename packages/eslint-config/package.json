@@ -1,5 +1,5 @@
 {
-	"name": "eslint-config-custom",
+	"name": "@readit/eslint-config",
 	"version": "0.0.0",
 	"main": "index.js",
 	"license": "MIT",
@@ -14,7 +14,7 @@
 		"eslint-plugin-testing-library": "^5.9.1"
 	},
 	"devDependencies": {
-		"typescript": "^4.7.4"
+		"typescript": "^4.8.4"
 	},
 	"publishConfig": {
 		"access": "public"

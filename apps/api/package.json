@@ -56,7 +56,7 @@
 		"esbuild": "^0.15.12",
 		"esbuild-register": "^3.3.3",
 		"eslint": "^8.26.0",
-		"eslint-config-custom-server": "workspace:*",
+		"@readit/eslint-config-server": "workspace:*",
 		"globby": "^13.1.2",
 		"kysely-codegen": "^0.8.0",
 		"kysely-migration-cli": "^0.1.1",
