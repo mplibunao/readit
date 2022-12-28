@@ -74,8 +74,8 @@ jobs:
           docker-compose up -d
           pnpm ci
 
-  docker_staging_cd:
-    name: docker_staging_cd
+  docker_staging_cloudrun_cd:
+    name: docker_staging_cloudrun_cd
     needs: [ci]
     runs-on: ubuntu-latest
     permissions:

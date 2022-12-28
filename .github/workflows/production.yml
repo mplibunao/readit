@@ -72,8 +72,8 @@ jobs:
           docker-compose up -d
           pnpm ci
 
-  docker_prod_cd:
-    name: docker_prod_cd
+  docker_prod_cloudrun_cd:
+    name: docker_prod_cloudrun_cd
     needs: [ci]
     runs-on: ubuntu-latest
     permissions:
