@@ -2,8 +2,9 @@ import { clearDatabase } from '@api/helpers/test/clearDatabase'
 import { db } from '@api/infra/pg/client'
 import { createContextInner } from '@api/trpc'
 import { inferProcedureInput } from '@trpc/server'
-import { test, describe, beforeEach, expect } from 'vitest'
-import { appRouter, AppRouter } from '..'
+import { beforeEach, describe, expect, test } from 'vitest'
+
+import { AppRouter, appRouter } from '..'
 
 beforeEach(async () => {
 	await clearDatabase()

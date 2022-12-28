@@ -1,5 +1,6 @@
-import { clientUrl } from '@/utils/url'
 import Head from 'next/head'
+
+import { clientUrl } from '@/utils/url'
 
 export interface SEOProps {
 	title?: string

@@ -1,5 +1,6 @@
 import { FastifyPluginAsync } from 'fastify'
 import fp from 'fastify-plugin'
+
 import { createPgClient, PG, PgOpts } from './createClient'
 
 declare module 'fastify' {

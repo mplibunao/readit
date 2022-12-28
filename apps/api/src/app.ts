@@ -1,11 +1,12 @@
+import cors from '@fastify/cors'
+import { ProcedureType, TRPCError } from '@trpc/server'
+import { fastifyTRPCPlugin } from '@trpc/server/adapters/fastify'
 import { FastifyPluginAsync, FastifyRequest } from 'fastify'
+
 import { Config } from './config'
 import healthcheck from './infra/healthcheck'
 import pg from './infra/pg/plugin'
-import { fastifyTRPCPlugin } from '@trpc/server/adapters/fastify'
 import { appRouter, Context, createContext } from './trpc'
-import { ProcedureType, TRPCError } from '@trpc/server'
-import cors from '@fastify/cors'
 
 type OnErrorParams = {
 	error: TRPCError

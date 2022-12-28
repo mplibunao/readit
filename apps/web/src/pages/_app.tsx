@@ -1,11 +1,13 @@
 import '../styles/global.css'
-import type { AppProps } from 'next/app'
+
 import { Inter } from '@next/font/google'
-import { trpc } from '@/utils/trpc'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { useState } from 'react'
 import { httpBatchLink, loggerLink } from '@trpc/client'
+import type { AppProps } from 'next/app'
+import { useState } from 'react'
 import superjson from 'superjson'
+
+import { trpc } from '@/utils/trpc'
 import { trpcUrl } from '@/utils/url'
 
 const interVariable = Inter({

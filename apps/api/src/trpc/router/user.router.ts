@@ -1,8 +1,9 @@
+import { Accounts } from '@api/modules/accounts/accounts.service'
 import {
 	registerSchema,
 	userByIdInput,
 } from '@api/modules/accounts/accounts.validation'
-import { Accounts } from '@api/modules/accounts/accounts.service'
+
 import { publicProcedure, router } from '../trpc'
 
 export const userRouter = router({

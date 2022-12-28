@@ -1,5 +1,6 @@
-import { cva, cx, VariantProps } from 'cva'
 import { Button as AriaButton } from 'ariakit/button'
+import { cva, cx, VariantProps } from 'cva'
+
 import { Spinner } from '../Spinner'
 
 const button = cva(

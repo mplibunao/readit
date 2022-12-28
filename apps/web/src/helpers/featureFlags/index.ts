@@ -1,5 +1,6 @@
-import { nextApi } from '@/utils/wretch'
 import { useQuery } from '@tanstack/react-query'
+
+import { nextApi } from '@/utils/wretch'
 
 export function useFeatureFlags<T>({
 	flag,

@@ -1,6 +1,6 @@
 import { build } from '@api/helpers/test/build'
 import { sql } from 'kysely'
-import { test, describe, expect } from 'vitest'
+import { describe, expect, test } from 'vitest'
 
 describe('pg plugin', () => {
 	test('Should be able to connect to database and query it', async () => {

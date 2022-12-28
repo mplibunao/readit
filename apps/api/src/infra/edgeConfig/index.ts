@@ -1,6 +1,7 @@
 import { config } from '@api/config'
-import { createClient } from '@vercel/edge-config'
 import { EdgeConfig } from '@readit/edge-config'
+import { createClient } from '@vercel/edge-config'
+
 import { logger } from '../logger'
 
 export const edgeConfig = new EdgeConfig({

@@ -1,5 +1,6 @@
-import { IconId } from './types'
 import * as AccessibleIcon from '@radix-ui/react-accessible-icon'
+
+import { IconId } from './types'
 
 export interface IconProps {
 	className?: string

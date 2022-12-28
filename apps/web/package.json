@@ -9,6 +9,7 @@
 		"build": "next build",
 		"start": "next start",
 		"lint:check": "TIMING=1 next lint --cache --cache-location .eslintcache --ignore-path ../../.eslintignore",
+		"lint:fix": "TIMING=1 next lint --cache --cache-location .eslintcache --ignore-path ../../.eslintignore --fix",
 		"typecheck": "tsc",
 		"format:fix": "prettier --config ../../prettier.config.cjs --ignore-path ../../.prettierignore --write 'src/**/*.{js,jsx,ts,tsx,md,mdx,graphql,css,scss,yaml,json}'",
 		"format:check": "prettier --config ../../prettier.config.cjs --ignore-path ../../.prettierignore --list-different 'src/**/*.{js,jsx,ts,tsx,md,mdx,graphql,css,scss,yaml,json}'",
