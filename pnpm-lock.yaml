@@ -201,11 +201,9 @@ importers:
   packages/edge-config:
     specifiers:
       '@vercel/edge-config': ^0.1.0
-      pino: ^8.7.0
       vitest: ^0.24.5
     devDependencies:
       '@vercel/edge-config': 0.1.0
-      pino: 8.7.0
       vitest: 0.24.5
 
   packages/eslint-config-custom:

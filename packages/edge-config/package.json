@@ -13,7 +13,6 @@
 	"dependencies": {},
 	"devDependencies": {
 		"vitest": "^0.24.5",
-		"pino": "^8.7.0",
 		"@vercel/edge-config": "^0.1.0"
 	}
 }
