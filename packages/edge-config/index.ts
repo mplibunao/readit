@@ -1,35 +1,23 @@
 import { EdgeConfigClient } from '@vercel/edge-config'
-import pino from 'pino'
-
-type Logger = Console | pino.BaseLogger
 
 export interface EdgeConfigOptions {
 	client: EdgeConfigClient
 	appName: string
-	logger?: Logger
-	logErrors?: boolean
 	env?: string
+	onError?: (err: unknown) => void
 }
 
 export class EdgeConfig {
 	private client: EdgeConfigClient
 	private appName: string
-	private logger: Logger
-	private logErrors: boolean
 	private env?: string
+	private onError?: (err: unknown) => void
 
-	constructor({
-		client,
-		appName,
-		logger = console,
-		logErrors = false,
-		env = '',
-	}: EdgeConfigOptions) {
+	constructor({ client, appName, env = '', onError }: EdgeConfigOptions) {
 		this.client = client
 		this.appName = appName.toUpperCase()
-		this.logger = logger
-		this.logErrors = logErrors
 		this.env = env.toUpperCase()
+		this.onError = onError
 	}
 
 	private get<T>(key: string) {
@@ -51,9 +39,7 @@ export class EdgeConfig {
 			const fullKey = this.getFullKey(key)
 			return (await this.has(fullKey)) ? await this.get<T>(fullKey) : fallback
 		} catch (e) {
-			if (this.logErrors) {
-				this.logger.error(e, 'Failed to get config')
-			}
+			this.onError && this.onError(e)
 			return fallback
 		}
 	}
@@ -71,9 +57,7 @@ export class EdgeConfig {
 
 			return flags.reduce((acc, flag) => ({ ...acc, ...flag }), {})
 		} catch (e) {
-			if (this.logErrors) {
-				this.logger.error(e, 'Failed to get config')
-			}
+			this.onError && this.onError(e)
 
 			return keys
 				.map((key, index) => ({ [key]: fallback[index] }))
