@@ -215,7 +215,6 @@ importers:
       eslint-plugin-react: 7.31.8
       eslint-plugin-simple-import-sort: ^8.0.0
       eslint-plugin-testing-library: ^5.9.1
-      eslint-plugin-unused-imports: ^2.0.0
       typescript: ^4.8.4
     dependencies:
       '@typescript-eslint/eslint-plugin': 5.42.1_2udltptbznfmezdozpdoa2aemq
@@ -227,7 +226,6 @@ importers:
       eslint-plugin-react: 7.31.8_eslint@8.27.0
       eslint-plugin-simple-import-sort: 8.0.0_eslint@8.27.0
       eslint-plugin-testing-library: 5.9.1_rmayb2veg2btbq6mbmnyivgasy
-      eslint-plugin-unused-imports: 2.0.0_nlzgfrebny3tjssyl6pxqc4kfq
     devDependencies:
       typescript: 4.8.4
 
@@ -238,7 +236,6 @@ importers:
       eslint: ^8.26.0
       eslint-config-prettier: ^8.3.0
       eslint-plugin-simple-import-sort: ^8.0.0
-      eslint-plugin-unused-imports: ^2.0.0
       typescript: ^4.8.4
     dependencies:
       '@typescript-eslint/eslint-plugin': 5.42.1_2udltptbznfmezdozpdoa2aemq
@@ -246,7 +243,6 @@ importers:
       eslint: 8.27.0
       eslint-config-prettier: 8.5.0_eslint@8.27.0
       eslint-plugin-simple-import-sort: 8.0.0_eslint@8.27.0
-      eslint-plugin-unused-imports: 2.0.0_nlzgfrebny3tjssyl6pxqc4kfq
     devDependencies:
       typescript: 4.8.4
 
@@ -4900,26 +4896,6 @@ packages:
       eslint: '>6.6.0'
     dependencies:
       eslint: 8.27.0
-    dev: false
-
-  /eslint-plugin-unused-imports/2.0.0_nlzgfrebny3tjssyl6pxqc4kfq:
-    resolution: {integrity: sha512-3APeS/tQlTrFa167ThtP0Zm0vctjr4M44HMpeg1P4bK6wItarumq0Ma82xorMKdFsWpphQBlRPzw/pxiVELX1A==}
-    engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
-    peerDependencies:
-      '@typescript-eslint/eslint-plugin': ^5.0.0
-      eslint: ^8.0.0
-    peerDependenciesMeta:
-      '@typescript-eslint/eslint-plugin':
-        optional: true
-    dependencies:
-      '@typescript-eslint/eslint-plugin': 5.42.1_2udltptbznfmezdozpdoa2aemq
-      eslint: 8.27.0
-      eslint-rule-composer: 0.3.0
-    dev: false
-
-  /eslint-rule-composer/0.3.0:
-    resolution: {integrity: sha512-bt+Sh8CtDmn2OajxvNO+BX7Wn4CIWMpTRm3MaiKPCQcnnlm0CS2mhui6QaoeQugs+3Kj2ESKEEGJUdVafwhiCg==}
-    engines: {node: '>=4.0.0'}
     dev: false
 
   /eslint-scope/5.1.1:
