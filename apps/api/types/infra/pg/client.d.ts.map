@@ -1,1 +1,1 @@
-{"version":3,"file":"client.d.ts","sourceRoot":"","sources":["../../../src/infra/pg/client.ts"],"names":[],"mappings":"AAIA,eAAO,MAAM,EAAE,sDAAoC,CAAA"}
+{"version":3,"file":"client.d.ts","sourceRoot":"","sources":["../../../src/infra/pg/client.ts"],"names":[],"mappings":"AAKA,eAAO,MAAM,EAAE,sDAAoC,CAAA"}

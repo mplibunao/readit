@@ -34,6 +34,7 @@ importers:
       dotenv: ^16.0.3
       env-schema: ^5.1.0
       esbuild: ^0.15.12
+      esbuild-plugin-ts-references: ^0.2.2
       esbuild-register: ^3.3.3
       eslint: ^8.26.0
       fastify: ^4.9.2
@@ -86,6 +87,7 @@ importers:
       '@vitest/ui': 0.24.5
       dotenv: 16.0.3
       esbuild: 0.15.13
+      esbuild-plugin-ts-references: 0.2.2_esbuild@0.15.13
       esbuild-register: 3.4.1_esbuild@0.15.13
       eslint: 8.27.0
       globby: 13.1.2
@@ -198,9 +200,11 @@ importers:
 
   packages/edge-config:
     specifiers:
+      '@readit/tsconfig': workspace:*
       '@vercel/edge-config': ^0.1.0
       vitest: ^0.24.5
     devDependencies:
+      '@readit/tsconfig': link:../tsconfig
       '@vercel/edge-config': 0.1.0
       vitest: 0.24.5
 
@@ -4507,6 +4511,14 @@ packages:
     requiresBuild: true
     dev: true
     optional: true
+
+  /esbuild-plugin-ts-references/0.2.2_esbuild@0.15.13:
+    resolution: {integrity: sha512-brn2MCLMmarSxwi1S0Gc4CSBW29s+1xchi+iTjcROATV/wkk457BfwfBw00PxznrQvYXH0GGtvLkpf7j3hBP+A==}
+    peerDependencies:
+      esbuild: '>= 0.14.21'
+    dependencies:
+      esbuild: 0.15.13
+    dev: true
 
   /esbuild-register/3.4.1_esbuild@0.15.13:
     resolution: {integrity: sha512-iCgs88/1wA5dIRx4i65eSjbkgrQQQJGpY6Z1eD2XPlzrSjbgNtfkw2/rfSMzJ4dTtlOD8EZTxrIA3fyYp0FsMA==}

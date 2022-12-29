@@ -1,4 +1,6 @@
 // @ts-check
+import fs from 'fs'
+
 import { env } from './src/env/server.mjs'
 
 /**
@@ -13,6 +15,17 @@ function defineNextConfig(config) {
 	return config
 }
 
+function getTranspilePackages() {
+	const packageJson = JSON.parse(fs.readFileSync('./package.json', 'utf-8'))
+
+	//const included = new Set([])
+	const transpilePackages = [...Object.keys(packageJson.dependencies)]
+		//.filter((deps) => included.has(deps))
+		.filter((deps) => deps.startsWith('@readit/'))
+	return transpilePackages
+}
+
+getTranspilePackages()
 /** @type {import('next').NextConfig} */
 const nextConfig = {
 	reactStrictMode: true,
@@ -23,7 +36,7 @@ const nextConfig = {
 		defaultLocale: 'en',
 	},
 	experimental: {
-		transpilePackages: ['api', 'edge-config'],
+		transpilePackages: getTranspilePackages(),
 	},
 }
 

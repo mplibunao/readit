@@ -2,7 +2,7 @@
 	"name": "@readit/edge-config",
 	"version": "1.0.0",
 	"description": "",
-	"main": "index.ts",
+	"main": "src/index.ts",
 	"scripts": {
 		"test": "vitest --run --coverage",
 		"test:watch": "vitest watch --coverage --ui"
@@ -13,6 +13,7 @@
 	"dependencies": {},
 	"devDependencies": {
 		"vitest": "^0.24.5",
-		"@vercel/edge-config": "^0.1.0"
+		"@vercel/edge-config": "^0.1.0",
+		"@readit/tsconfig": "workspace:*"
 	}
 }

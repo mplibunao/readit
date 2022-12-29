@@ -1,0 +1,14 @@
+{
+	"$schema": "https://json.schemastore.org/tsconfig",
+	"display": "package",
+	"extends": "./esbuild-server.json",
+	"compilerOptions": {
+		"declaration": true,
+		"declarationMap": true,
+		"composite": true,
+		"noEmit": false,
+		"emitDeclarationOnly": true
+	},
+	"include": ["src"],
+	"exclude": ["node_modules", "**/*.test.ts"]
+}

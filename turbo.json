@@ -71,7 +71,7 @@
 			"cache": false
 		},
 		"typecheck": {
-			"outputs": [],
+			"outputs": ["types/**", "tsconfig.tsbuildinfo"],
 			"dependsOn": [],
 			"inputs": ["src/**/*.{tsx,ts}", "tsconfig.json"]
 		},
