@@ -13,7 +13,7 @@ RUN npm i -g pnpm && \
 FROM base AS pruner
 WORKDIR /app
 COPY . .
-RUN pnpm dlx turbo prune --scope=api --docker
+RUN pnpm dlx turbo prune --scope=@readit/api --docker
 
 
 FROM base AS installer
@@ -27,7 +27,7 @@ RUN pnpm install --frozen-lockfile --prefer-offline
 COPY --from=pruner /app/out/full/ .
 COPY turbo.json turbo.json
 # Build then use pnpm's own prune to generate node_modules with only prod deps
-RUN pnpm dlx turbo run build --filter=api
+RUN pnpm dlx turbo run build --filter=@readit/api
 RUN pnpm --filter=api --prod deploy pruned
 
 FROM $DISTROLESS AS production
