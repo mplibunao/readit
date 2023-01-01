@@ -9,6 +9,8 @@ import { FastifyInstance, FastifyPluginAsync } from 'fastify'
 import fp from 'fastify-plugin'
 import { sql } from 'kysely'
 
+import { logger } from '../logger'
+
 /*
  *This plugin is especially useful if you expect an high load
  *on your application, it measures the process load and returns
@@ -38,23 +40,23 @@ export interface UnderPressure extends underPressure.UnderPressureOptions {
 
 export const healthCheck: FastifyPluginAsync<Config> = async (
 	fastify,
-	opts
+	opts,
 ) => {
 	fastify.register(underPressure, {
 		...opts.underPressure,
 		pressureHandler: (_req, _rep, type, value) => {
 			switch (type) {
 				case TYPE_HEAP_USED_BYTES:
-					fastify.log.warn(`too many heap bytes used: ${value}`)
+					logger.warn(`too many heap bytes used: ${value}`)
 					break
 				case TYPE_RSS_BYTES:
-					fastify.log.warn(`too many rss bytes used: ${value}`)
+					logger.warn(`too many rss bytes used: ${value}`)
 					break
 				case TYPE_EVENT_LOOP_UTILIZATION:
-					fastify.log.warn(`event loop utilization too high: ${value}`)
+					logger.warn(`event loop utilization too high: ${value}`)
 					break
 				case TYPE_EVENT_LOOP_DELAY:
-					fastify.log.warn(`event loop delay too high: ${value}`)
+					logger.warn(`event loop delay too high: ${value}`)
 					break
 				default:
 			}
@@ -89,12 +91,12 @@ async function dbCheck(server: FastifyInstance) {
 	try {
 		const result =
 			await sql<string>`select 'Hello world!'::TEXT AS message`.execute(
-				server.pg
+				server.pg,
 			)
 
 		if (result.rows.length === 1) return 'ok'
 	} catch (err) {
-		server.log.fatal({ err }, 'failed to read DB during health check')
+		logger.fatal({ err }, 'failed to read DB during health check')
 	}
 	return 'fail'
 }
@@ -104,7 +106,7 @@ async function dbCheck(server: FastifyInstance) {
 //const response = await server.redis.ping()
 //if (response === 'PONG') return 'ok'
 //} catch (err) {
-//server.log.debug({ err }, 'failed to read DB during health check')
+//logger.debug({ err }, 'failed to read DB during health check')
 //}
 //return 'fail'
 //}

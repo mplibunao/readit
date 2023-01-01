@@ -91,7 +91,7 @@ const button = cva(
 			disabled: false,
 			loading: false,
 		},
-	}
+	},
 )
 
 export interface ButtonProps

@@ -1,12 +1,24 @@
+import { ApplicationError } from '@api/helpers/errors'
 import { initTRPC } from '@trpc/server'
 import superjson from 'superjson'
+import { ZodError } from 'zod'
 
 import { Context } from './context'
 
 export const t = initTRPC.context<Context>().create({
 	transformer: superjson,
-	errorFormatter({ shape }) {
-		return shape
+	errorFormatter({ shape, error }) {
+		return {
+			...shape,
+			data: {
+				...shape.data,
+				type: error instanceof ApplicationError ? error.type : null,
+				zodError:
+					error.code === 'BAD_REQUEST' && error.cause instanceof ZodError
+						? error.cause.flatten()
+						: null,
+			},
+		}
 	},
 })
 

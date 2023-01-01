@@ -12,7 +12,7 @@ export interface PgOpts extends PoolConfig {
 
 export const createPgClient = (
 	opts: PgOpts,
-	logger: pino.BaseLogger | Logger<pino.LoggerOptions> | Console = console
+	logger: pino.BaseLogger | Logger<pino.LoggerOptions> | Console = console,
 ) => {
 	return new Kysely<DB>({
 		dialect: new PostgresDialect({

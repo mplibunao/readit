@@ -52,7 +52,7 @@ export class EdgeConfig {
 					const exists = await this.has(fullKey)
 					const value = exists ? await this.get(fullKey) : fallback[index]
 					return { [key]: value }
-				})
+				}),
 			)
 
 			return flags.reduce((acc, flag) => ({ ...acc, ...flag }), {})

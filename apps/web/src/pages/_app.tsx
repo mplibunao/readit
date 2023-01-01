@@ -1,19 +1,19 @@
 import '../styles/global.css'
+import '@fontsource/inter/variable.css'
 
-import { Inter } from '@next/font/google'
+import { trpc } from '@/utils/trpc'
+import { trpcUrl } from '@/utils/url'
+//import { Inter } from '@next/font/google'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { httpBatchLink, loggerLink } from '@trpc/client'
 import type { AppProps } from 'next/app'
 import { useState } from 'react'
 import superjson from 'superjson'
 
-import { trpc } from '@/utils/trpc'
-import { trpcUrl } from '@/utils/url'
-
-const interVariable = Inter({
-	subsets: ['latin'],
-	variable: '--font-inter',
-})
+//const interVariable = Inter({
+//subsets: ['latin'],
+//variable: '--font-inter',
+//})
 
 const links = [
 	loggerLink({
@@ -30,13 +30,13 @@ function MyApp({ Component, pageProps }: AppProps) {
 		trpc.createClient({
 			links,
 			transformer: superjson,
-		})
+		}),
 	)
 
 	return (
 		<trpc.Provider client={trpcClient} queryClient={queryClient}>
 			<QueryClientProvider client={queryClient}>
-				<main className={`${interVariable.className} font-sans`}>
+				<main>
 					<Component {...pageProps} />
 				</main>
 			</QueryClientProvider>

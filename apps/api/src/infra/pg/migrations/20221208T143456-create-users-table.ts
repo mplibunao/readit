@@ -5,17 +5,17 @@ export async function up(db: Kysely<any>): Promise<void> {
 		.createTable('users')
 		.ifNotExists()
 		.addColumn('id', 'uuid', (col) =>
-			col.primaryKey().defaultTo(sql`gen_random_uuid()`)
+			col.primaryKey().defaultTo(sql`gen_random_uuid()`),
 		)
 		.addColumn('email', 'text', (col) => col.unique().notNull())
 		.addColumn('hashedPassword', 'text', (col) => col.notNull())
 		.addColumn('firstName', 'text', (col) => col.notNull())
 		.addColumn('lastName', 'text', (col) => col.notNull())
 		.addColumn('createdAt', 'timestamptz', (col) =>
-			col.defaultTo(sql`now()`).notNull()
+			col.defaultTo(sql`now()`).notNull(),
 		)
 		.addColumn('updatedAt', 'timestamptz', (col) =>
-			col.defaultTo(sql`now()`).notNull()
+			col.defaultTo(sql`now()`).notNull(),
 		)
 		.addColumn('deactivatedAt', 'timestamptz')
 		.execute()

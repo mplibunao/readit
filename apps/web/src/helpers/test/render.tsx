@@ -5,7 +5,7 @@ import { FormProvider, useForm, UseFormProps } from 'react-hook-form'
 
 export async function renderWithReactHookForm(
 	ui: React.ReactElement,
-	options: RenderOptions & { useFormProps?: UseFormProps } = {}
+	options: RenderOptions & { useFormProps?: UseFormProps } = {},
 ) {
 	const { useFormProps, ...renderOptions } = options
 

@@ -8,6 +8,7 @@ export class ApplicationError extends TRPCError {
 		code: TRPC_ERROR_CODE_KEY
 		message?: string
 		type: string
+		//type: 'DATABASE_ERROR' | 'APP_ERROR'
 	}) {
 		super({
 			cause: opts.cause !== undefined ? opts.cause : undefined,
@@ -20,12 +21,14 @@ export class ApplicationError extends TRPCError {
 }
 
 export class DatabaseError extends ApplicationError {
+	static type = 'DATABASE_ERROR'
+
 	constructor(cause: unknown) {
 		super({
 			cause,
 			message: 'A database error occurred',
 			code: 'INTERNAL_SERVER_ERROR',
-			type: 'DATABASE_ERROR',
+			type: DatabaseError.type,
 		})
 	}
 }

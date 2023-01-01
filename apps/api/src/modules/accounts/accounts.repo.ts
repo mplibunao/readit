@@ -13,7 +13,7 @@ export * as AccountsRepo from './accounts.repo'
 
 export const create = (
 	pg: PG,
-	user: InsertableUser
+	user: InsertableUser,
 ): ResultAsync<Partial<User>, RegistrationError> => {
 	return ResultAsync.fromPromise(
 		pg
@@ -28,13 +28,13 @@ export const create = (
 				}
 			}
 			return new DatabaseError(error)
-		}
+		},
 	)
 }
 
 export const findUserById = (
 	pg: PG,
-	id: string
+	id: string,
 ): ResultAsync<Partial<User>, FindUserByIdError> =>
 	ResultAsync.fromPromise(
 		pg
@@ -42,5 +42,5 @@ export const findUserById = (
 			.select(['id', 'email', 'firstName', 'lastName', 'deactivatedAt'])
 			.where('id', '=', id)
 			.executeTakeFirstOrThrow(),
-		(error) => new DatabaseError(error)
+		(error) => new DatabaseError(error),
 	)

@@ -1,11 +1,10 @@
 import { routeResponseSchemaOpts, UnderPressure } from '@api/infra/healthcheck'
 import { PgOpts } from '@api/infra/pg'
 import { EdgeConfigOptions } from '@readit/edge-config'
+import { getLoggerConfig, LoggerOpts } from '@readit/pino-logger'
 import { Static, Type } from '@sinclair/typebox'
 import envSchema from 'env-schema'
 import { PinoLoggerOptions } from 'fastify/types/logger'
-
-import { getLoggerConfig, LoggerOpts } from '../infra/logger/loggerConfig'
 
 const envJsonSchema = Type.Object({
 	NODE_ENV: Type.Union([
@@ -30,8 +29,6 @@ const envJsonSchema = Type.Object({
 	DATABASE_URL: Type.String(),
 
 	TRPC_ENDPOINT: Type.String(),
-	TRPC_PLAYGROUND_ENDPOINT: Type.Optional(Type.String()),
-	TRPC_ENABLE_PLAYGROUND: Type.Optional(Type.Boolean({ default: false })),
 
 	//Derived from K_SERVICE env passed by cloud run
 	IS_GCP_CLOUD_RUN: Type.Boolean(),
@@ -46,7 +43,7 @@ const envJsonSchema = Type.Object({
 			Type.Literal('debug'),
 			Type.Literal('trace'),
 		],
-		{ default: 'info' }
+		{ default: 'info' },
 	),
 
 	HEALTHCHECK_URL: Type.Optional(Type.String({ default: '/health' })),
@@ -61,7 +58,7 @@ const envJsonSchema = Type.Object({
 	HEALTHCHECK_MAX_HEAP_USED: Type.Optional(
 		Type.Number({
 			default: (512 - 50 - 20) * 1024 * 1024,
-		})
+		}),
 	),
 	/*
 	 *512 MB
@@ -70,19 +67,19 @@ const envJsonSchema = Type.Object({
 	HEALTHCHECK_MAX_RSS: Type.Optional(
 		Type.Number({
 			default: 512 * 1024 * 1024,
-		})
+		}),
 	),
 	HEALTHCHECK_MAX_EVENT_LOOP_UTILIZATION: Type.Optional(
-		Type.Number({ default: 0.98 })
+		Type.Number({ default: 0.98 }),
 	),
 	HEALTHCHECK_MAX_EVENT_LOOP_DELAY: Type.Optional(
-		Type.Number({ default: 1000 })
+		Type.Number({ default: 1000 }),
 	),
 	ENABLE_HTTP2: Type.Optional(
 		Type.Boolean({
 			default: false,
 			description: "Note: You can't use this with websockets",
-		})
+		}),
 	),
 	EDGE_CONFIG: Type.String({
 		description: 'Connection string for feature flags',
@@ -138,8 +135,6 @@ export interface Config {
 	loggerOpts: LoggerOpts
 	trpc: {
 		endpoint: string
-		playgroundEndpoint: string
-		enablePlayground?: boolean
 	}
 	pg: PgOpts
 	//redis: FastifyRedisPluginOptions
@@ -172,11 +167,11 @@ export const config: Config = {
 		IS_GCP_CLOUD_RUN: env.IS_GCP_CLOUD_RUN,
 		LOGGING_LEVEL: env.LOGGING_LEVEL,
 		IS_PROD: env.IS_PROD,
+		APP_NAME: env.APP_NAME,
+		APP_VERSION: env.APP_VERSION,
 	},
 	trpc: {
 		endpoint: env.TRPC_ENDPOINT,
-		playgroundEndpoint: env.TRPC_PLAYGROUND_ENDPOINT ?? '/trpc-playground',
-		enablePlayground: env.TRPC_ENABLE_PLAYGROUND,
 	},
 	pg: {
 		connectionString: env.DATABASE_URL,

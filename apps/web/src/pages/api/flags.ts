@@ -1,6 +1,5 @@
-import { NextRequest } from 'next/server'
-
 import { edgeConfig } from '@/server/infra/edgeConfig'
+import { NextRequest } from 'next/server'
 
 export default async function getFlags(req: NextRequest) {
 	if (req.method !== 'POST') {
@@ -22,7 +21,7 @@ export default async function getFlags(req: NextRequest) {
 			{
 				status: 400,
 				statusText: 'Bad Request',
-			}
+			},
 		)
 	}
 
@@ -34,7 +33,7 @@ export default async function getFlags(req: NextRequest) {
 			{
 				status: 400,
 				statusText: 'Bad Request',
-			}
+			},
 		)
 	}
 

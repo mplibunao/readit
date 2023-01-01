@@ -1,0 +1,50 @@
+{
+	"name": "@readit/pg",
+	"version": "0.0.0",
+	"description": "",
+	"main": "src/index.ts",
+	"scripts": {
+		"test": "pnpm test:migrate && vitest --run --coverage",
+		"test:watch": "pnpm test:migrate && vitest watch --coverage --ui",
+		"format:fix": "prettier --ignore-path ../../.prettierignore --write 'src/**/*.{js,jsx,ts,tsx,md,mdx,graphql,css,scss,yaml,json}'",
+		"format:check": "prettier --ignore-path ../../.prettierignore --list-different 'src/**/*.{js,jsx,ts,tsx,md,mdx,graphql,css,scss,yaml,json}'",
+		"lint:check": "TIMING=1 eslint --color --cache --cache-location .eslintcache --ignore-path ../../.eslintignore ./src --ext .js,.jsx,.ts,.tsx",
+		"lint:fix": "TIMING=1 eslint --color --cache --cache-location .eslintcache --ignore-path ../../.eslintignore ./src --ext .js,.jsx,.ts,.tsx --fix",
+		"ts-node": "node --no-warnings --experimental-loader ../../esbuild-register-loader.mjs -r @cspotcode/source-map-support/register -r esbuild-register",
+		"kysely-codegen": "kysely-codegen --dialect postgres --camel-case --out-file ./src/infra/pg/pg.generated.ts && pnpm format:fix",
+		"migrate": "pnpm ts-node src/infra/pg/cliMigrate.ts",
+		"migrate:up": "run-s 'migrate up' kysely-codegen format:fix"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"kysely": "^0.22.0",
+		"pg": "^8.8.0"
+	},
+	"devDependencies": {
+		"@readit/eslint-config-server": "workspace:*",
+		"@readit/prettier-config": "workspace:*",
+		"@readit/tsconfig": "workspace:*",
+		"@types/pg": "^8.6.5",
+		"@vitest/coverage-c8": "^0.24.5",
+		"@vitest/ui": "^0.24.5",
+		"eslint": "^8.26.0",
+		"esbuild": "^0.15.12",
+		"esbuild-register": "^3.3.3",
+		"kysely-codegen": "^0.8.0",
+		"kysely-migration-cli": "^0.1.1",
+		"npm-run-all": "^4.1.5",
+		"prettier": "2.8.0",
+		"typescript": "^4.8.4",
+		"vite": "^3.2.2",
+		"vitest": "^0.24.5"
+	},
+	"prettier": "@readit/prettier-config",
+	"eslintConfig": {
+		"root": true,
+		"extends": [
+			"@readit/eslint-config-server"
+		]
+	}
+}

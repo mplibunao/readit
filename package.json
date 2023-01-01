@@ -21,13 +21,13 @@
 	},
 	"devDependencies": {
 		"@readit/eslint-config": "workspace:*",
-		"prettier": "latest",
-		"prettier-plugin-tailwindcss": "^0.1.13",
+		"@readit/prettier-config": "workspace:*",
 		"turbo": "latest"
 	},
 	"engines": {
 		"npm": ">=8.15.0",
 		"node": ">=18.12.1"
 	},
+	"prettier": "@readit/prettier-config",
 	"packageManager": "pnpm@7.14.1"
 }

@@ -1,0 +1,8 @@
+{
+	"$schema": "https://json.schemastore.org/tsconfig",
+	"display": "package",
+	"extends": "@readit/tsconfig/package-project-references.json",
+	"compilerOptions": {
+		"rootDir": "src"
+	}
+}

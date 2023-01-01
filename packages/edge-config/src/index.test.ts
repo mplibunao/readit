@@ -1,5 +1,6 @@
-import { describe, vi, afterEach, beforeEach, it, expect } from 'vitest'
 import { createClient } from '@vercel/edge-config'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+
 import { EdgeConfig } from '.'
 
 const mockClient = {
@@ -63,7 +64,7 @@ describe('EdgeConfig', () => {
 			expect(logSpy).toHaveBeenCalledTimes(1)
 			expect(logSpy).toBeCalledWith(
 				new Error('Some error'),
-				'Failed to get config'
+				'Failed to get config',
 			)
 		})
 	})
@@ -75,7 +76,7 @@ describe('EdgeConfig', () => {
 
 			const result = await edgeConfig.getAllConfig(
 				['SOME_FIELD', 'SOME_OTHER_FIELD'],
-				[true, true]
+				[true, true],
 			)
 			expect(result).toEqual({
 				SOME_FIELD: true,
@@ -89,7 +90,7 @@ describe('EdgeConfig', () => {
 
 			const result = await edgeConfig.getAllConfig(
 				['SOME_FIELD', 'SOME_OTHER_FIELD'],
-				[true, true]
+				[true, true],
 			)
 			expect(result).toEqual({
 				SOME_FIELD: true,
@@ -105,7 +106,7 @@ describe('EdgeConfig', () => {
 
 			const result = await edgeConfig.getAllConfig(
 				['SOME_FIELD', 'SOME_OTHER_FIELD'],
-				[true, true]
+				[true, true],
 			)
 			expect(result).toEqual({
 				SOME_FIELD: true,
@@ -114,7 +115,7 @@ describe('EdgeConfig', () => {
 			expect(logSpy).toHaveBeenCalledTimes(1)
 			expect(logSpy).toBeCalledWith(
 				new Error('Some error'),
-				'Failed to get config'
+				'Failed to get config',
 			)
 		})
 	})

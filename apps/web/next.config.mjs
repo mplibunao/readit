@@ -38,6 +38,9 @@ const nextConfig = {
 	experimental: {
 		transpilePackages: getTranspilePackages(),
 	},
+	/** We already do linting and typechecking as separate tasks in CI */
+	eslint: { ignoreDuringBuilds: !!process.env.CI },
+	typescript: { ignoreBuildErrors: !!process.env.CI },
 }
 
 async function withBundleAnalyzer() {
