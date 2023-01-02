@@ -7,9 +7,10 @@
 		"packages/*"
 	],
 	"scripts": {
-		"migrate:up": "pnpm -F api migrate:up",
+		"clean:turbo": "turbo run clean:turbo",
 		"build": "turbo run build --parallel",
 		"dev": "turbo run dev --parallel",
+		"db:migrate:dev": "turbo run db:migrate:dev --parallel",
 		"test": "turbo run test --parallel",
 		"test:watch": "turbo run test:watch",
 		"lint:check": "turbo run lint:check --parallel",

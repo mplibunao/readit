@@ -1,0 +1,13 @@
+{
+	"extends": "@readit/tsconfig/esbuild-server.json",
+	"compilerOptions": {
+		"outDir": "./dist",
+		"rootDir": "./src",
+		"noEmit": false,
+		"baseUrl": ".",
+		"composite": true,
+		"emitDeclarationOnly": true
+	},
+	"include": ["src"],
+	"exclude": ["node_modules"]
+}

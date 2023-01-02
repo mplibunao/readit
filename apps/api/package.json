@@ -4,7 +4,7 @@
 	"main": "src/trpc",
 	"type": "module",
 	"scripts": {
-		"test:migrate": "NODE_ENV=test pnpm migrate latest",
+		"test:migrate": "turbo run db:migrate:test --parallel",
 		"test": "pnpm test:migrate && vitest --run --coverage",
 		"test:watch": "pnpm test:migrate && vitest watch --coverage --ui",
 		"build": "node ./scripts/esbuild.mjs --minify",
@@ -46,6 +46,7 @@
 	},
 	"devDependencies": {
 		"@readit/eslint-config-server": "workspace:*",
+		"@readit/pino-logger": "workspace:*",
 		"@readit/prettier-config": "workspace:*",
 		"@readit/tsconfig": "workspace:*",
 		"@types/node": "^17.0.12",

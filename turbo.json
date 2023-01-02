@@ -1,6 +1,10 @@
 {
 	"$schema": "https://turbo.build/schema.json",
 	"pipeline": {
+		"clean:turbo": {
+			"dependsOn": ["^clean:turbo"],
+			"cache": false
+		},
 		"build": {
 			"dependsOn": ["^build"],
 			"outputs": ["dist/**", ".next/**"],
@@ -60,7 +64,7 @@
 		},
 		"test": {
 			"outputs": ["coverage/**"],
-			"dependsOn": [],
+			"dependsOn": ["db:migrate:test"],
 			"inputs": [
 				"src/**/*.{tsx,ts}",
 				"!src/**/*.stories.tsx",
@@ -69,6 +73,7 @@
 			]
 		},
 		"dev": {
+			"dependsOn": ["^db:generate"],
 			"cache": false
 		},
 		"typecheck": {
@@ -86,6 +91,22 @@
 		},
 		"ci": {
 			"dependsOn": ["typecheck", "lint:check", "format:check", "test"]
+		},
+		"db:generate": {
+			"outputs": ["src/db.d.ts"],
+			"inputs": ["src/prisma/schema.prisma", "src/migrations"],
+			"env": ["DATABASE_URL"],
+			"dependsOn": ["db:migrate:dev"]
+		},
+		"db:migrate:test": {
+			"outputs": [],
+			"inputs": ["src/prisma/schema.prisma", "src/migrations"],
+			"env": ["DATABASE_URL", "GITHUB_ENV", "GITHUB_ACTIONS"]
+		},
+		"db:migrate:dev": {
+			"outputs": [],
+			"inputs": ["src/prisma/schema.prisma", "src/migrations"],
+			"env": ["DATABASE_URL"]
 		}
 	}
 }
