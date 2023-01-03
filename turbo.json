@@ -94,23 +94,23 @@
 		},
 		"db:generate": {
 			"outputs": ["src/db.d.ts"],
-			"inputs": ["src/prisma/migrations", "src/migrations"],
+			"inputs": ["src/prisma/migrations/**", "src/migrations/**"],
 			"env": ["DATABASE_URL"],
 			"dependsOn": ["db:migrate:dev"]
 		},
 		"db:migrate:test": {
 			"outputs": [],
-			"inputs": ["src/prisma/migrations", "src/migrations"],
+			"inputs": ["src/prisma/migrations/**", "src/migrations/**"],
 			"env": ["DATABASE_URL", "GITHUB_ENV", "GITHUB_ACTIONS"]
 		},
 		"db:migrate:dev": {
 			"outputs": [],
-			"inputs": ["src/prisma/migrations", "src/migrations"],
+			"inputs": ["src/prisma/migrations/**", "src/migrations/**"],
 			"env": ["DATABASE_URL"]
 		},
 		"prisma:db:pull": {
 			"outputs": ["src/prisma/schema.prisma"],
-			"inputs": ["src/prisma/migrations", "src/migrations"],
+			"inputs": ["src/prisma/migrations/**", "src/migrations/**"],
 			"env": ["DATABASE_URL"],
 			"dependsOn": ["db:migrate:dev"]
 		}
