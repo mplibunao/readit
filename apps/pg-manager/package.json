@@ -13,15 +13,16 @@
 		"lint:check": "TIMING=1 eslint --color --cache --cache-location .eslintcache --ignore-path ../../.eslintignore ./src --ext .js,.jsx,.ts,.tsx",
 		"lint:fix": "TIMING=1 eslint --color --cache --cache-location .eslintcache --ignore-path ../../.eslintignore ./src --ext .js,.jsx,.ts,.tsx --fix",
 		"db:migrate": "pnpm ts-node src/index.ts",
-		"db:migrate:dev": "run-s 'db:migrate up' prisma:baseline",
+		"db:migrate:dev": "run-s 'db:migrate up' prisma:db:pull",
 		"db:migrate:test": "NODE_ENV=test pnpm migrate latest",
-		"db:generate": "run-s kysely-codgen format:fix",
+		"db:generate": "run-s kysely-codegen format:fix",
 		"ts-node": "node --no-warnings --experimental-loader ../../esbuild-register-loader.mjs -r @cspotcode/source-map-support/register -r esbuild-register",
 		"typecheck": "tsc",
 		"prisma:studio": "prisma studio",
-		"prisma:db:pull": "prisma db pull",
-		"prisma:baseline": "prisma migrate diff --from-empty --to-schema-datamodel prisma/schema.prisma --script > prisma/migrations/0_init/migration.sql",
-		"kysely-codgen": "kysely-codegen --dialect postgres --camel-case --out-file ./src/db.d.ts"
+		"prisma:db:pull": "prisma db pull && prisma migrate diff --from-empty --to-schema-datamodel prisma/schema.prisma --script > prisma/migrations/0_init/migration.sql && prisma migrate resolve --applied 0_init",
+		"kysely-codegen": "kysely-codegen --dialect postgres --camel-case --out-file ./src/db.d.ts",
+		"kysely:create": "pnpm db:migrate create",
+		"prisma:create": "prisma migrate dev --create-only --name"
 	},
 	"dependencies": {
 		"@cspotcode/source-map-support": "^0.8.1",
@@ -44,7 +45,8 @@
 		"eslint": "^8.26.0",
 		"npm-run-all": "^4.1.5",
 		"prettier": "2.8.0",
-		"prisma": "^4.8.0"
+		"prisma": "^4.8.0",
+		"zx": "^7.1.1"
 	},
 	"prettier": "@readit/prettier-config",
 	"eslintConfig": {

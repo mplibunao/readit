@@ -1,3 +1,20 @@
+# Commands
+
+- `pnpm -F pg-manager db:generate`: Generates types and formats it               
+- `pnpm -F pg-manager db:migrate:dev`: Runs kysely migration
+	- Syncs prisma schema with new state of database
+	- Generates corresponding prisma migration
+	- Marks it as applied so if want to generate migrations from prisma, you can
+- `turbo run db:generate`: Runs when you run `pnpm dev` or `turbo run dev`
+	- Runs `db:migrate:dev` 
+	- Runs `db:generate`
+- `pnpm -F studio`: Runs prisma studio
+- `pnpm -F kysely:create <name>`: Creates a new migration 
+- `pnpm -F prisma:create <name>`: Creates a new prisma migration for the changes in the prisma schema
+
+
+
+# Turbo commands
 
 # What this package does
 
@@ -35,6 +52,20 @@ Although it's more verbose and involved compared to prisma migrations
 However, you are free to use prisma migrations if you prefer. This gives you a much easier migration experience where the prisma schema is the single source of truth and prisma generates the SQL needed to get your database to that state
 
 Just make sure to swap out the dependencies and move `prisma` related deps into **dependencies** and `kysely` related deps into **dev-dependencies** as the docker build strips out the dev-dependencies to decrease final image size
+
+#### Using prisma to generate sql and kysely to apply it
+
+If you want, you can use prisma to generate the sql and then translate it to kysely.
+
+This is helpful if you want the flexibility and control of kysely but want prisma to hold your hand in creating the migrations
+
+The npm scripts already keep the prisma schema and migrations updated. The only thing you need to do for this workflow are the following steps:
+
+1. Run `pnpm db:generate` to run pending migrations, generate types and update the prisma schema, and migrations
+2. Update prisma schema
+3. Run `pnpm prisma:create <name>` to generate prisma migration
+4. Check out the sql file, generate a kysely migration using `pnpm kysely:create <name>` and translate the sql into the kysely's syntax
+5. 
 
 
 ### Alternatives

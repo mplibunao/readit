@@ -107,12 +107,6 @@
 			"outputs": [],
 			"inputs": ["src/prisma/migrations/**", "src/migrations/**"],
 			"env": ["DATABASE_URL"]
-		},
-		"prisma:db:pull": {
-			"outputs": ["src/prisma/schema.prisma"],
-			"inputs": ["src/prisma/migrations/**", "src/migrations/**"],
-			"env": ["DATABASE_URL"],
-			"dependsOn": ["db:migrate:dev"]
 		}
 	}
 }

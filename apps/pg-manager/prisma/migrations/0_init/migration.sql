@@ -1,3 +1,6 @@
+-- CreateEnum
+CREATE TYPE "gender" AS ENUM ('male', 'female', 'prefer_not_to_say');
+
 -- CreateTable
 CREATE TABLE "kysely_migration" (
     "name" VARCHAR(255) NOT NULL,
@@ -24,6 +27,7 @@ CREATE TABLE "users" (
     "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "deactivated_at" TIMESTAMPTZ(6),
+    "gender" "gender",
 
     CONSTRAINT "users_pkey" PRIMARY KEY ("id")
 );

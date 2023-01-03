@@ -26,6 +26,13 @@ model users {
   created_at      DateTime  @default(now()) @db.Timestamptz(6)
   updated_at      DateTime  @default(now()) @db.Timestamptz(6)
   deactivated_at  DateTime? @db.Timestamptz(6)
+  gender          gender?
 
   @@index([email], map: "idx_users_email")
+}
+
+enum gender {
+  male
+  female
+  prefer_not_to_say
 }
