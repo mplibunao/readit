@@ -1,0 +1,31 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model kysely_migration {
+  name      String @id @db.VarChar(255)
+  timestamp String @db.VarChar(255)
+}
+
+model kysely_migration_lock {
+  id        String @id @db.VarChar(255)
+  is_locked Int    @default(0)
+}
+
+model users {
+  id              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email           String    @unique
+  hashed_password String
+  first_name      String
+  last_name       String
+  created_at      DateTime  @default(now()) @db.Timestamptz(6)
+  updated_at      DateTime  @default(now()) @db.Timestamptz(6)
+  deactivated_at  DateTime? @db.Timestamptz(6)
+
+  @@index([email], map: "idx_users_email")
+}

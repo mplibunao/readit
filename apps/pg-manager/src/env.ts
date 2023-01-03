@@ -3,14 +3,16 @@ import dotenv from 'dotenv'
 import { PoolConfig } from 'pg'
 import { z, ZodFormattedError } from 'zod'
 
-const NODE_ENV = process.env.NODE_ENV || 'development'
+const loadEnv = () => {
+	const NODE_ENV = process.env.NODE_ENV || 'development'
+	const CI = Boolean(process.env.CI)
 
-if (!['development', 'test', 'production'].includes(NODE_ENV)) {
-	throw new Error('NODE_ENV must be one of development, test, or production')
+	if (CI || NODE_ENV === 'production') return
+	if (NODE_ENV === 'test') dotenv.config({ path: '.env.test' })
+	if (NODE_ENV === 'development') dotenv.config()
 }
 
-if (NODE_ENV === 'development') dotenv.config()
-if (NODE_ENV === 'test') dotenv.config({ path: '.env.test' })
+loadEnv()
 
 const formatErrors = (errors: ZodFormattedError<Map<string, string>, string>) =>
 	Object.entries(errors)
@@ -27,10 +29,7 @@ const serverSchema = z.object({
 	APP_NAME: z.string().default('pg-manager'),
 	APP_VERSION: z.string().default('0.0.0'),
 	K_SERVICE: z.string().optional(),
-	LOGGING_LEVEL: z
-		.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace'])
-		.optional()
-		.default('info'),
+	LOGGING_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace']),
 	IS_PROD: z.preprocess((val) => Boolean(val), z.boolean()),
 })
 

@@ -13,11 +13,13 @@
 		"lint:check": "TIMING=1 eslint --color --cache --cache-location .eslintcache --ignore-path ../../.eslintignore ./src --ext .js,.jsx,.ts,.tsx",
 		"lint:fix": "TIMING=1 eslint --color --cache --cache-location .eslintcache --ignore-path ../../.eslintignore ./src --ext .js,.jsx,.ts,.tsx --fix",
 		"db:migrate": "pnpm ts-node src/index.ts",
-		"db:migrate:dev": "run-s 'db:migrate up' db:generate format:fix",
+		"db:migrate:dev": "pnpm db:migrate up",
 		"db:migrate:test": "NODE_ENV=test pnpm migrate latest",
 		"db:generate": "kysely-codegen --dialect postgres --camel-case --out-file ./src/db.d.ts",
 		"ts-node": "node --no-warnings --experimental-loader ../../esbuild-register-loader.mjs -r @cspotcode/source-map-support/register -r esbuild-register",
-		"typecheck": "tsc"
+		"typecheck": "tsc",
+		"prisma:studio": "prisma studio",
+		"prisma:db:pull": "prisma db pull"
 	},
 	"dependencies": {
 		"@cspotcode/source-map-support": "^0.8.1",
@@ -39,7 +41,8 @@
 		"dotenv": "^16.0.3",
 		"eslint": "^8.26.0",
 		"npm-run-all": "^4.1.5",
-		"prettier": "2.8.0"
+		"prettier": "2.8.0",
+		"prisma": "^4.8.0"
 	},
 	"prettier": "@readit/prettier-config",
 	"eslintConfig": {
