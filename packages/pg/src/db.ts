@@ -5,7 +5,7 @@ import pg, { PoolConfig } from 'pg'
 export type PG = Kysely<DB>
 export type PgOpts = PoolConfig
 
-export const createPgClient = (opts: PgOpts, logCallback: LogConfig) => {
+export const createPgClient = (opts: PgOpts, logCallback?: LogConfig) => {
 	return new Kysely<DB>({
 		dialect: new PostgresDialect({
 			pool: new pg.Pool(opts),
