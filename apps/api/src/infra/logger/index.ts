@@ -1,4 +1,4 @@
 import { config } from '@api/config'
-import { getLogger } from '@readit/pino-logger'
+import { getLogger, Logger } from '@readit/pino-logger'
 
-export const logger = getLogger(config.loggerOpts)
+export const logger: Logger = getLogger(config.loggerOpts)

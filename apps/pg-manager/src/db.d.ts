@@ -10,20 +10,9 @@ export type Timestamp = ColumnType<
 	Date | string | RawBuilder
 >
 
-export interface _PrismaMigrations {
-	appliedStepsCount: Generated<number>
-	checksum: string
-	finishedAt: Timestamp | null
-	id: string
-	logs: string | null
-	migrationName: string
-	rolledBackAt: Timestamp | null
-	startedAt: Generated<Timestamp>
-}
-
 export interface Users {
 	createdAt: Generated<Timestamp>
-	deactivatedAt: Timestamp | null
+	deletedAt: Timestamp | null
 	email: string
 	firstName: string
 	hashedPassword: string
@@ -33,6 +22,5 @@ export interface Users {
 }
 
 export interface DB {
-	_PrismaMigrations: _PrismaMigrations
 	users: Users
 }

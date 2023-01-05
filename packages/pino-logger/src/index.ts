@@ -1,4 +1,4 @@
-import pino, { LoggerOptions } from 'pino'
+import pino, { BaseLogger,LoggerOptions } from 'pino'
 
 export interface LoggerOpts {
 	IS_GCP_CLOUD_RUN: boolean
@@ -99,6 +99,8 @@ export const getLoggerConfig = (opts: LoggerOpts): Partial<LoggerOptions> => {
 	}
 }
 
-export const getLogger = (opts: LoggerOpts): pino.BaseLogger => {
+export type Logger = BaseLogger
+
+export const getLogger = (opts: LoggerOpts): BaseLogger => {
 	return pino(getLoggerConfig(opts))
 }

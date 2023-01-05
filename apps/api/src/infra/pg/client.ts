@@ -1,6 +1,7 @@
 import { config } from '@api/config'
 
-import { logger } from '../logger'
-import { createPgClient } from './createClient'
+import { createPgClient, PG } from './createClient'
+//import { createPgClient, PG } from '@readit/pg'
+import { pgLogCallback } from './pgLogCallback'
 
-export const db = createPgClient(config.pg, logger)
+export const pg: PG = createPgClient(config.pg, pgLogCallback)

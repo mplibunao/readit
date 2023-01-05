@@ -1,8 +1,8 @@
-import { ApplicationError, DatabaseError } from '@api/helpers/errors'
+import { ApplicationError, DBError } from '@api/helpers/errors'
 
-export type RegistrationError = UserAlreadyExists | DatabaseError
+export type RegistrationError = UserAlreadyExists | DBError
 
-export type FindUserByIdError = UserNotFound | DatabaseError
+export type FindUserByIdError = UserNotFound | DBError
 
 export class UserAlreadyExists extends ApplicationError {
 	constructor(error: unknown, message = 'User already exists') {

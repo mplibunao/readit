@@ -1,5 +1,7 @@
-import { DatabaseError } from '@api/helpers/errors'
-import { InsertableUser, PG, User } from '@api/infra/pg'
+import { DBError } from '@api/helpers/errors'
+import { PG } from '@api/infra/pg/createClient'
+import { InsertableUser, User } from '@api/infra/pg/types'
+//import { DatabaseError, InsertableUser, PG, User } from '@readit/pg'
 import { ResultAsync } from 'neverthrow'
 import Pg from 'pg'
 
@@ -27,7 +29,7 @@ export const create = (
 					return new UserAlreadyExists(error)
 				}
 			}
-			return new DatabaseError(error)
+			return new DBError(error)
 		},
 	)
 }
@@ -39,8 +41,8 @@ export const findUserById = (
 	ResultAsync.fromPromise(
 		pg
 			.selectFrom('users')
-			.select(['id', 'email', 'firstName', 'lastName', 'deactivatedAt'])
+			.select(['id', 'email', 'firstName', 'lastName', 'deletedAt'])
 			.where('id', '=', id)
 			.executeTakeFirstOrThrow(),
-		(error) => new DatabaseError(error),
+		(error) => new DBError(error),
 	)

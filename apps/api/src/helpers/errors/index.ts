@@ -20,7 +20,7 @@ export class ApplicationError extends TRPCError {
 	}
 }
 
-export class DatabaseError extends ApplicationError {
+export class DBError extends ApplicationError {
 	static type = 'DATABASE_ERROR'
 
 	constructor(cause: unknown) {
@@ -28,7 +28,7 @@ export class DatabaseError extends ApplicationError {
 			cause,
 			message: 'A database error occurred',
 			code: 'INTERNAL_SERVER_ERROR',
-			type: DatabaseError.type,
+			type: DBError.type,
 		})
 	}
 }

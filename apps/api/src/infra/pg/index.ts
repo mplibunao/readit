@@ -1,4 +1,2 @@
-export * from './createClient'
-export * from './pg.generated'
+export * from './client'
 export * from './plugin'
-export * from './types'

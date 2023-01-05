@@ -1,7 +1,9 @@
+//import { createPgClient, PG, PgOpts } from '@readit/pg'
 import { FastifyPluginAsync } from 'fastify'
 import fp from 'fastify-plugin'
 
 import { createPgClient, PG, PgOpts } from './createClient'
+import { pgLogCallback } from './pgLogCallback'
 
 declare module 'fastify' {
 	interface FastifyInstance {
@@ -13,7 +15,7 @@ export const kyselyPg: FastifyPluginAsync<PgOpts> = async (fastify, opts) => {
 	const name = 'pg'
 
 	try {
-		const db = createPgClient(opts, fastify.log)
+		const db = createPgClient(opts, pgLogCallback)
 
 		if (fastify[name]) {
 			throw new Error(`plugin '${name}' instance has already been registered`)

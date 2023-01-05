@@ -1,5 +1,5 @@
-import { db } from '@api/infra/pg/client'
+import { pg } from '@api/infra/pg/client'
 
 export const clearDatabase = async () => {
-	await db.deleteFrom('users').execute()
+	await pg.deleteFrom('users').execute()
 }

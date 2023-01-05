@@ -1,6 +1,6 @@
 import { routeResponseSchemaOpts, UnderPressure } from '@api/infra/healthcheck'
-import { PgOpts } from '@api/infra/pg'
 import { EdgeConfigOptions } from '@readit/edge-config'
+import { PgOpts } from '@readit/pg'
 import { getLoggerConfig, LoggerOpts } from '@readit/pino-logger'
 import { Static, Type } from '@sinclair/typebox'
 import envSchema from 'env-schema'
@@ -177,7 +177,6 @@ export const config: Config = {
 		connectionString: env.DATABASE_URL,
 		application_name: `${env.APP_NAME}-api`,
 		idleTimeoutMillis: env.PG_IDLE_TIMEOUT_MS,
-		isProd: env.IS_PROD,
 		ssl: env.PG_SSL,
 	},
 	//redis: {

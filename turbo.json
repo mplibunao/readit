@@ -73,7 +73,7 @@
 			]
 		},
 		"dev": {
-			"dependsOn": ["^db:generate"],
+			"dependsOn": ["db:gen:types"],
 			"cache": false
 		},
 		"typecheck": {
@@ -92,20 +92,20 @@
 		"ci": {
 			"dependsOn": ["typecheck", "lint:check", "format:check", "test"]
 		},
-		"db:generate": {
+		"db:gen:types": {
 			"outputs": ["src/db.d.ts"],
-			"inputs": ["src/prisma/migrations/**", "src/migrations/**"],
+			"inputs": ["src/migrations/**"],
 			"env": ["DATABASE_URL"],
 			"dependsOn": ["db:migrate:dev"]
 		},
 		"db:migrate:test": {
 			"outputs": [],
-			"inputs": ["src/prisma/migrations/**", "src/migrations/**"],
+			"inputs": ["src/migrations/**"],
 			"env": ["DATABASE_URL", "GITHUB_ENV", "GITHUB_ACTIONS"]
 		},
 		"db:migrate:dev": {
 			"outputs": [],
-			"inputs": ["src/prisma/migrations/**", "src/migrations/**"],
+			"inputs": ["src/migrations/**"],
 			"env": ["DATABASE_URL"]
 		}
 	}

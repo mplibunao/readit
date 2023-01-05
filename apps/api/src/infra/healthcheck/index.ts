@@ -5,6 +5,7 @@ import underPressure, {
 	TYPE_HEAP_USED_BYTES,
 	TYPE_RSS_BYTES,
 } from '@fastify/under-pressure'
+//import { sql } from '@readit/pg'
 import { FastifyInstance, FastifyPluginAsync } from 'fastify'
 import fp from 'fastify-plugin'
 import { sql } from 'kysely'
@@ -70,14 +71,17 @@ export const healthCheck: FastifyPluginAsync<Config> = async (
 		healthCheck: async (parent: FastifyInstance) => {
 			// You can return a boolean here as well. Returning false will probably return an unhealthy status code.
 			// Cool but I prefer strings so that I can add multiple alerting policies for server, db, redis and not have everything notifying when 1 component goes down
-			return {
+			const response = {
 				version: opts.underPressure.version,
 				timestamp: new Date().toISOString(),
 				status: 'ok',
 				metrics: parent?.memoryUsage(),
+				//db: 'ok',
 				db: await dbCheck(parent),
 				//redis: await redisCheck(parent),
 			}
+
+			return response
 		},
 	})
 }
@@ -96,7 +100,9 @@ async function dbCheck(server: FastifyInstance) {
 
 		if (result.rows.length === 1) return 'ok'
 	} catch (err) {
-		logger.fatal({ err }, 'failed to read DB during health check')
+		if (process.env.NODE_ENV !== 'test') {
+			logger.error({ err }, 'failed to read DB during health check')
+		}
 	}
 	return 'fail'
 }
