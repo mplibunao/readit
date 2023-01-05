@@ -1,7 +1,6 @@
 import { config } from '@api/config'
-import { LogConfig } from 'kysely'
+import { LogConfig } from '@readit/pg'
 
-//import { LogConfig } from '@readit/pg'
 import { logger } from '../logger'
 
 export const pgLogCallback: LogConfig = (event) => {

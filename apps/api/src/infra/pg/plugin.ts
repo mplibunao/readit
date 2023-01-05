@@ -1,8 +1,7 @@
-//import { createPgClient, PG, PgOpts } from '@readit/pg'
+import { createPgClient, PG, PgOpts } from '@readit/pg'
 import { FastifyPluginAsync } from 'fastify'
 import fp from 'fastify-plugin'
 
-import { createPgClient, PG, PgOpts } from './createClient'
 import { pgLogCallback } from './pgLogCallback'
 
 declare module 'fastify' {

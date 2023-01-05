@@ -5,18 +5,17 @@ import underPressure, {
 	TYPE_HEAP_USED_BYTES,
 	TYPE_RSS_BYTES,
 } from '@fastify/under-pressure'
-//import { sql } from '@readit/pg'
+import { sql } from '@readit/pg'
 import { FastifyInstance, FastifyPluginAsync } from 'fastify'
 import fp from 'fastify-plugin'
-import { sql } from 'kysely'
-
-import { logger } from '../logger'
 
 /*
- *This plugin is especially useful if you expect an high load
- *on your application, it measures the process load and returns
- *a 503 if the process is undergoing too much stress.
- *Also provides health check
+ * This plugin is especially useful if you expect an high load
+ * on your application, it measures the process load and returns
+ * a 503 if the process is undergoing too much stress.
+ * Also provides health check
+ *
+ * WARNING: Don't use an external logger. It seems to break the custom health check feature and only return status: ok
  */
 
 export const routeResponseSchemaOpts = {
@@ -48,16 +47,16 @@ export const healthCheck: FastifyPluginAsync<Config> = async (
 		pressureHandler: (_req, _rep, type, value) => {
 			switch (type) {
 				case TYPE_HEAP_USED_BYTES:
-					logger.warn(`too many heap bytes used: ${value}`)
+					fastify.log.warn(`too many heap bytes used: ${value}`)
 					break
 				case TYPE_RSS_BYTES:
-					logger.warn(`too many rss bytes used: ${value}`)
+					fastify.log.warn(`too many rss bytes used: ${value}`)
 					break
 				case TYPE_EVENT_LOOP_UTILIZATION:
-					logger.warn(`event loop utilization too high: ${value}`)
+					fastify.log.warn(`event loop utilization too high: ${value}`)
 					break
 				case TYPE_EVENT_LOOP_DELAY:
-					logger.warn(`event loop delay too high: ${value}`)
+					fastify.log.warn(`event loop delay too high: ${value}`)
 					break
 				default:
 			}
@@ -76,7 +75,6 @@ export const healthCheck: FastifyPluginAsync<Config> = async (
 				timestamp: new Date().toISOString(),
 				status: 'ok',
 				metrics: parent?.memoryUsage(),
-				//db: 'ok',
 				db: await dbCheck(parent),
 				//redis: await redisCheck(parent),
 			}
@@ -101,7 +99,7 @@ async function dbCheck(server: FastifyInstance) {
 		if (result.rows.length === 1) return 'ok'
 	} catch (err) {
 		if (process.env.NODE_ENV !== 'test') {
-			logger.error({ err }, 'failed to read DB during health check')
+			server.log.error({ err }, 'failed to read DB during health check')
 		}
 	}
 	return 'fail'

@@ -1,7 +1,5 @@
 import { DBError } from '@api/helpers/errors'
-import { PG } from '@api/infra/pg/createClient'
-import { InsertableUser, User } from '@api/infra/pg/types'
-//import { DatabaseError, InsertableUser, PG, User } from '@readit/pg'
+import { InsertableUser, PG, User } from '@readit/pg'
 import { ResultAsync } from 'neverthrow'
 import Pg from 'pg'
 

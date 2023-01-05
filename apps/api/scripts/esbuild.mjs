@@ -43,7 +43,7 @@ async function main() {
 		const external = [...Object.keys(packageJson.dependencies)]
 			.filter((deps) => !deps.startsWith('@readit/'))
 			.concat(excluded)
-		console.log('external', external) // eslint-disable-line no-console
+
 		return external
 
 		//return ['./node_modules/*']
@@ -54,8 +54,8 @@ async function main() {
 	const analyze = argv.analyze
 	const entrypoint = argv.e || argv.entrypoint || 'src/index.ts'
 	const watch = argv.w || argv.watch
-	const minify = false
-	//const minify = argv.m || argv.minify
+	//const minify = false
+	const minify = argv.m || argv.minify
 	const directory = argv.d || argv.directory || 'dist'
 	const incremental = argv.i || argv.incremental
 

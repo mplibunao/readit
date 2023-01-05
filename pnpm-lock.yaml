@@ -19,7 +19,7 @@ importers:
       '@fastify/under-pressure': ^8.1.0
       '@readit/edge-config': workspace:*
       '@readit/eslint-config-server': workspace:*
-      '@readit/pg-manager': workspace:*
+      '@readit/pg': workspace:*
       '@readit/pino-logger': workspace:*
       '@readit/prettier-config': workspace:*
       '@readit/tsconfig': workspace:*
@@ -41,7 +41,6 @@ importers:
       fastify: ^4.9.2
       fastify-plugin: ^4.3.0
       globby: ^13.1.2
-      kysely: ^0.22.0
       minimist: ^1.2.7
       neverthrow: ^5.1.0
       nodemon: ^2.0.20
@@ -61,7 +60,7 @@ importers:
       '@fastify/cors': 8.2.0
       '@fastify/under-pressure': 8.1.0
       '@readit/edge-config': link:../../packages/edge-config
-      '@readit/pg-manager': link:../pg-manager
+      '@readit/pg': link:../../packages/pg
       '@readit/pino-logger': link:../../packages/pino-logger
       '@sinclair/typebox': 0.25.8
       '@trpc/server': 10.5.0
@@ -71,7 +70,6 @@ importers:
       env-schema: 5.1.1
       fastify: 4.9.2
       fastify-plugin: 4.3.0
-      kysely: 0.22.0
       neverthrow: 5.1.0
       pg: 8.8.0
       pino: 8.7.0
