@@ -1,6 +1,6 @@
 export function getMessageFromUnknownError(
 	err: unknown,
-	fallback: string,
+	fallback?: string,
 ): string {
 	if (typeof err === 'string') {
 		return err
@@ -9,7 +9,12 @@ export function getMessageFromUnknownError(
 	if (err instanceof Error && typeof err.message === 'string') {
 		return err.message
 	}
-	return fallback
+
+	if (fallback) {
+		return fallback
+	}
+
+	return 'Unknown error'
 }
 
 export function getErrorFromUnknown(cause: unknown): Error {

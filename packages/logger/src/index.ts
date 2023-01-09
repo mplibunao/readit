@@ -1,12 +1,19 @@
-import pino, { BaseLogger,LoggerOptions } from 'pino'
+import pino, { BaseLogger, LoggerOptions } from 'pino'
+import { z } from 'zod'
 
-export interface LoggerOpts {
-	IS_GCP_CLOUD_RUN: boolean
-	LOGGING_LEVEL: 'fatal' | 'error' | 'warn' | 'info' | 'debug' | 'trace'
-	IS_PROD: boolean
-	APP_NAME: string
-	APP_VERSION?: string
+export const loggerOptsEnvSchema = {
+	APP_NAME: z.string(),
+	APP_VERSION: z.string().default('0.0.0'),
+	K_SERVICE: z.string().optional(),
+	LOGGING_LEVEL: z
+		.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace'])
+		.default('info'),
+	IS_PROD: z.boolean(),
 }
+
+const loggerOptsSchema = z.object(loggerOptsEnvSchema)
+
+export type LoggerOpts = z.infer<typeof loggerOptsSchema>
 
 interface ErrorReportingFields {
 	'@type': string
@@ -17,7 +24,7 @@ interface ErrorReportingFields {
 }
 
 export const getLoggerConfig = (opts: LoggerOpts): Partial<LoggerOptions> => {
-	if (opts.IS_GCP_CLOUD_RUN) {
+	if (opts.K_SERVICE) {
 		// https://cloud.google.com/error-reporting/docs/formatting-error-messages
 		const errorReportingFields: ErrorReportingFields = {
 			'@type':
@@ -101,6 +108,6 @@ export const getLoggerConfig = (opts: LoggerOpts): Partial<LoggerOptions> => {
 
 export type Logger = BaseLogger
 
-export const getLogger = (opts: LoggerOpts): BaseLogger => {
+export const getLogger = (opts: LoggerOpts): Logger => {
 	return pino(getLoggerConfig(opts))
 }

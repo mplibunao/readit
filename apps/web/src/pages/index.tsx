@@ -1,11 +1,12 @@
+import { DBError } from '@readit/api/src/helpers/errors'
+
 import { trpc } from '@/utils/trpc'
-import { DatabaseError } from '@readit/api/src/helpers/errors'
 
 const IndexPage = () => {
 	const { data, error, isLoading } = trpc.uptime.uptime.useQuery()
 	if (error) {
-		console.log('DatabaseError.prototype.type', DatabaseError.type) // eslint-disable-line no-console
-		if (error.data?.type === DatabaseError.type) {
+		console.log('DatabaseError.prototype.type', DBError.type) // eslint-disable-line no-console
+		if (error.data?.type === DBError.type) {
 			console.log('woo')
 		} else {
 			console.log('no')

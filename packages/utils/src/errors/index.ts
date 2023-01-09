@@ -1,6 +1,8 @@
 import { getErrorFromUnknown, getMessageFromUnknownError } from './utils'
 
-interface ErrorOpts {
+export * as BaseError from './index'
+
+export interface ErrorOpts {
 	cause?: unknown
 	message?: string
 	type?: string
@@ -25,5 +27,35 @@ export class AppError extends Error {
 		this.name = 'AppError'
 
 		Object.setPrototypeOf(this, new.target.prototype)
+	}
+}
+
+/*
+ *Error message will fallback to cause or type (in that order)
+ */
+export class DBError extends AppError {
+	static type = 'DB_ERROR'
+
+	constructor(opts: ErrorOpts) {
+		super({ ...opts, type: DBError.type })
+		this.name = DBError.type
+	}
+}
+
+export class DomainValidationError extends AppError {
+	static type = 'VALIDATION_ERROR'
+
+	constructor(opts: ErrorOpts) {
+		super({ ...opts, type: DomainValidationError.type })
+		this.name = DomainValidationError.type
+	}
+}
+
+export class DomainOutputValidationError extends AppError {
+	static type = 'INVALID_DOMAIN_ERROR'
+
+	constructor(opts: ErrorOpts) {
+		super({ ...opts, type: DomainOutputValidationError.type })
+		this.name = DomainOutputValidationError.type
 	}
 }

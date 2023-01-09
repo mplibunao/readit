@@ -18,12 +18,14 @@ importers:
       '@fastify/cors': ^8.2.0
       '@fastify/under-pressure': ^8.1.0
       '@readit/edge-config': workspace:*
+      '@readit/env': workspace:*
       '@readit/eslint-config-server': workspace:*
-      '@readit/pg': workspace:*
-      '@readit/pino-logger': workspace:*
+      '@readit/kysely-pg-config': workspace:*
+      '@readit/logger': workspace:*
+      '@readit/pg-manager': workspace:*
       '@readit/prettier-config': workspace:*
       '@readit/tsconfig': workspace:*
-      '@sinclair/typebox': ^0.25.2
+      '@readit/utils': workspace:*
       '@trpc/server': ^10.5.0
       '@types/node': ^17.0.12
       '@types/pg': ^8.6.5
@@ -32,8 +34,6 @@ importers:
       '@vitest/ui': ^0.24.5
       argon2: ^0.30.2
       close-with-grace: ^1.1.0
-      dotenv: ^16.0.3
-      env-schema: ^5.1.0
       esbuild: ^0.15.12
       esbuild-plugin-ts-references: ^0.2.2
       esbuild-register: ^3.3.3
@@ -41,6 +41,7 @@ importers:
       fastify: ^4.9.2
       fastify-plugin: ^4.3.0
       globby: ^13.1.2
+      kysely: ^0.22.0
       minimist: ^1.2.7
       neverthrow: ^5.1.0
       nodemon: ^2.0.20
@@ -50,41 +51,44 @@ importers:
       prettier: 2.8.0
       superjson: ^1.12.0
       tslib: ^2.4.1
-      typescript: ^4.8.4
+      typescript: ^4.9.4
       vite: ^3.2.2
       vite-tsconfig-paths: ^3.5.2
       vitest: ^0.24.5
+      znv: ^0.3.2
       zod: ^3.19.1
     dependencies:
       '@cspotcode/source-map-support': 0.8.1
       '@fastify/cors': 8.2.0
       '@fastify/under-pressure': 8.1.0
       '@readit/edge-config': link:../../packages/edge-config
-      '@readit/pg': link:../../packages/pg
-      '@readit/pino-logger': link:../../packages/pino-logger
-      '@sinclair/typebox': 0.25.8
+      '@readit/env': link:../../packages/env
+      '@readit/kysely-pg-config': link:../../packages/kysely-pg-config
+      '@readit/logger': link:../../packages/logger
+      '@readit/utils': link:../../packages/utils
       '@trpc/server': 10.5.0
       '@vercel/edge-config': 0.1.0
       argon2: 0.30.2
       close-with-grace: 1.1.0
-      env-schema: 5.1.1
       fastify: 4.9.2
       fastify-plugin: 4.3.0
+      kysely: 0.22.0
       neverthrow: 5.1.0
       pg: 8.8.0
       pino: 8.7.0
       superjson: 1.12.0
       tslib: 2.4.1
+      znv: 0.3.2_zod@3.19.1
       zod: 3.19.1
     devDependencies:
       '@readit/eslint-config-server': link:../../packages/config/eslint-config-server
+      '@readit/pg-manager': link:../pg-manager
       '@readit/prettier-config': link:../../packages/config/prettier-config
       '@readit/tsconfig': link:../../packages/config/tsconfig
       '@types/node': 17.0.45
       '@types/pg': 8.6.5
       '@vitest/coverage-c8': 0.24.5_@vitest+ui@0.24.5
       '@vitest/ui': 0.24.5
-      dotenv: 16.0.3
       esbuild: 0.15.13
       esbuild-plugin-ts-references: 0.2.2_esbuild@0.15.13
       esbuild-register: 3.4.1_esbuild@0.15.13
@@ -94,7 +98,7 @@ importers:
       nodemon: 2.0.20
       npm-run-all: 4.1.5
       prettier: 2.8.0
-      typescript: 4.8.4
+      typescript: 4.9.4
       vite: 3.2.3_@types+node@17.0.45
       vite-tsconfig-paths: 3.5.2_vite@3.2.3
       vitest: 0.24.5_@vitest+ui@0.24.5
@@ -102,13 +106,13 @@ importers:
   apps/pg-manager:
     specifiers:
       '@cspotcode/source-map-support': ^0.8.1
+      '@readit/env': workspace:*
       '@readit/eslint-config-server': workspace:*
-      '@readit/pino-logger': workspace:*
+      '@readit/logger': workspace:*
       '@readit/prettier-config': workspace:*
       '@readit/tsconfig': workspace:*
       '@types/node': ^17.0.12
       '@types/pg': ^8.6.5
-      dotenv: ^16.0.3
       esbuild: ^0.15.12
       esbuild-register: ^3.3.3
       eslint: ^8.26.0
@@ -119,13 +123,13 @@ importers:
       npm-run-all: ^4.1.5
       pg: ^8.8.0
       prettier: 2.8.0
-      typescript: ^4.8.4
+      typescript: ^4.9.4
       znv: ^0.3.2
       zod: ^3.19.1
     dependencies:
       '@cspotcode/source-map-support': 0.8.1
-      '@readit/pino-logger': link:../../packages/pino-logger
-      dotenv: 16.0.3
+      '@readit/env': link:../../packages/env
+      '@readit/logger': link:../../packages/logger
       esbuild: 0.15.13
       kysely: 0.22.0
       kysely-migration-cli: 0.1.1
@@ -144,7 +148,7 @@ importers:
       kysely-codegen: 0.8.0_kysely@0.22.0+pg@8.8.0
       npm-run-all: 4.1.5
       prettier: 2.8.0
-      typescript: 4.8.4
+      typescript: 4.9.4
 
   apps/web:
     specifiers:
@@ -192,7 +196,7 @@ importers:
       react-hook-form: ^7.40.0
       superjson: ^1.12.0
       tailwindcss: ^3.2.4
-      typescript: ^4.8.4
+      typescript: ^4.9.4
       wretch: ^2.3.0
       zod: ^3.19.1
     dependencies:
@@ -209,7 +213,7 @@ importers:
       '@trpc/server': 10.5.0
       '@vercel/edge-config': 0.1.0
       ariakit: 2.0.0-next.41_biqbaboplfbrettd7655fr4n2y
-      cva: /class-variance-authority/0.4.0_typescript@4.8.4
+      cva: /class-variance-authority/0.4.0_typescript@4.9.4
       next: 13.0.0_mqvh5p7ejg4taogoj6tpk3gd5a
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
@@ -243,7 +247,7 @@ importers:
       postcss: 8.4.19
       prettier: 2.8.0
       tailwindcss: 3.2.4_postcss@8.4.19
-      typescript: 4.8.4
+      typescript: 4.9.4
 
   packages/config/eslint-config:
     specifiers:
@@ -333,15 +337,32 @@ importers:
       typescript: 4.8.4
       vitest: 0.24.5
 
-  packages/pg:
+  packages/env:
     specifiers:
       '@readit/eslint-config-server': workspace:*
-      '@readit/pg-manager': workspace:*
+      '@readit/prettier-config': workspace:*
+      '@readit/tsconfig': workspace:*
+      dotenv: ^16.0.3
+      eslint: ^8.26.0
+      prettier: 2.8.0
+      typescript: ^4.8.4
+    dependencies:
+      dotenv: 16.0.3
+    devDependencies:
+      '@readit/eslint-config-server': link:../config/eslint-config-server
+      '@readit/prettier-config': link:../config/prettier-config
+      '@readit/tsconfig': link:../config/tsconfig
+      eslint: 8.27.0
+      prettier: 2.8.0
+      typescript: 4.9.4
+
+  packages/kysely-pg-config:
+    specifiers:
+      '@readit/eslint-config-server': workspace:*
+      '@readit/logger': workspace:*
       '@readit/prettier-config': workspace:*
       '@readit/tsconfig': workspace:*
       '@types/pg': ^8.6.5
-      '@vitest/coverage-c8': ^0.24.5
-      '@vitest/ui': ^0.24.5
       eslint: ^8.26.0
       kysely: ^0.22.0
       pg: ^8.8.0
@@ -349,24 +370,24 @@ importers:
       typescript: ^4.8.4
       vite: ^3.2.2
       vitest: ^0.24.5
+      zod: ^3.19.1
     dependencies:
       kysely: 0.22.0
       pg: 8.8.0
+      zod: 3.19.1
     devDependencies:
       '@readit/eslint-config-server': link:../config/eslint-config-server
-      '@readit/pg-manager': link:../../apps/pg-manager
+      '@readit/logger': link:../logger
       '@readit/prettier-config': link:../config/prettier-config
       '@readit/tsconfig': link:../config/tsconfig
       '@types/pg': 8.6.5
-      '@vitest/coverage-c8': 0.24.5_@vitest+ui@0.24.5
-      '@vitest/ui': 0.24.5
       eslint: 8.27.0
       prettier: 2.8.0
-      typescript: 4.8.4
+      typescript: 4.9.4
       vite: 3.2.3
-      vitest: 0.24.5_@vitest+ui@0.24.5
+      vitest: 0.24.5
 
-  packages/pino-logger:
+  packages/logger:
     specifiers:
       '@readit/eslint-config-server': workspace:*
       '@readit/prettier-config': workspace:*
@@ -376,8 +397,10 @@ importers:
       pino-pretty: ^9.1.1
       prettier: 2.8.0
       typescript: ^4.8.4
+      zod: ^3.19.1
     dependencies:
       pino: 8.7.0
+      zod: 3.19.1
     devDependencies:
       '@readit/eslint-config-server': link:../config/eslint-config-server
       '@readit/prettier-config': link:../config/prettier-config
@@ -385,26 +408,32 @@ importers:
       eslint: 8.27.0
       pino-pretty: 9.1.1
       prettier: 2.8.0
-      typescript: 4.8.4
+      typescript: 4.9.4
 
   packages/utils:
     specifiers:
       '@readit/eslint-config-server': workspace:*
       '@readit/prettier-config': workspace:*
       '@readit/tsconfig': workspace:*
+      '@vitest/coverage-c8': ^0.24.5
+      '@vitest/ui': ^0.24.5
       eslint: ^8.26.0
       prettier: 2.8.0
       typescript: ^4.8.4
+      vitest: ^0.24.5
+      zod: ^3.19.1
+    dependencies:
+      zod: 3.19.1
     devDependencies:
       '@readit/eslint-config-server': link:../config/eslint-config-server
       '@readit/prettier-config': link:../config/prettier-config
       '@readit/tsconfig': link:../config/tsconfig
+      '@vitest/coverage-c8': 0.24.5_@vitest+ui@0.24.5
+      '@vitest/ui': 0.24.5
       eslint: 8.27.0
       prettier: 2.8.0
       typescript: 4.8.4
-
-  services/users:
-    specifiers: {}
+      vitest: 0.24.5_@vitest+ui@0.24.5
 
 packages:
 
@@ -2500,10 +2529,6 @@ packages:
     resolution: {integrity: sha512-1P1OROm/rdubP5aFDSZQILU0vrLCJ4fvHt6EoqHEM+2D/G5MK3bIaymUKLit8Js9gbns5UyJnkP/TZROLw4tUA==}
     dev: true
 
-  /@sinclair/typebox/0.25.8:
-    resolution: {integrity: sha512-/7GXgMOCfnxpIov52cPetqQ7bxRBaTBJAgp04Se2UQB1J0vUfEOIMpn63cLc3S5JXDUflCWxELKDV8eiPpmUTQ==}
-    dev: false
-
   /@sinonjs/commons/1.8.6:
     resolution: {integrity: sha512-Ky+XkAkqPZSm3NLBeUng77EBQl3cmeJhITaGHdYH8kjVB+aun3S4XBRti2zt17mtt0mIUDiNxYeoJm6drVvBJQ==}
     dependencies:
@@ -3703,7 +3728,7 @@ packages:
     resolution: {integrity: sha512-cOU9usZw8/dXIXKtwa8pM0OTJQuJkxMN6w30csNRUerHfeQ5R6U3kkU/FtJeIf3M202OHfY2U8ccInBG7/xogA==}
     dev: true
 
-  /class-variance-authority/0.4.0_typescript@4.8.4:
+  /class-variance-authority/0.4.0_typescript@4.9.4:
     resolution: {integrity: sha512-74enNN8O9ZNieycac/y8FxqgyzZhZbxmCitAtAeUrLPlxjSd5zA7LfpprmxEcOmQBnaGs5hYhiSGnJ0mqrtBLQ==}
     peerDependencies:
       typescript: '>= 4.5.5 < 5'
@@ -3711,7 +3736,7 @@ packages:
       typescript:
         optional: true
     dependencies:
-      typescript: 4.8.4
+      typescript: 4.9.4
     dev: false
 
   /classnames/2.3.2:
@@ -4225,11 +4250,6 @@ packages:
       domelementtype: 1.3.1
     dev: true
 
-  /dotenv-expand/9.0.0:
-    resolution: {integrity: sha512-uW8Hrhp5ammm9x7kBLR6jDfujgaDarNA02tprvZdyrJ7MpdzD1KyrIHG4l+YoC2fJ2UcdFdNWNWIjt+sexBHJw==}
-    engines: {node: '>=12'}
-    dev: false
-
   /dotenv/16.0.3:
     resolution: {integrity: sha512-7GO6HghkA5fYG9TYnNxi14/7K9f5occMlp3zXAuSxn7CKCxt9xbNWG7yF8hTCSUchlfWSe3uLmlPfigevRItzQ==}
     engines: {node: '>=12'}
@@ -4287,14 +4307,6 @@ packages:
     resolution: {integrity: sha512-oYp7156SP8LkeGD0GF85ad1X9Ai79WtRsZ2gxJqtBuzH+98YUV6jkHEKlZkMbcrjJjIVJNIDP/3WL9wQkoPbWA==}
     engines: {node: '>=0.12'}
     dev: true
-
-  /env-schema/5.1.1:
-    resolution: {integrity: sha512-3jftabBd44XEYFCZjLg5Ris/7DKz09AJClvJEJXh8eciBPbKXSzdgwLZqpqA1lKmNkHFiAqr7JAqTToU80mDew==}
-    dependencies:
-      ajv: 8.11.0
-      dotenv: 16.0.3
-      dotenv-expand: 9.0.0
-    dev: false
 
   /error-ex/1.3.2:
     resolution: {integrity: sha512-7dFHNmqeFSEt2ZBsCriorKnn3Z2pj+fd9kmI6QoWw4//DL+icEBfc0U7qJCisqrTsKTjw4fNFy2pW9OqStD84g==}
@@ -8793,6 +8805,11 @@ packages:
 
   /typescript/4.8.4:
     resolution: {integrity: sha512-QCh+85mCy+h0IGff8r5XWzOVSbBO+KfeYrMQh7NJ58QujwcE22u+NUSmUxqF+un70P9GXKxa2HCNiTTMJknyjQ==}
+    engines: {node: '>=4.2.0'}
+    hasBin: true
+
+  /typescript/4.9.4:
+    resolution: {integrity: sha512-Uz+dTXYzxXXbsFpM86Wh3dKCxrQqUcVMxwU54orwlJjOpO3ao8L7j5lH+dWfTwgCwIuM9GQ2kvVotzYJMXTBZg==}
     engines: {node: '>=4.2.0'}
     hasBin: true
 

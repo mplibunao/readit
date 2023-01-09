@@ -1,26 +1,57 @@
-# Commands
+## Commands
 
-- `pnpm -F pg-manager db:generate`: Generates types and formats it               
-- `pnpm -F pg-manager db:migrate:dev`: Runs kysely migration
+> **Note**: If running commands from root of workspace, you need to filter this packages using `--filter` or `-F`. Eg. `pnpm -F pg-manager db:gen:types`
+
+- `db:gen:types`: Generates types and formats it               
+- `db:migrate:dev`: Runs kysely migration
 	- Syncs prisma schema with new state of database
 	- Generates corresponding prisma migration
 	- Marks it as applied so if want to generate migrations from prisma, you can
-- `turbo run db:generate`: Runs when you run `pnpm dev` or `turbo run dev`
+	- Caches for faster workflow
+- `db:migrate:test`: Runs migration on test database
+- `db:migrate:prod`: Runs migration through `dist/index.js`
+	- **Note**: This only runs `kysely-migration-cli` but doesn't pass any specific arguments so you need to provide one
+	- Eg. `--help`, `up`, `down`, `latest`, `redo` 
+- `turbo run db:gen:types`: Runs when you run `pnpm dev` or `turbo run dev`
 	- Runs `db:migrate:dev` 
-	- Runs `db:generate`
-- `pnpm -F studio`: Runs prisma studio
-- `pnpm -F kysely:create <name>`: Creates a new migration 
-- `pnpm -F prisma:create <name>`: Creates a new prisma migration for the changes in the prisma schema
+	- Runs `db:gen:types`
+- `db:migrate:reset`: Resets the database
+- `db:gen:migration <name>`: Creates a new migration
 
 
+### Separate migration commands per env
 
-# Turbo commands
+The reason we have 4 migration commands, 1 base and 1 for each environment is because:
 
-# What this package does
+1. For tests we need to pass the `NODE_ENV` since we check that (along with `process.env.CI`) to determine which `.env` files to load using dotenv or to ignore using dotenv altogether. This is needed so we pass a different database in `DATABASE_URL` and run migrations on the test database
+2. For dev, we want a streamlined workflow that runs migration and generates types when we run the dev command, therefore we enabled caching using turborepo. However, caching database migrations are risky. Accidentally caching migrations can cause tests to fail or worse downtime if the remote caching kicks in. This is why we separated the dev command.
+	- To demonstrate, you can run the following command to see turborepo caching on dev
+	- **Note**: It's probably still possible to end up in a weird migration state (especially due to remote caching) but that's why I've added the `clean` command as an escape hatch
+	
+```sh
+❯ turbo run dev --filter=api...
+• Packages in scope: @readit/api, @readit/edge-config, @readit/eslint-config-server, @readit/pg, @readit/pg-manager, @readit/pino-logger, @readit/prettier-config, @readit/tsconfig
+• Running dev in 8 packages
+• Remote caching disabled
+@readit/api:dev: cache bypass, force executing 94cc88defd82455c
+@readit/pg-manager:db:migrate:dev: cache hit, replaying output b8283d72d7f12c69
+@readit/pg-manager:db:migrate:dev:
+@readit/pg-manager:db:migrate:dev: > @readit/pg-manager@0.0.0 db:migrate:dev /Users/mp/Projects/personal/temp/readit/apps/pg-manager
+..
+...
+@readit/pg-manager:db:gen:types: cache hit, replaying output 1f764fd2bcd4dccf
+@readit/pg-manager:db:gen:types:
+@readit/pg-manager:db:gen:types: > @readit/pg-manager@0.0.0 db:gen:types /Users/mp/Projects/personal/temp/readit/apps/pg-manager
+@readit/pg-manager:db:gen:types: > run-s kysely-codegen format:fix
+```
+
+3. Finally, the production command. Runs the transpiled js files instead of ts files. This allows us to remove typescript and other dependencies from the production image, making our final image much smaller and reducing storage costs
+
+## What this package does
 
 This package helps you manage your postgres database by providing you with the following functionality:
 
-## Migrations
+### Migrations
 
 One of the reasons why this is a separate package instead of part of the `@api` or `@pg` package is that I wanted to build this into a docker image and deploy it.
 
@@ -43,39 +74,36 @@ Unfortunately, this comes at cost of not having a shell.
 
 ### Kysely
 
-By default, migrations are handled using `kysely` and `kysely-migration-cli` as this is more flexible than prisma migrations and allow for data migrations, backfills, etc.
+Migrations are handled using `kysely` and `kysely-migration-cli` as this is more flexible than prisma migrations and allow for data migrations, backfills, etc.
 
 Although it's more verbose and involved compared to prisma migrations
 
 ### Prisma
 
-However, you are free to use prisma migrations if you prefer. This gives you a much easier migration experience where the prisma schema is the single source of truth and prisma generates the SQL needed to get your database to that state
+I have tried to integrate prisma into migrations due to the declarative nature of prisma migrations and easy to use interface of prisma studio. However, I ended up giving up and ripping it due to errors experiencing when using kysely the backing sql executor for umzug
 
-Just make sure to swap out the dependencies and move `prisma` related deps into **dependencies** and `kysely` related deps into **dev-dependencies** as the docker build strips out the dev-dependencies to decrease final image size
+Also I've found prisma's generated sql to be unideal at times. Eg:
+- Wrapping table names in "double-quotes" despite using lower case names in schema 
+- `@default(uuid())` defaults to UUID v4. `@default(dbgenerated("gen_random_uuid()")) @db.Uuid` give a bit better performance
+- Most of the stuff you want is probably achievable but it's tough because you have to learn another dsl on top of sql (atleast kysely is really close to sql)
 
-#### Using prisma to generate sql and kysely to apply it
-
-If you want, you can use prisma to generate the sql and then translate it to kysely.
-
-This is helpful if you want the flexibility and control of kysely but want prisma to hold your hand in creating the migrations
-
-The npm scripts already keep the prisma schema and migrations updated. The only thing you need to do for this workflow are the following steps:
-
-1. Run `pnpm db:generate` to run pending migrations, generate types and update the prisma schema, and migrations
-2. Update prisma schema
-3. Run `pnpm prisma:create <name>` to generate prisma migration
-4. Check out the sql file, generate a kysely migration using `pnpm kysely:create <name>` and translate the sql into the kysely's syntax
-5. 
+If you are interested check out the following repos:
+- [github marek hanzal prisma migration example](https://github.com/marek-hanzal/prisma-migration-example)
+- [github marek hanzal puff smith](https://github.com/marek-hanzal/puff-smith)
+- [github sequelize umzug](https://github.com/sequelize/umzug)
+	- Migration tool
+- [github leight core server blob main src source sql ts](https://github.com/leight-core/server/blob/main/src/source/sql.ts)
+	- This is the helpers he's using to execute the raw sql files. I wrote my own implementation of this using kysely which may be why I was getting occassional errors
 
 
-### Alternatives
+#### Alternatives
 
-#### Run migrations on application startup
+##### Run migrations on application startup
 
 - This a common pattern for a lot of small applications, but I don't recommend it as it couples your migration to your application too much.
 - Increases your cold start time if you are running on serverless which we are
 
-#### Run migration on CI
+##### Run migration on CI
 
 - It's also common to run migrations on your CI like github actions
 - This a better solution the previous one and this package supports that
@@ -86,13 +114,13 @@ The npm scripts already keep the prisma schema and migrations updated. The only 
 	- Locally (break the glass situations, etc)
 - Using something like [doppler](https://www.doppler.com/) probably solves this (probably better than my current approach)
 
-#### Expose as http endpoints
+##### Expose as http endpoints
 
 - I've only seed this at one repo and it's feels weird and unsecure to expose it as http endpoints but I guess it's an option especially if you're behind a VPC or something
 - I've mentioned this because it solves the secrets problem and because kysely is capable of doing this but not through [kysely-migration-cli](https://github.com/acro5piano/kysely-migration-cli) but rather by implementing your own [MigrationProvider](https://github.com/koskimas/kysely#migrations)
 
 
-## Type generation
+### Type generation
 
 - Similar to migrations, type generation is also handled by `kysely` using [kysely codegen](https://github.com/RobinBlomberg/kysely-codegen) by default and generated in `db.d.ts`
 - It's also the only thing being exported in this package just to be sure we don't increase the bundle size any more than we need to
@@ -100,4 +128,11 @@ The npm scripts already keep the prisma schema and migrations updated. The only 
 
 ## Prisma studio
 
-- You can also run prisma studio using this package if you want even if you are not using prisma for migrations and types. Turborepo runs `prisma db pull` to sync the prisma schema with the database so that we can run prisma studio for debugging purposes and better visualization of data while developing
+- Since we removed prisma, we can't use prisma studio anymore since it requires a prisma schema
+- If you're interested in using a UI to visualize you're data, I would recommend checking out PG Admin or [tableplus](https://tableplus.com/pricing)
+	- Table plus has a free tier with limited features and 2 databases I think
+	- PG Admin is free. To use run the following command and restart your container
+
+```sh
+cp docker-compose.override.yml.example docker-compose.override.yml
+```

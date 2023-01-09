@@ -1,5 +1,5 @@
-import { getLogger } from '@readit/pino-logger'
+import { getLogger, Logger } from '@readit/logger'
 
 import { loggerConfig } from './env'
 
-export const logger = getLogger(loggerConfig)
+export const logger: Logger = getLogger(loggerConfig)

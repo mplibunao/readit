@@ -3,6 +3,9 @@
 	"display": "package",
 	"extends": "@readit/tsconfig/package-project-references.json",
 	"compilerOptions": {
-		"rootDir": "src"
-	}
+		"rootDir": "src",
+		"baseUrl": "."
+	},
+	"include": ["src"],
+	"exclude": ["node_modules"]
 }
