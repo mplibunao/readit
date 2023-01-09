@@ -5,9 +5,9 @@ import underPressure, {
 	TYPE_HEAP_USED_BYTES,
 	TYPE_RSS_BYTES,
 } from '@fastify/under-pressure'
-import { sql } from '@readit/pg'
 import { FastifyInstance, FastifyPluginAsync } from 'fastify'
 import fp from 'fastify-plugin'
+import { sql } from 'kysely'
 
 /*
  * This plugin is especially useful if you expect an high load

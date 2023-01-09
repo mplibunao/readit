@@ -1,11 +1,8 @@
 import { build } from '@api/helpers/test/build'
 import { clearDatabase } from '@api/helpers/test/clearDatabase'
-import { pg } from '@api/infra/pg/client'
-import { createContextInner } from '@api/trpc'
+import { AppRouter, appRouter, createContextInner } from '@api/trpc'
 import { inferProcedureInput } from '@trpc/server'
 import { beforeEach, describe, expect, test } from 'vitest'
-
-import { AppRouter, appRouter } from '..'
 
 beforeEach(async () => {
 	await clearDatabase()
@@ -13,8 +10,11 @@ beforeEach(async () => {
 
 describe('TRPC user router', () => {
 	test('user.register should create a user and fetch the same user using user.byId', async () => {
-		await build()
-		const ctx = await createContextInner({ pg: pg })
+		const fastify = await build()
+		const ctx = await createContextInner({
+			pg: fastify.pg,
+			logger: fastify.log,
+		})
 		const caller = appRouter.createCaller(ctx)
 
 		const input: inferProcedureInput<AppRouter['user']['register']> = {

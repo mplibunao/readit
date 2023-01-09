@@ -1,5 +1,5 @@
 import { build } from '@api/helpers/test/build'
-import { sql } from '@readit/pg'
+import { sql } from 'kysely'
 import { describe, expect, test } from 'vitest'
 
 describe('pg plugin', () => {

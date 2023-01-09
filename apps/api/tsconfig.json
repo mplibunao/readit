@@ -21,7 +21,13 @@
 			"path": "../../packages/edge-config"
 		},
 		{
-			"path": "../../packages/pino-logger"
+			"path": "../../packages/logger"
+		},
+		{
+			"path": "../../packages/env"
+		},
+		{
+			"path": "../../packages/kysely-pg-config"
 		}
 	]
 }
