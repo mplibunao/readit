@@ -18,25 +18,20 @@ export const register = async (
 	const validatedInput = UserTypes.createUserInput.parse(userInput)
 	const { password, ...user } = validatedInput
 
-	const hashedPassword = await ResultAsync.fromPromise(
-		argon2.hash(password),
-		(err) => {
-			deps.logger.error('Password hashing failed', err, password, user)
-			return new PasswordHashingError({
-				cause: err,
-				message: 'Registration failed',
-			})
-		},
-	)
-	if (hashedPassword.isErr()) return err(hashedPassword.error)
-
-	const userResult = await UserMutationsRepo.create(deps, {
-		...user,
-		hashedPassword: hashedPassword.value,
+	return ResultAsync.fromPromise(argon2.hash(password), (err) => {
+		deps.logger.error('Password hashing failed', err, password, user)
+		return new PasswordHashingError({
+			cause: err,
+			message: 'Registration failed',
+		})
 	})
-	if (userResult.isErr()) return err(userResult.error)
-
-	return ok(UserTypes.createUserOutput.parse(userResult.value))
+		.map(async (hashedPassword) => {
+			return UserMutationsRepo.create(deps, {
+				...user,
+				hashedPassword: hashedPassword,
+			})
+		})
+		.map((user) => UserTypes.createUserOutput.parse(user))
 }
 
 export const findUserById = async (
