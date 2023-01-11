@@ -7,7 +7,8 @@
 		"packages/*"
 	],
 	"scripts": {
-		"clean:turbo": "turbo run clean:turbo",
+		"clean:turbo": "turbo run clean:turbo --parallel",
+		"clean:ts": "turbo run clean:ts --parallel",
 		"build": "turbo run build --parallel",
 		"dev": "turbo run dev --parallel",
 		"db:gen:types": "turbo run db:gen:types",
@@ -19,12 +20,13 @@
 		"format:fix": "turbo format:fix --parallel",
 		"format:check": "turbo format:check --parallel",
 		"ci": "turbo run ci --parallel",
+		"typecheck": "turbo run typecheck --parallel",
 		"docker:up": "docker-compose up -d"
 	},
 	"devDependencies": {
-		"@readit/eslint-config": "workspace:*",
 		"@readit/prettier-config": "workspace:*",
-		"turbo": "latest"
+		"turbo": "1.7.0",
+		"typescript": "^4.8.4"
 	},
 	"engines": {
 		"npm": ">=8.15.0",

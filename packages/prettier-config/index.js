@@ -15,5 +15,5 @@ module.exports = {
 	],
 	importOrder: ['^\\$/(.*)$', '^[../]', '^[./]'],
 	importOrderSeparation: true,
-	tailwindConfig: '../../packages/config/tailwind-config',
+	tailwindConfig: '../../packages/tailwind-config',
 }

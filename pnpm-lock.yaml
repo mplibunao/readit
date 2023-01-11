@@ -4,13 +4,13 @@ importers:
 
   .:
     specifiers:
-      '@readit/eslint-config': workspace:*
       '@readit/prettier-config': workspace:*
-      turbo: latest
+      turbo: 1.7.0
+      typescript: ^4.8.4
     devDependencies:
-      '@readit/eslint-config': link:packages/config/eslint-config
-      '@readit/prettier-config': link:packages/config/prettier-config
-      turbo: 1.6.3
+      '@readit/prettier-config': link:packages/prettier-config
+      turbo: 1.7.0
+      typescript: 4.9.4
 
   apps/api:
     specifiers:
@@ -18,8 +18,6 @@ importers:
       '@fastify/cors': ^8.2.0
       '@fastify/under-pressure': ^8.1.0
       '@readit/edge-config': workspace:*
-      '@readit/env': workspace:*
-      '@readit/eslint-config-server': workspace:*
       '@readit/kysely-pg-config': workspace:*
       '@readit/logger': workspace:*
       '@readit/pg-manager': workspace:*
@@ -34,10 +32,11 @@ importers:
       '@vitest/ui': ^0.24.5
       argon2: ^0.30.2
       close-with-grace: ^1.1.0
+      env-schema: ^5.2.0
       esbuild: ^0.15.12
-      esbuild-plugin-ts-references: ^0.2.2
       esbuild-register: ^3.3.3
       eslint: ^8.26.0
+      eslint-config-custom-server: workspace:*
       fastify: ^4.9.2
       fastify-plugin: ^4.3.0
       globby: ^13.1.2
@@ -51,18 +50,17 @@ importers:
       prettier: 2.8.0
       superjson: ^1.12.0
       tslib: ^2.4.1
-      typescript: ^4.9.4
+      typescript: ^4.8.4
       vite: ^3.2.2
       vite-tsconfig-paths: ^3.5.2
       vitest: ^0.24.5
-      znv: ^0.3.2
-      zod: ^3.19.1
+      zod: ^3.20.2
+      zod-to-json-schema: ^3.20.2
     dependencies:
       '@cspotcode/source-map-support': 0.8.1
       '@fastify/cors': 8.2.0
       '@fastify/under-pressure': 8.1.0
       '@readit/edge-config': link:../../packages/edge-config
-      '@readit/env': link:../../packages/env
       '@readit/kysely-pg-config': link:../../packages/kysely-pg-config
       '@readit/logger': link:../../packages/logger
       '@readit/utils': link:../../packages/utils
@@ -70,6 +68,7 @@ importers:
       '@vercel/edge-config': 0.1.0
       argon2: 0.30.2
       close-with-grace: 1.1.0
+      env-schema: 5.2.0
       fastify: 4.9.2
       fastify-plugin: 4.3.0
       kysely: 0.22.0
@@ -78,21 +77,20 @@ importers:
       pino: 8.7.0
       superjson: 1.12.0
       tslib: 2.4.1
-      znv: 0.3.2_zod@3.19.1
-      zod: 3.19.1
+      zod: 3.20.2
+      zod-to-json-schema: 3.20.2_zod@3.20.2
     devDependencies:
-      '@readit/eslint-config-server': link:../../packages/config/eslint-config-server
       '@readit/pg-manager': link:../pg-manager
-      '@readit/prettier-config': link:../../packages/config/prettier-config
-      '@readit/tsconfig': link:../../packages/config/tsconfig
+      '@readit/prettier-config': link:../../packages/prettier-config
+      '@readit/tsconfig': link:../../packages/tsconfig
       '@types/node': 17.0.45
       '@types/pg': 8.6.5
       '@vitest/coverage-c8': 0.24.5_@vitest+ui@0.24.5
       '@vitest/ui': 0.24.5
       esbuild: 0.15.13
-      esbuild-plugin-ts-references: 0.2.2_esbuild@0.15.13
       esbuild-register: 3.4.1_esbuild@0.15.13
       eslint: 8.27.0
+      eslint-config-custom-server: link:../../packages/eslint-config-custom-server
       globby: 13.1.2
       minimist: 1.2.7
       nodemon: 2.0.20
@@ -106,45 +104,41 @@ importers:
   apps/pg-manager:
     specifiers:
       '@cspotcode/source-map-support': ^0.8.1
-      '@readit/env': workspace:*
-      '@readit/eslint-config-server': workspace:*
-      '@readit/logger': workspace:*
       '@readit/prettier-config': workspace:*
       '@readit/tsconfig': workspace:*
       '@types/node': ^17.0.12
       '@types/pg': ^8.6.5
+      dotenv: ^16.0.3
       esbuild: ^0.15.12
       esbuild-register: ^3.3.3
       eslint: ^8.26.0
-      globby: ^13.1.2
+      eslint-config-custom-server: workspace:*
       kysely: ^0.22.0
       kysely-codegen: ^0.8.0
       kysely-migration-cli: ^0.1.1
       npm-run-all: ^4.1.5
       pg: ^8.8.0
+      pino: 8.7.0
       prettier: 2.8.0
-      typescript: ^4.9.4
-      znv: ^0.3.2
-      zod: ^3.19.1
+      typescript: ^4.8.4
+      zod: ^3.20.2
     dependencies:
-      '@cspotcode/source-map-support': 0.8.1
-      '@readit/env': link:../../packages/env
-      '@readit/logger': link:../../packages/logger
-      esbuild: 0.15.13
+      dotenv: 16.0.3
       kysely: 0.22.0
       kysely-migration-cli: 0.1.1
       pg: 8.8.0
-      znv: 0.3.2_zod@3.19.1
-      zod: 3.19.1
+      pino: 8.7.0
+      zod: 3.20.2
     devDependencies:
-      '@readit/eslint-config-server': link:../../packages/config/eslint-config-server
-      '@readit/prettier-config': link:../../packages/config/prettier-config
-      '@readit/tsconfig': link:../../packages/config/tsconfig
+      '@cspotcode/source-map-support': 0.8.1
+      '@readit/prettier-config': link:../../packages/prettier-config
+      '@readit/tsconfig': link:../../packages/tsconfig
       '@types/node': 17.0.45
       '@types/pg': 8.6.5
+      esbuild: 0.15.13
       esbuild-register: 3.4.1_esbuild@0.15.13
       eslint: 8.27.0
-      globby: 13.1.2
+      eslint-config-custom-server: link:../../packages/eslint-config-custom-server
       kysely-codegen: 0.8.0_kysely@0.22.0+pg@8.8.0
       npm-run-all: 4.1.5
       prettier: 2.8.0
@@ -162,7 +156,6 @@ importers:
       '@radix-ui/react-toggle': ^1.0.1
       '@readit/api': workspace:*
       '@readit/edge-config': workspace:*
-      '@readit/eslint-config': workspace:*
       '@readit/prettier-config': workspace:*
       '@readit/tailwind-config': workspace:*
       '@readit/tsconfig': workspace:*
@@ -183,6 +176,7 @@ importers:
       autoprefixer: ^10.4.13
       cva: npm:class-variance-authority@^0.4.0
       eslint: ^8.26.0
+      eslint-config-custom: workspace:*
       icon-pipeline: ^0.1.3
       jest: ^29.3.1
       jest-axe: ^7.0.0
@@ -196,13 +190,13 @@ importers:
       react-hook-form: ^7.40.0
       superjson: ^1.12.0
       tailwindcss: ^3.2.4
-      typescript: ^4.9.4
+      typescript: ^4.8.4
       wretch: ^2.3.0
-      zod: ^3.19.1
+      zod: ^3.20.2
     dependencies:
       '@fontsource/inter': 4.5.14
       '@headlessui/react': 1.7.5_biqbaboplfbrettd7655fr4n2y
-      '@hookform/resolvers': 2.9.10_react-hook-form@7.40.0
+      '@hookform/resolvers': 2.9.10_react-hook-form@7.41.5
       '@radix-ui/react-accessible-icon': 1.0.1_biqbaboplfbrettd7655fr4n2y
       '@radix-ui/react-toggle': 1.0.1_biqbaboplfbrettd7655fr4n2y
       '@readit/api': link:../api
@@ -217,18 +211,17 @@ importers:
       next: 13.0.0_mqvh5p7ejg4taogoj6tpk3gd5a
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
-      react-hook-form: 7.40.0_react@18.2.0
+      react-hook-form: 7.41.5_react@18.2.0
       superjson: 1.12.0
       wretch: 2.3.0
-      zod: 3.19.1
+      zod: 3.20.2
     devDependencies:
       '@babel/core': 7.20.2
       '@ladle/react': 2.4.5_mvvjsnjpryd72ctnk2n4ydobdm
       '@next/bundle-analyzer': 13.0.6
-      '@readit/eslint-config': link:../../packages/config/eslint-config
-      '@readit/prettier-config': link:../../packages/config/prettier-config
-      '@readit/tailwind-config': link:../../packages/config/tailwind-config
-      '@readit/tsconfig': link:../../packages/config/tsconfig
+      '@readit/prettier-config': link:../../packages/prettier-config
+      '@readit/tailwind-config': link:../../packages/tailwind-config
+      '@readit/tsconfig': link:../../packages/tsconfig
       '@testing-library/jest-dom': 5.16.5
       '@testing-library/react': 13.4.0_biqbaboplfbrettd7655fr4n2y
       '@types/jest': 29.2.4
@@ -239,6 +232,7 @@ importers:
       '@types/testing-library__jest-dom': 5.14.5
       autoprefixer: 10.4.13_postcss@8.4.19
       eslint: 8.27.0
+      eslint-config-custom: link:../../packages/eslint-config-custom
       icon-pipeline: 0.1.3
       jest: 29.3.1_@types+node@17.0.45
       jest-axe: 7.0.0
@@ -249,7 +243,29 @@ importers:
       tailwindcss: 3.2.4_postcss@8.4.19
       typescript: 4.9.4
 
-  packages/config/eslint-config:
+  packages/edge-config:
+    specifiers:
+      '@readit/prettier-config': workspace:*
+      '@readit/tsconfig': workspace:*
+      '@types/node': ^17.0.12
+      '@vercel/edge-config': ^0.1.0
+      eslint: ^8.26.0
+      eslint-config-custom-server: workspace:*
+      prettier: 2.8.0
+      typescript: ^4.8.4
+      vitest: ^0.24.5
+    devDependencies:
+      '@readit/prettier-config': link:../prettier-config
+      '@readit/tsconfig': link:../tsconfig
+      '@types/node': 17.0.45
+      '@vercel/edge-config': 0.1.0
+      eslint: 8.27.0
+      eslint-config-custom-server: link:../eslint-config-custom-server
+      prettier: 2.8.0
+      typescript: 4.9.4
+      vitest: 0.24.5
+
+  packages/eslint-config-custom:
     specifiers:
       '@typescript-eslint/eslint-plugin': ^5.42.0
       '@typescript-eslint/parser': ^5.42.0
@@ -262,19 +278,19 @@ importers:
       eslint-plugin-testing-library: ^5.9.1
       typescript: ^4.8.4
     dependencies:
-      '@typescript-eslint/eslint-plugin': 5.42.1_2udltptbznfmezdozpdoa2aemq
-      '@typescript-eslint/parser': 5.42.1_rmayb2veg2btbq6mbmnyivgasy
+      '@typescript-eslint/eslint-plugin': 5.42.1_nbcwnlsvv54otropltfa2t6hou
+      '@typescript-eslint/parser': 5.42.1_fqmqyeinda7panflsqpj5zauc4
       eslint: 8.27.0
-      eslint-config-next: 13.0.0_rmayb2veg2btbq6mbmnyivgasy
+      eslint-config-next: 13.0.0_fqmqyeinda7panflsqpj5zauc4
       eslint-config-prettier: 8.5.0_eslint@8.27.0
       eslint-config-turbo: 0.0.7_eslint@8.27.0
       eslint-plugin-react: 7.31.8_eslint@8.27.0
       eslint-plugin-simple-import-sort: 8.0.0_eslint@8.27.0
-      eslint-plugin-testing-library: 5.9.1_rmayb2veg2btbq6mbmnyivgasy
+      eslint-plugin-testing-library: 5.9.1_fqmqyeinda7panflsqpj5zauc4
     devDependencies:
-      typescript: 4.8.4
+      typescript: 4.9.4
 
-  packages/config/eslint-config-server:
+  packages/eslint-config-custom-server:
     specifiers:
       '@typescript-eslint/eslint-plugin': ^5.42.0
       '@typescript-eslint/parser': ^5.42.0
@@ -283,15 +299,69 @@ importers:
       eslint-plugin-simple-import-sort: ^8.0.0
       typescript: ^4.8.4
     dependencies:
-      '@typescript-eslint/eslint-plugin': 5.42.1_2udltptbznfmezdozpdoa2aemq
-      '@typescript-eslint/parser': 5.42.1_rmayb2veg2btbq6mbmnyivgasy
+      '@typescript-eslint/eslint-plugin': 5.42.1_nbcwnlsvv54otropltfa2t6hou
+      '@typescript-eslint/parser': 5.42.1_fqmqyeinda7panflsqpj5zauc4
       eslint: 8.27.0
       eslint-config-prettier: 8.5.0_eslint@8.27.0
       eslint-plugin-simple-import-sort: 8.0.0_eslint@8.27.0
     devDependencies:
-      typescript: 4.8.4
+      typescript: 4.9.4
 
-  packages/config/prettier-config:
+  packages/kysely-pg-config:
+    specifiers:
+      '@readit/logger': workspace:*
+      '@readit/prettier-config': workspace:*
+      '@readit/tsconfig': workspace:*
+      '@types/node': ^17.0.12
+      '@types/pg': ^8.6.5
+      eslint: ^8.26.0
+      eslint-config-custom-server: workspace:*
+      kysely: ^0.22.0
+      pg: ^8.8.0
+      prettier: 2.8.0
+      typescript: ^4.8.4
+      zod: ^3.20.2
+    dependencies:
+      kysely: 0.22.0
+      pg: 8.8.0
+      zod: 3.20.2
+    devDependencies:
+      '@readit/logger': link:../logger
+      '@readit/prettier-config': link:../prettier-config
+      '@readit/tsconfig': link:../tsconfig
+      '@types/node': 17.0.45
+      '@types/pg': 8.6.5
+      eslint: 8.27.0
+      eslint-config-custom-server: link:../eslint-config-custom-server
+      prettier: 2.8.0
+      typescript: 4.9.4
+
+  packages/logger:
+    specifiers:
+      '@readit/prettier-config': workspace:*
+      '@readit/tsconfig': workspace:*
+      '@types/node': ^17.0.12
+      eslint: ^8.26.0
+      eslint-config-custom-server: workspace:*
+      pino: 8.7.0
+      pino-pretty: ^9.1.1
+      prettier: 2.8.0
+      typescript: ^4.8.4
+      zod: ^3.20.2
+    dependencies:
+      pino: 8.7.0
+      zod: 3.20.2
+    devDependencies:
+      '@readit/prettier-config': link:../prettier-config
+      '@readit/tsconfig': link:../tsconfig
+      '@types/node': 17.0.45
+      eslint: 8.27.0
+      eslint-config-custom-server: link:../eslint-config-custom-server
+      pino-pretty: 9.1.1
+      prettier: 2.8.0
+      typescript: 4.9.4
+
+  packages/prettier-config:
     specifiers:
       '@ianvs/prettier-plugin-sort-imports': 3.7.1
       prettier: 2.8.0
@@ -302,7 +372,7 @@ importers:
     devDependencies:
       prettier: 2.8.0
 
-  packages/config/tailwind-config:
+  packages/tailwind-config:
     specifiers:
       '@tailwindcss/forms': ^0.5.3
       autoprefixer: ^10.4.13
@@ -314,125 +384,34 @@ importers:
       postcss: 8.4.19
       tailwindcss: 3.2.4_postcss@8.4.19
 
-  packages/config/tsconfig:
+  packages/tsconfig:
     specifiers: {}
-
-  packages/edge-config:
-    specifiers:
-      '@readit/eslint-config-server': workspace:*
-      '@readit/prettier-config': workspace:*
-      '@readit/tsconfig': workspace:*
-      '@vercel/edge-config': ^0.1.0
-      eslint: ^8.26.0
-      prettier: 2.8.0
-      typescript: ^4.8.4
-      vitest: ^0.24.5
-    devDependencies:
-      '@readit/eslint-config-server': link:../config/eslint-config-server
-      '@readit/prettier-config': link:../config/prettier-config
-      '@readit/tsconfig': link:../config/tsconfig
-      '@vercel/edge-config': 0.1.0
-      eslint: 8.27.0
-      prettier: 2.8.0
-      typescript: 4.8.4
-      vitest: 0.24.5
-
-  packages/env:
-    specifiers:
-      '@readit/eslint-config-server': workspace:*
-      '@readit/prettier-config': workspace:*
-      '@readit/tsconfig': workspace:*
-      dotenv: ^16.0.3
-      eslint: ^8.26.0
-      prettier: 2.8.0
-      typescript: ^4.8.4
-    dependencies:
-      dotenv: 16.0.3
-    devDependencies:
-      '@readit/eslint-config-server': link:../config/eslint-config-server
-      '@readit/prettier-config': link:../config/prettier-config
-      '@readit/tsconfig': link:../config/tsconfig
-      eslint: 8.27.0
-      prettier: 2.8.0
-      typescript: 4.9.4
-
-  packages/kysely-pg-config:
-    specifiers:
-      '@readit/eslint-config-server': workspace:*
-      '@readit/logger': workspace:*
-      '@readit/prettier-config': workspace:*
-      '@readit/tsconfig': workspace:*
-      '@types/pg': ^8.6.5
-      eslint: ^8.26.0
-      kysely: ^0.22.0
-      pg: ^8.8.0
-      prettier: 2.8.0
-      typescript: ^4.8.4
-      vite: ^3.2.2
-      vitest: ^0.24.5
-      zod: ^3.19.1
-    dependencies:
-      kysely: 0.22.0
-      pg: 8.8.0
-      zod: 3.19.1
-    devDependencies:
-      '@readit/eslint-config-server': link:../config/eslint-config-server
-      '@readit/logger': link:../logger
-      '@readit/prettier-config': link:../config/prettier-config
-      '@readit/tsconfig': link:../config/tsconfig
-      '@types/pg': 8.6.5
-      eslint: 8.27.0
-      prettier: 2.8.0
-      typescript: 4.9.4
-      vite: 3.2.3
-      vitest: 0.24.5
-
-  packages/logger:
-    specifiers:
-      '@readit/eslint-config-server': workspace:*
-      '@readit/prettier-config': workspace:*
-      '@readit/tsconfig': workspace:*
-      eslint: ^8.26.0
-      pino: 8.7.0
-      pino-pretty: ^9.1.1
-      prettier: 2.8.0
-      typescript: ^4.8.4
-      zod: ^3.19.1
-    dependencies:
-      pino: 8.7.0
-      zod: 3.19.1
-    devDependencies:
-      '@readit/eslint-config-server': link:../config/eslint-config-server
-      '@readit/prettier-config': link:../config/prettier-config
-      '@readit/tsconfig': link:../config/tsconfig
-      eslint: 8.27.0
-      pino-pretty: 9.1.1
-      prettier: 2.8.0
-      typescript: 4.9.4
 
   packages/utils:
     specifiers:
-      '@readit/eslint-config-server': workspace:*
       '@readit/prettier-config': workspace:*
       '@readit/tsconfig': workspace:*
+      '@types/node': ^17.0.12
       '@vitest/coverage-c8': ^0.24.5
       '@vitest/ui': ^0.24.5
       eslint: ^8.26.0
+      eslint-config-custom-server: workspace:*
       prettier: 2.8.0
       typescript: ^4.8.4
       vitest: ^0.24.5
-      zod: ^3.19.1
+      zod: ^3.20.2
     dependencies:
-      zod: 3.19.1
+      zod: 3.20.2
     devDependencies:
-      '@readit/eslint-config-server': link:../config/eslint-config-server
-      '@readit/prettier-config': link:../config/prettier-config
-      '@readit/tsconfig': link:../config/tsconfig
+      '@readit/prettier-config': link:../prettier-config
+      '@readit/tsconfig': link:../tsconfig
+      '@types/node': 17.0.45
       '@vitest/coverage-c8': 0.24.5_@vitest+ui@0.24.5
       '@vitest/ui': 0.24.5
       eslint: 8.27.0
+      eslint-config-custom-server: link:../eslint-config-custom-server
       prettier: 2.8.0
-      typescript: 4.8.4
+      typescript: 4.9.4
       vitest: 0.24.5_@vitest+ui@0.24.5
 
 packages:
@@ -1766,7 +1745,6 @@ packages:
     engines: {node: '>=12'}
     dependencies:
       '@jridgewell/trace-mapping': 0.3.9
-    dev: false
 
   /@cush/relative/1.0.0:
     resolution: {integrity: sha512-RpfLEtTlyIxeNPGKcokS+p3BZII/Q3bYxryFRglh5H3A3T8q9fsLYm72VYAMEOOIBLEa8o93kFLiBDUWKrwXZA==}
@@ -1778,6 +1756,7 @@ packages:
     cpu: [arm]
     os: [android]
     requiresBuild: true
+    dev: true
     optional: true
 
   /@esbuild/linux-loong64/0.15.13:
@@ -1786,6 +1765,7 @@ packages:
     cpu: [loong64]
     os: [linux]
     requiresBuild: true
+    dev: true
     optional: true
 
   /@eslint/eslintrc/1.3.3:
@@ -1866,12 +1846,12 @@ packages:
       react-dom: 18.2.0_react@18.2.0
     dev: false
 
-  /@hookform/resolvers/2.9.10_react-hook-form@7.40.0:
+  /@hookform/resolvers/2.9.10_react-hook-form@7.41.5:
     resolution: {integrity: sha512-JIL1DgJIlH9yuxcNGtyhsWX/PgNltz+5Gr6+8SX9fhXc/hPbEIk6wPI82nhgvp3uUb6ZfAM5mqg/x7KR7NAb+A==}
     peerDependencies:
       react-hook-form: ^7.0.0
     dependencies:
-      react-hook-form: 7.40.0_react@18.2.0
+      react-hook-form: 7.41.5_react@18.2.0
     dev: false
 
   /@humanwhocodes/config-array/0.11.7:
@@ -2179,7 +2159,6 @@ packages:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.0
       '@jridgewell/sourcemap-codec': 1.4.14
-    dev: false
 
   /@ladle/react-context/1.0.1_biqbaboplfbrettd7655fr4n2y:
     resolution: {integrity: sha512-xVQ8siyOEQG6e4Knibes1uA3PTyXnqiMmfSmd5pIbkzeDty8NCBtYHhTXSlfmcDNEsw/G8OzNWo4VbyQAVDl2A==}
@@ -2819,7 +2798,7 @@ packages:
       '@types/yargs-parser': 21.0.0
     dev: true
 
-  /@typescript-eslint/eslint-plugin/5.42.1_2udltptbznfmezdozpdoa2aemq:
+  /@typescript-eslint/eslint-plugin/5.42.1_nbcwnlsvv54otropltfa2t6hou:
     resolution: {integrity: sha512-LyR6x784JCiJ1j6sH5Y0K6cdExqCCm8DJUTcwG5ThNXJj/G8o5E56u5EdG4SLy+bZAwZBswC+GYn3eGdttBVCg==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     peerDependencies:
@@ -2830,23 +2809,23 @@ packages:
       typescript:
         optional: true
     dependencies:
-      '@typescript-eslint/parser': 5.42.1_rmayb2veg2btbq6mbmnyivgasy
+      '@typescript-eslint/parser': 5.42.1_fqmqyeinda7panflsqpj5zauc4
       '@typescript-eslint/scope-manager': 5.42.1
-      '@typescript-eslint/type-utils': 5.42.1_rmayb2veg2btbq6mbmnyivgasy
-      '@typescript-eslint/utils': 5.42.1_rmayb2veg2btbq6mbmnyivgasy
+      '@typescript-eslint/type-utils': 5.42.1_fqmqyeinda7panflsqpj5zauc4
+      '@typescript-eslint/utils': 5.42.1_fqmqyeinda7panflsqpj5zauc4
       debug: 4.3.4
       eslint: 8.27.0
       ignore: 5.2.0
       natural-compare-lite: 1.4.0
       regexpp: 3.2.0
       semver: 7.3.8
-      tsutils: 3.21.0_typescript@4.8.4
-      typescript: 4.8.4
+      tsutils: 3.21.0_typescript@4.9.4
+      typescript: 4.9.4
     transitivePeerDependencies:
       - supports-color
     dev: false
 
-  /@typescript-eslint/parser/5.42.1_rmayb2veg2btbq6mbmnyivgasy:
+  /@typescript-eslint/parser/5.42.1_fqmqyeinda7panflsqpj5zauc4:
     resolution: {integrity: sha512-kAV+NiNBWVQDY9gDJDToTE/NO8BHi4f6b7zTsVAJoTkmB/zlfOpiEVBzHOKtlgTndCKe8vj9F/PuolemZSh50Q==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     peerDependencies:
@@ -2858,10 +2837,10 @@ packages:
     dependencies:
       '@typescript-eslint/scope-manager': 5.42.1
       '@typescript-eslint/types': 5.42.1
-      '@typescript-eslint/typescript-estree': 5.42.1_typescript@4.8.4
+      '@typescript-eslint/typescript-estree': 5.42.1_typescript@4.9.4
       debug: 4.3.4
       eslint: 8.27.0
-      typescript: 4.8.4
+      typescript: 4.9.4
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -2874,7 +2853,7 @@ packages:
       '@typescript-eslint/visitor-keys': 5.42.1
     dev: false
 
-  /@typescript-eslint/type-utils/5.42.1_rmayb2veg2btbq6mbmnyivgasy:
+  /@typescript-eslint/type-utils/5.42.1_fqmqyeinda7panflsqpj5zauc4:
     resolution: {integrity: sha512-WWiMChneex5w4xPIX56SSnQQo0tEOy5ZV2dqmj8Z371LJ0E+aymWD25JQ/l4FOuuX+Q49A7pzh/CGIQflxMVXg==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     peerDependencies:
@@ -2884,12 +2863,12 @@ packages:
       typescript:
         optional: true
     dependencies:
-      '@typescript-eslint/typescript-estree': 5.42.1_typescript@4.8.4
-      '@typescript-eslint/utils': 5.42.1_rmayb2veg2btbq6mbmnyivgasy
+      '@typescript-eslint/typescript-estree': 5.42.1_typescript@4.9.4
+      '@typescript-eslint/utils': 5.42.1_fqmqyeinda7panflsqpj5zauc4
       debug: 4.3.4
       eslint: 8.27.0
-      tsutils: 3.21.0_typescript@4.8.4
-      typescript: 4.8.4
+      tsutils: 3.21.0_typescript@4.9.4
+      typescript: 4.9.4
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -2899,7 +2878,7 @@ packages:
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dev: false
 
-  /@typescript-eslint/typescript-estree/5.42.1_typescript@4.8.4:
+  /@typescript-eslint/typescript-estree/5.42.1_typescript@4.9.4:
     resolution: {integrity: sha512-qElc0bDOuO0B8wDhhW4mYVgi/LZL+igPwXtV87n69/kYC/7NG3MES0jHxJNCr4EP7kY1XVsRy8C/u3DYeTKQmw==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     peerDependencies:
@@ -2914,13 +2893,13 @@ packages:
       globby: 11.1.0
       is-glob: 4.0.3
       semver: 7.3.8
-      tsutils: 3.21.0_typescript@4.8.4
-      typescript: 4.8.4
+      tsutils: 3.21.0_typescript@4.9.4
+      typescript: 4.9.4
     transitivePeerDependencies:
       - supports-color
     dev: false
 
-  /@typescript-eslint/utils/5.42.1_rmayb2veg2btbq6mbmnyivgasy:
+  /@typescript-eslint/utils/5.42.1_fqmqyeinda7panflsqpj5zauc4:
     resolution: {integrity: sha512-Gxvf12xSp3iYZd/fLqiQRD4uKZjDNR01bQ+j8zvhPjpsZ4HmvEFL/tC4amGNyxN9Rq+iqvpHLhlqx6KTxz9ZyQ==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     peerDependencies:
@@ -2930,7 +2909,7 @@ packages:
       '@types/semver': 7.3.13
       '@typescript-eslint/scope-manager': 5.42.1
       '@typescript-eslint/types': 5.42.1
-      '@typescript-eslint/typescript-estree': 5.42.1_typescript@4.8.4
+      '@typescript-eslint/typescript-estree': 5.42.1_typescript@4.9.4
       eslint: 8.27.0
       eslint-scope: 5.1.1
       eslint-utils: 3.0.0_eslint@8.27.0
@@ -3815,6 +3794,7 @@ packages:
 
   /colorette/2.0.19:
     resolution: {integrity: sha512-3tlv/dIP7FWvj3BsbHrGLJ6l/oKh1O3TcgBqMn+yyCagOxc23fyzDS6HypQbgxWbkpDnf52p1LuR4eWDQ/K9WQ==}
+    dev: true
 
   /combined-stream/1.0.8:
     resolution: {integrity: sha512-FQN4MRfuJeHf7cBbBMJFXhKSDq+2kAArBlmRBvcvFE5BB1HZKXtSFASDhdlz9zOYwxh8lDdnvmMOe/+5cdoEdg==}
@@ -4250,6 +4230,11 @@ packages:
       domelementtype: 1.3.1
     dev: true
 
+  /dotenv-expand/9.0.0:
+    resolution: {integrity: sha512-uW8Hrhp5ammm9x7kBLR6jDfujgaDarNA02tprvZdyrJ7MpdzD1KyrIHG4l+YoC2fJ2UcdFdNWNWIjt+sexBHJw==}
+    engines: {node: '>=12'}
+    dev: false
+
   /dotenv/16.0.3:
     resolution: {integrity: sha512-7GO6HghkA5fYG9TYnNxi14/7K9f5occMlp3zXAuSxn7CKCxt9xbNWG7yF8hTCSUchlfWSe3uLmlPfigevRItzQ==}
     engines: {node: '>=12'}
@@ -4307,6 +4292,14 @@ packages:
     resolution: {integrity: sha512-oYp7156SP8LkeGD0GF85ad1X9Ai79WtRsZ2gxJqtBuzH+98YUV6jkHEKlZkMbcrjJjIVJNIDP/3WL9wQkoPbWA==}
     engines: {node: '>=0.12'}
     dev: true
+
+  /env-schema/5.2.0:
+    resolution: {integrity: sha512-36/6cZ+zIbcPA2ANrzp7vTz2bS8/zdZaq2RPFqJVtCGJ4P55EakgJ1BeKP8RMvEmM7ndrnHdJXzL3J1dHrEm1w==}
+    dependencies:
+      ajv: 8.11.0
+      dotenv: 16.0.3
+      dotenv-expand: 9.0.0
+    dev: false
 
   /error-ex/1.3.2:
     resolution: {integrity: sha512-7dFHNmqeFSEt2ZBsCriorKnn3Z2pj+fd9kmI6QoWw4//DL+icEBfc0U7qJCisqrTsKTjw4fNFy2pW9OqStD84g==}
@@ -4380,6 +4373,7 @@ packages:
     cpu: [x64]
     os: [android]
     requiresBuild: true
+    dev: true
     optional: true
 
   /esbuild-android-arm64/0.15.13:
@@ -4388,6 +4382,7 @@ packages:
     cpu: [arm64]
     os: [android]
     requiresBuild: true
+    dev: true
     optional: true
 
   /esbuild-darwin-64/0.15.13:
@@ -4396,6 +4391,7 @@ packages:
     cpu: [x64]
     os: [darwin]
     requiresBuild: true
+    dev: true
     optional: true
 
   /esbuild-darwin-arm64/0.15.13:
@@ -4404,6 +4400,7 @@ packages:
     cpu: [arm64]
     os: [darwin]
     requiresBuild: true
+    dev: true
     optional: true
 
   /esbuild-freebsd-64/0.15.13:
@@ -4412,6 +4409,7 @@ packages:
     cpu: [x64]
     os: [freebsd]
     requiresBuild: true
+    dev: true
     optional: true
 
   /esbuild-freebsd-arm64/0.15.13:
@@ -4420,6 +4418,7 @@ packages:
     cpu: [arm64]
     os: [freebsd]
     requiresBuild: true
+    dev: true
     optional: true
 
   /esbuild-linux-32/0.15.13:
@@ -4428,6 +4427,7 @@ packages:
     cpu: [ia32]
     os: [linux]
     requiresBuild: true
+    dev: true
     optional: true
 
   /esbuild-linux-64/0.15.13:
@@ -4436,6 +4436,7 @@ packages:
     cpu: [x64]
     os: [linux]
     requiresBuild: true
+    dev: true
     optional: true
 
   /esbuild-linux-arm/0.15.13:
@@ -4444,6 +4445,7 @@ packages:
     cpu: [arm]
     os: [linux]
     requiresBuild: true
+    dev: true
     optional: true
 
   /esbuild-linux-arm64/0.15.13:
@@ -4452,6 +4454,7 @@ packages:
     cpu: [arm64]
     os: [linux]
     requiresBuild: true
+    dev: true
     optional: true
 
   /esbuild-linux-mips64le/0.15.13:
@@ -4460,6 +4463,7 @@ packages:
     cpu: [mips64el]
     os: [linux]
     requiresBuild: true
+    dev: true
     optional: true
 
   /esbuild-linux-ppc64le/0.15.13:
@@ -4468,6 +4472,7 @@ packages:
     cpu: [ppc64]
     os: [linux]
     requiresBuild: true
+    dev: true
     optional: true
 
   /esbuild-linux-riscv64/0.15.13:
@@ -4476,6 +4481,7 @@ packages:
     cpu: [riscv64]
     os: [linux]
     requiresBuild: true
+    dev: true
     optional: true
 
   /esbuild-linux-s390x/0.15.13:
@@ -4484,6 +4490,7 @@ packages:
     cpu: [s390x]
     os: [linux]
     requiresBuild: true
+    dev: true
     optional: true
 
   /esbuild-netbsd-64/0.15.13:
@@ -4492,6 +4499,7 @@ packages:
     cpu: [x64]
     os: [netbsd]
     requiresBuild: true
+    dev: true
     optional: true
 
   /esbuild-openbsd-64/0.15.13:
@@ -4500,15 +4508,8 @@ packages:
     cpu: [x64]
     os: [openbsd]
     requiresBuild: true
-    optional: true
-
-  /esbuild-plugin-ts-references/0.2.2_esbuild@0.15.13:
-    resolution: {integrity: sha512-brn2MCLMmarSxwi1S0Gc4CSBW29s+1xchi+iTjcROATV/wkk457BfwfBw00PxznrQvYXH0GGtvLkpf7j3hBP+A==}
-    peerDependencies:
-      esbuild: '>= 0.14.21'
-    dependencies:
-      esbuild: 0.15.13
     dev: true
+    optional: true
 
   /esbuild-register/3.4.1_esbuild@0.15.13:
     resolution: {integrity: sha512-iCgs88/1wA5dIRx4i65eSjbkgrQQQJGpY6Z1eD2XPlzrSjbgNtfkw2/rfSMzJ4dTtlOD8EZTxrIA3fyYp0FsMA==}
@@ -4527,6 +4528,7 @@ packages:
     cpu: [x64]
     os: [sunos]
     requiresBuild: true
+    dev: true
     optional: true
 
   /esbuild-windows-32/0.15.13:
@@ -4535,6 +4537,7 @@ packages:
     cpu: [ia32]
     os: [win32]
     requiresBuild: true
+    dev: true
     optional: true
 
   /esbuild-windows-64/0.15.13:
@@ -4543,6 +4546,7 @@ packages:
     cpu: [x64]
     os: [win32]
     requiresBuild: true
+    dev: true
     optional: true
 
   /esbuild-windows-arm64/0.15.13:
@@ -4551,6 +4555,7 @@ packages:
     cpu: [arm64]
     os: [win32]
     requiresBuild: true
+    dev: true
     optional: true
 
   /esbuild/0.15.13:
@@ -4581,6 +4586,7 @@ packages:
       esbuild-windows-32: 0.15.13
       esbuild-windows-64: 0.15.13
       esbuild-windows-arm64: 0.15.13
+    dev: true
 
   /escalade/3.1.1:
     resolution: {integrity: sha512-k0er2gUkLf8O0zKJiAhmkTnJlTvINGv7ygDNPbeIsX/TJjGJZHuh9B2UxbsaEkmlEo9MfhrSzmhIlhRlI2GXnw==}
@@ -4616,7 +4622,7 @@ packages:
       source-map: 0.6.1
     dev: true
 
-  /eslint-config-next/13.0.0_rmayb2veg2btbq6mbmnyivgasy:
+  /eslint-config-next/13.0.0_fqmqyeinda7panflsqpj5zauc4:
     resolution: {integrity: sha512-y2nqWS2tycWySdVhb+rhp6CuDmDazGySqkzzQZf3UTyfHyC7og1m5m/AtMFwCo5mtvDqvw1BENin52kV9733lg==}
     peerDependencies:
       eslint: ^7.23.0 || ^8.0.0
@@ -4627,7 +4633,7 @@ packages:
     dependencies:
       '@next/eslint-plugin-next': 13.0.0
       '@rushstack/eslint-patch': 1.2.0
-      '@typescript-eslint/parser': 5.42.1_rmayb2veg2btbq6mbmnyivgasy
+      '@typescript-eslint/parser': 5.42.1_fqmqyeinda7panflsqpj5zauc4
       eslint: 8.27.0
       eslint-import-resolver-node: 0.3.6
       eslint-import-resolver-typescript: 2.7.1_dcpv4nbdr5ks2h5677xdltrk6e
@@ -4635,7 +4641,7 @@ packages:
       eslint-plugin-jsx-a11y: 6.6.1_eslint@8.27.0
       eslint-plugin-react: 7.31.8_eslint@8.27.0
       eslint-plugin-react-hooks: 4.6.0_eslint@8.27.0
-      typescript: 4.8.4
+      typescript: 4.9.4
     transitivePeerDependencies:
       - eslint-import-resolver-webpack
       - supports-color
@@ -4707,7 +4713,7 @@ packages:
       eslint-import-resolver-webpack:
         optional: true
     dependencies:
-      '@typescript-eslint/parser': 5.42.1_rmayb2veg2btbq6mbmnyivgasy
+      '@typescript-eslint/parser': 5.42.1_fqmqyeinda7panflsqpj5zauc4
       debug: 3.2.7
       eslint: 8.27.0
       eslint-import-resolver-node: 0.3.6
@@ -4726,7 +4732,7 @@ packages:
       '@typescript-eslint/parser':
         optional: true
     dependencies:
-      '@typescript-eslint/parser': 5.42.1_rmayb2veg2btbq6mbmnyivgasy
+      '@typescript-eslint/parser': 5.42.1_fqmqyeinda7panflsqpj5zauc4
       array-includes: 3.1.6
       array.prototype.flat: 1.3.1
       debug: 2.6.9
@@ -4809,13 +4815,13 @@ packages:
       eslint: 8.27.0
     dev: false
 
-  /eslint-plugin-testing-library/5.9.1_rmayb2veg2btbq6mbmnyivgasy:
+  /eslint-plugin-testing-library/5.9.1_fqmqyeinda7panflsqpj5zauc4:
     resolution: {integrity: sha512-6BQp3tmb79jLLasPHJmy8DnxREe+2Pgf7L+7o09TSWPfdqqtQfRZmZNetr5mOs3yqZk/MRNxpN3RUpJe0wB4LQ==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0, npm: '>=6'}
     peerDependencies:
       eslint: ^7.5.0 || ^8.0.0
     dependencies:
-      '@typescript-eslint/utils': 5.42.1_rmayb2veg2btbq6mbmnyivgasy
+      '@typescript-eslint/utils': 5.42.1_fqmqyeinda7panflsqpj5zauc4
       eslint: 8.27.0
     transitivePeerDependencies:
       - supports-color
@@ -7779,8 +7785,8 @@ packages:
       react-dom: 18.2.0_react@18.2.0
     dev: true
 
-  /react-hook-form/7.40.0_react@18.2.0:
-    resolution: {integrity: sha512-0rokdxMPJs0k9bvFtY6dbcSydyNhnZNXCR49jgDr/aR03FDHFOK6gfh8ccqB3fl696Mk7lqh04xdm+agqWXKSw==}
+  /react-hook-form/7.41.5_react@18.2.0:
+    resolution: {integrity: sha512-DAKjSJ7X9f16oQrP3TW2/eD9N6HOgrmIahP4LOdFphEWVfGZ2LulFd6f6AQ/YS/0cx/5oc4j8a1PXxuaurWp/Q==}
     engines: {node: '>=12.22.0'}
     peerDependencies:
       react: ^16.8.0 || ^17 || ^18
@@ -8692,75 +8698,75 @@ packages:
     resolution: {integrity: sha512-tGyy4dAjRIEwI7BzsB0lynWgOpfqjUdq91XXAlIWD2OwKBH7oCl/GZG/HT4BOHrTlPMOASlMQ7veyTqpmRcrNA==}
     dev: false
 
-  /tsutils/3.21.0_typescript@4.8.4:
+  /tsutils/3.21.0_typescript@4.9.4:
     resolution: {integrity: sha512-mHKK3iUXL+3UF6xL5k0PEhKRUBKPBCv/+RkEOpjRWxxx27KKRBmmA60A9pgOUvMi8GKhRMPEmjBRPzs2W7O1OA==}
     engines: {node: '>= 6'}
     peerDependencies:
       typescript: '>=2.8.0 || >= 3.2.0-dev || >= 3.3.0-dev || >= 3.4.0-dev || >= 3.5.0-dev || >= 3.6.0-dev || >= 3.6.0-beta || >= 3.7.0-dev || >= 3.7.0-beta'
     dependencies:
       tslib: 1.14.1
-      typescript: 4.8.4
+      typescript: 4.9.4
     dev: false
 
-  /turbo-darwin-64/1.6.3:
-    resolution: {integrity: sha512-QmDIX0Yh1wYQl0bUS0gGWwNxpJwrzZU2GIAYt3aOKoirWA2ecnyb3R6ludcS1znfNV2MfunP+l8E3ncxUHwtjA==}
+  /turbo-darwin-64/1.7.0:
+    resolution: {integrity: sha512-hSGAueSf5Ko8J67mpqjpt9FsP6ePn1nMcl7IVPoJq5dHsgX3anCP/BPlexJ502bNK+87DDyhQhJ/LPSJXKrSYQ==}
     cpu: [x64]
     os: [darwin]
     requiresBuild: true
     dev: true
     optional: true
 
-  /turbo-darwin-arm64/1.6.3:
-    resolution: {integrity: sha512-75DXhFpwE7CinBbtxTxH08EcWrxYSPFow3NaeFwsG8aymkWXF+U2aukYHJA6I12n9/dGqf7yRXzkF0S/9UtdyQ==}
+  /turbo-darwin-arm64/1.7.0:
+    resolution: {integrity: sha512-BLLOW5W6VZxk5+0ZOj5AO1qjM0P5isIgjbEuyAl8lHZ4s9antUbY4CtFrspT32XxPTYoDl4UjviPMcSsbcl3WQ==}
     cpu: [arm64]
     os: [darwin]
     requiresBuild: true
     dev: true
     optional: true
 
-  /turbo-linux-64/1.6.3:
-    resolution: {integrity: sha512-O9uc6J0yoRPWdPg9THRQi69K6E2iZ98cRHNvus05lZbcPzZTxJYkYGb5iagCmCW/pq6fL4T4oLWAd6evg2LGQA==}
+  /turbo-linux-64/1.7.0:
+    resolution: {integrity: sha512-aw2qxmfZa+kT87SB3GNUoFimqEPzTlzlRqhPgHuAAT6Uf0JHnmebPt4K+ZPtDNl5yfVmtB05bhHPqw+5QV97Yg==}
     cpu: [x64]
     os: [linux]
     requiresBuild: true
     dev: true
     optional: true
 
-  /turbo-linux-arm64/1.6.3:
-    resolution: {integrity: sha512-dCy667qqEtZIhulsRTe8hhWQNCJO0i20uHXv7KjLHuFZGCeMbWxB8rsneRoY+blf8+QNqGuXQJxak7ayjHLxiA==}
+  /turbo-linux-arm64/1.7.0:
+    resolution: {integrity: sha512-AJEx2jX+zO5fQtJpO3r6uhTabj4oSA5ZhB7zTs/rwu/XqoydsvStA4X8NDW4poTbOjF7DcSHizqwi04tSMzpJw==}
     cpu: [arm64]
     os: [linux]
     requiresBuild: true
     dev: true
     optional: true
 
-  /turbo-windows-64/1.6.3:
-    resolution: {integrity: sha512-lKRqwL3mrVF09b9KySSaOwetehmGknV9EcQTF7d2dxngGYYX1WXoQLjFP9YYH8ZV07oPm+RUOAKSCQuDuMNhiA==}
+  /turbo-windows-64/1.7.0:
+    resolution: {integrity: sha512-ewj7PPv2uxqv0r31hgnBa3E5qwUu7eyVRP5M1gB/TJXfSHduU79gbxpKCyxIZv2fL/N2/3U7EPOQPSZxBAoljA==}
     cpu: [x64]
     os: [win32]
     requiresBuild: true
     dev: true
     optional: true
 
-  /turbo-windows-arm64/1.6.3:
-    resolution: {integrity: sha512-BXY1sDPEA1DgPwuENvDCD8B7Hb0toscjus941WpL8CVd10hg9pk/MWn9CNgwDO5Q9ks0mw+liDv2EMnleEjeNA==}
+  /turbo-windows-arm64/1.7.0:
+    resolution: {integrity: sha512-LzjOUzveWkvTD0jP8DBMYiAnYemmydsvqxdSmsUapHHJkl6wKZIOQNSO7pxsy+9XM/1/+0f9Y9F9ZNl5lePTEA==}
     cpu: [arm64]
     os: [win32]
     requiresBuild: true
     dev: true
     optional: true
 
-  /turbo/1.6.3:
-    resolution: {integrity: sha512-FtfhJLmEEtHveGxW4Ye/QuY85AnZ2ZNVgkTBswoap7UMHB1+oI4diHPNyqrQLG4K1UFtCkjOlVoLsllUh/9QRw==}
+  /turbo/1.7.0:
+    resolution: {integrity: sha512-cwympNwQNnQZ/TffBd8yT0i0O10Cf/hlxccCYgUcwhcGEb9rDjE5thDbHoHw1hlJQUF/5ua7ERJe7Zr0lNE/ww==}
     hasBin: true
     requiresBuild: true
     optionalDependencies:
-      turbo-darwin-64: 1.6.3
-      turbo-darwin-arm64: 1.6.3
-      turbo-linux-64: 1.6.3
-      turbo-linux-arm64: 1.6.3
-      turbo-windows-64: 1.6.3
-      turbo-windows-arm64: 1.6.3
+      turbo-darwin-64: 1.7.0
+      turbo-darwin-arm64: 1.7.0
+      turbo-linux-64: 1.7.0
+      turbo-linux-arm64: 1.7.0
+      turbo-windows-64: 1.7.0
+      turbo-windows-arm64: 1.7.0
     dev: true
 
   /type-check/0.3.2:
@@ -8802,11 +8808,6 @@ packages:
       media-typer: 0.3.0
       mime-types: 2.1.35
     dev: true
-
-  /typescript/4.8.4:
-    resolution: {integrity: sha512-QCh+85mCy+h0IGff8r5XWzOVSbBO+KfeYrMQh7NJ58QujwcE22u+NUSmUxqF+un70P9GXKxa2HCNiTTMJknyjQ==}
-    engines: {node: '>=4.2.0'}
-    hasBin: true
 
   /typescript/4.9.4:
     resolution: {integrity: sha512-Uz+dTXYzxXXbsFpM86Wh3dKCxrQqUcVMxwU54orwlJjOpO3ao8L7j5lH+dWfTwgCwIuM9GQ2kvVotzYJMXTBZg==}
@@ -8947,39 +8948,6 @@ packages:
       vite: 3.2.3_@types+node@17.0.45
     transitivePeerDependencies:
       - supports-color
-    dev: true
-
-  /vite/3.2.3:
-    resolution: {integrity: sha512-h8jl1TZ76eGs3o2dIBSsvXDLb1m/Ec1iej8ZMdz+PsaFUsftZeWe2CZOI3qogEsMNaywc17gu0q6cQDzh/weCQ==}
-    engines: {node: ^14.18.0 || >=16.0.0}
-    hasBin: true
-    peerDependencies:
-      '@types/node': '>= 14'
-      less: '*'
-      sass: '*'
-      stylus: '*'
-      sugarss: '*'
-      terser: ^5.4.0
-    peerDependenciesMeta:
-      '@types/node':
-        optional: true
-      less:
-        optional: true
-      sass:
-        optional: true
-      stylus:
-        optional: true
-      sugarss:
-        optional: true
-      terser:
-        optional: true
-    dependencies:
-      esbuild: 0.15.13
-      postcss: 8.4.19
-      resolve: 1.22.1
-      rollup: 2.79.1
-    optionalDependencies:
-      fsevents: 2.3.2
     dev: true
 
   /vite/3.2.3_@types+node@17.0.45:
@@ -9383,15 +9351,14 @@ packages:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
 
-  /znv/0.3.2_zod@3.19.1:
-    resolution: {integrity: sha512-dyQ2gfDe5RgEL7hKue1dFswmy4vzb/SRnLLRHaHNm39JteKstFs47I0nevlEa3oOWNMJ7XB4V1l/IdcLezPwoA==}
+  /zod-to-json-schema/3.20.2_zod@3.20.2:
+    resolution: {integrity: sha512-qka3UAXmVXD8z5SHkRU89UyHp8JHJW7zc8RQCpt7QloJOn6uijwkjUm8o+M/cF1IysmKc5gxac/QeDikaQMdzQ==}
     peerDependencies:
-      zod: ^3.11.6
+      zod: ^3.20.0
     dependencies:
-      colorette: 2.0.19
-      zod: 3.19.1
+      zod: 3.20.2
     dev: false
 
-  /zod/3.19.1:
-    resolution: {integrity: sha512-LYjZsEDhCdYET9ikFu6dVPGp2YH9DegXjdJToSzD9rO6fy4qiRYFoyEYwps88OseJlPyl2NOe2iJuhEhL7IpEA==}
+  /zod/3.20.2:
+    resolution: {integrity: sha512-1MzNQdAvO+54H+EaK5YpyEy0T+Ejo/7YLHS93G3RnYWh5gaotGHwGeN/ZO687qEDU2y4CdStQYXVHIgrUl5UVQ==}
     dev: false

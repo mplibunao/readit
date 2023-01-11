@@ -1,12 +1,7 @@
 import { build } from '@api/helpers/test/build'
-import { clearDatabase } from '@api/helpers/test/clearDatabase'
 import { AppRouter, appRouter, createContextInner } from '@api/trpc'
 import { inferProcedureInput } from '@trpc/server'
-import { beforeEach, describe, expect, test } from 'vitest'
-
-beforeEach(async () => {
-	await clearDatabase()
-})
+import { describe, expect, test } from 'vitest'
 
 describe('TRPC user router', () => {
 	test('user.register should create a user and fetch the same user using user.byId', async () => {
@@ -16,7 +11,6 @@ describe('TRPC user router', () => {
 			logger: fastify.log,
 		})
 		const caller = appRouter.createCaller(ctx)
-
 		const input: inferProcedureInput<AppRouter['user']['register']> = {
 			email: 'john@example.com',
 			firstName: 'John',
@@ -31,7 +25,7 @@ describe('TRPC user router', () => {
 			lastName: input.lastName,
 		})
 
-		const userById = await caller.user.byId({ id: user.id as string })
+		const userById = await caller.user.byId({ id: user.id })
 
 		expect(userById).toMatchObject({
 			email: input.email,

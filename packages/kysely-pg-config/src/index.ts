@@ -4,7 +4,7 @@ import pg from 'pg'
 import { z } from 'zod'
 
 export const kyselyPGEnvSchema = {
-	DATABASE_URL: z.string().url(),
+	DATABASE_URL: z.string(),
 	APP_NAME: z.string(),
 	PG_IDLE_TIMEOUT_MS: z.number().optional().default(60_000),
 	PG_SSL: z.boolean().optional().default(false),
@@ -18,6 +18,18 @@ export type KyselyPGConfigOpts = z.infer<typeof kyselyPGSchema> & {
 }
 
 export const getKyselyPgConfig = (opts: KyselyPGConfigOpts): KyselyConfig => {
+	try {
+		kyselyPGSchema.parse(opts)
+	} catch (error) {
+		opts.logger.error(
+			'Failed getting kysely config due to argument validation error',
+			error,
+		)
+		throw new Error(
+			'Failed getting kysely config due to argument validation error',
+			{ cause: error },
+		)
+	}
 	const { logger } = opts
 	return {
 		dialect: new PostgresDialect({

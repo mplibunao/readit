@@ -1,24 +1,12 @@
-import {
-	AppError,
-	DBError,
-	DomainOutputValidationError,
-	DomainValidationError,
-	ErrorOpts,
-} from '@readit/utils'
+import { AppError, DBError, ErrorOpts } from '@readit/utils'
 
 export * as UserErrors from './user.errors'
 
-export type FindByIdError =
-	| UserNotFound
-	| DBError
-	| DomainValidationError
-	| DomainOutputValidationError
+export type FindByIdError = UserNotFound | DBError
 export type RegistrationError =
 	| UserAlreadyExists
 	| DBError
-	| DomainValidationError
 	| PasswordHashingError
-	| DomainOutputValidationError
 
 export class UserNotFound extends AppError {
 	static type = 'USER_NOT_FOUND'

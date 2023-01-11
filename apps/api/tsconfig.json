@@ -3,31 +3,12 @@
 	"compilerOptions": {
 		"outDir": "./dist",
 		"rootDir": "./src",
-		"noEmit": false,
 		"importHelpers": true,
 		"baseUrl": ".",
 		"paths": {
 			"@api/*": ["src/*"]
-		},
-		//"noImplicitAny": false
-		// Required for project references
-		"composite": true,
-		"emitDeclarationOnly": true
+		}
 	},
 	"include": ["src"],
-	"exclude": ["node_modules"],
-	"references": [
-		{
-			"path": "../../packages/edge-config"
-		},
-		{
-			"path": "../../packages/logger"
-		},
-		{
-			"path": "../../packages/env"
-		},
-		{
-			"path": "../../packages/kysely-pg-config"
-		}
-	]
+	"exclude": ["node_modules"]
 }

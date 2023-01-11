@@ -2,60 +2,58 @@
 	"name": "@readit/pg-manager",
 	"version": "0.0.0",
 	"description": "",
-	"type": "module",
+	"type": "commonjs",
 	"main": "src/db.d.ts",
 	"types": "src/db.d.ts",
 	"keywords": [],
 	"author": "",
 	"license": "ISC",
 	"scripts": {
-		"build": "node ./esbuild.mjs",
+		"build": "tsc",
 		"clean:turbo": "rm -rf .turbo",
+		"clean:ts": "rm -rf tsconfig.tsbuildinfo",
 		"format:fix": "prettier --ignore-path ../../.prettierignore --write 'src/**/*.{js,jsx,ts,tsx,md,mdx,graphql,css,scss,yaml,json}'",
 		"format:check": "prettier --ignore-path ../../.prettierignore --list-different 'src/**/*.{js,jsx,ts,tsx,md,mdx,graphql,css,scss,yaml,json}'",
 		"lint:check": "TIMING=1 eslint --color --cache --cache-location .eslintcache --ignore-path ../../.eslintignore ./src --ext .js,.jsx,.ts,.tsx",
 		"lint:fix": "TIMING=1 eslint --color --cache --cache-location .eslintcache --ignore-path ../../.eslintignore ./src --ext .js,.jsx,.ts,.tsx --fix",
-		"typecheck": "tsc",
-		"ts-node": "node --no-warnings --experimental-loader ../../esbuild-register-loader.mjs -r @cspotcode/source-map-support/register -r esbuild-register",
+		"typecheck": "tsc --noEmit",
+		"ts-node": "node --no-warnings --experimental-loader ./esbuild-register-loader.mjs -r @cspotcode/source-map-support/register -r esbuild-register",
 		"kysely-codegen": "kysely-codegen --dialect postgres --camel-case --out-file ./src/db.d.ts",
 		"db:gen:types": "run-s kysely-codegen format:fix",
 		"db:gen:migration": "pnpm db:migrate create",
 		"db:migrate": "pnpm ts-node src/index.ts",
 		"db:migrate:dev": "pnpm db:migrate latest",
 		"db:migrate:test": "NODE_ENV=test pnpm db:migrate latest",
-		"db:migrate:prod": "node -r @cspotcode/source-map-support/register dist/index.js",
 		"db:migrate:reset": "pnpm db:migrate redo"
 	},
 	"dependencies": {
-		"@cspotcode/source-map-support": "^0.8.1",
-		"@readit/env": "workspace:*",
-		"@readit/logger": "workspace:*",
-		"esbuild": "^0.15.12",
+		"dotenv": "^16.0.3",
 		"kysely": "^0.22.0",
 		"kysely-migration-cli": "^0.1.1",
 		"pg": "^8.8.0",
-		"znv": "^0.3.2",
-		"zod": "^3.19.1"
+		"pino": "8.7.0",
+		"zod": "^3.20.2"
 	},
 	"devDependencies": {
-		"@readit/eslint-config-server": "workspace:*",
+		"@cspotcode/source-map-support": "^0.8.1",
 		"@readit/prettier-config": "workspace:*",
 		"@readit/tsconfig": "workspace:*",
 		"@types/node": "^17.0.12",
 		"@types/pg": "^8.6.5",
+		"esbuild": "^0.15.12",
 		"esbuild-register": "^3.3.3",
 		"eslint": "^8.26.0",
-		"globby": "^13.1.2",
+		"eslint-config-custom-server": "workspace:*",
 		"kysely-codegen": "^0.8.0",
 		"npm-run-all": "^4.1.5",
 		"prettier": "2.8.0",
-		"typescript": "^4.9.4"
+		"typescript": "^4.8.4"
 	},
 	"prettier": "@readit/prettier-config",
 	"eslintConfig": {
 		"root": true,
 		"extends": [
-			"@readit/eslint-config-server"
+			"custom-server"
 		]
 	}
 }

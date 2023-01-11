@@ -1,20 +1,22 @@
 import { Deps } from '@api/helpers/deps'
-import { InsertableUser } from '@api/infra/pg'
+import { InsertableUser, UserData } from '@api/infra/pg'
 import { DBError } from '@readit/utils'
 import { ResultAsync } from 'neverthrow'
 import Pg from 'pg'
 
 import { UserAlreadyExists } from './user.errors'
-import { UserMapper } from './user.mapper'
 
-export * as UserMutations from './user.mutations'
+export * as UserMutationsRepo from './user.mutations.repo'
 
-export const create = ({ pg, logger }: Deps, user: InsertableUser) => {
+export const create = (
+	{ pg, logger }: Deps,
+	user: InsertableUser,
+): ResultAsync<Partial<UserData>, DBError | UserAlreadyExists> => {
 	return ResultAsync.fromPromise(
 		pg
 			.insertInto('users')
-			.returning(['id', 'email', 'firstName', 'lastName'])
 			.values(user)
+			.returning(['id', 'email', 'firstName', 'lastName'])
 			.executeTakeFirstOrThrow(),
 		(error) => {
 			const { hashedPassword: _, ...userData } = user
@@ -35,5 +37,5 @@ export const create = ({ pg, logger }: Deps, user: InsertableUser) => {
 				message: 'Database error occurred while creating user',
 			})
 		},
-	).map((user) => UserMapper.toDomain(user))
+	)
 }

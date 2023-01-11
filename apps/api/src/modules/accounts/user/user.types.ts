@@ -1,31 +1,44 @@
-import { DateSchema, PasswordSchema } from '@readit/utils/src/schemas'
+import { PasswordSchema } from '@readit/utils/src/schemas'
 import { z } from 'zod'
 
 export * as UserTypes from './user.types'
 
-const registerSchema = {
-	email: z.string().trim().email({ message: 'Should be a valid email' }),
-	firstName: z.string().trim().min(2),
-	lastName: z.string().trim().min(2),
-}
-const id = z.string().uuid()
+const id = z.string()
+const email = z.string().trim().email({ message: 'Should be a valid email' })
+const firstName = z.string().trim().min(2)
+const lastName = z.string().trim().min(2)
+const password = PasswordSchema
+const createdAt = z.coerce.date()
+const updatedAt = z.coerce.date()
+const deletedAt = z.coerce.date().nullable()
 
-export const createUserSchema = z.object({
-	...registerSchema,
-	password: PasswordSchema,
+export const createUserInput = z.object({
+	email,
+	firstName,
+	lastName,
+	password,
 })
-
-export type CreateUserSchema = z.infer<typeof createUserSchema>
+export type CreateUserInput = z.infer<typeof createUserInput>
+export const createUserOutput = z.object({
+	id,
+	email,
+	firstName,
+	lastName,
+})
+export type CreateUserOutput = z.infer<typeof createUserOutput>
 
 export const userSchema = z.object({
-	...registerSchema,
 	id,
-	updatedAt: DateSchema,
-	deletedAt: DateSchema.nullable(),
+	email,
+	firstName,
+	lastName,
+	createdAt,
+	updatedAt,
+	deletedAt,
 })
 
 export type UserSchema = z.infer<typeof userSchema>
 
-export const findByIdSchema = z.object({ id })
+export const findByIdSchema = id
 
 export type FindByIdSchema = z.infer<typeof findByIdSchema>

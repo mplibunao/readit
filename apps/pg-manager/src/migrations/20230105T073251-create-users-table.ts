@@ -1,9 +1,9 @@
-import { IDB } from 'src/db'
+import { IDB } from '../db'
 import {
 	createUpdatedAtTrigger,
 	createTable,
 	dropUpdatedAtTrigger,
-} from 'src/utils'
+} from '../utils'
 
 export async function up(db: IDB): Promise<void> {
 	await createTable(db.schema, 'users', {})

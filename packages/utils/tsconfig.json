@@ -1,11 +1,10 @@
 {
 	"$schema": "https://json.schemastore.org/tsconfig",
-	"display": "package",
-	"extends": "@readit/tsconfig/package-project-references.json",
+	"extends": "@readit/tsconfig/esbuild-server.json",
 	"compilerOptions": {
 		"rootDir": "src",
 		"baseUrl": "."
 	},
 	"include": ["src"],
-	"exclude": ["node_modules"],
+	"exclude": ["node_modules"]
 }

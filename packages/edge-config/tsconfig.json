@@ -1,6 +1,6 @@
 {
 	"$schema": "https://json.schemastore.org/tsconfig",
-	"extends": "@readit/tsconfig/package-project-references.json",
+	"extends": "@readit/tsconfig/esbuild-server.json",
 	"compilerOptions": {
 		"rootDir": "src",
 		"baseUrl": "."

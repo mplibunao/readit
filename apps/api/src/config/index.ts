@@ -1,28 +1,40 @@
 import { routeResponseSchemaOpts, UnderPressure } from '@api/infra/healthcheck'
 import { PgPluginOpts } from '@api/infra/pg'
 import { EdgeConfigOptions } from '@readit/edge-config'
-import { loadEnv } from '@readit/env'
 import { kyselyPGEnvSchema } from '@readit/kysely-pg-config'
 import {
 	getLoggerConfig,
 	LoggerOpts,
 	loggerOptsEnvSchema,
 } from '@readit/logger'
+import { PortSchema } from '@readit/utils'
+import envSchema from 'env-schema'
 import { PinoLoggerOptions } from 'fastify/types/logger'
-import { parseEnv, port } from 'znv'
 import { z } from 'zod'
+import { zodToJsonSchema } from 'zod-to-json-schema'
 
 const redisEnvSchema = {
-	REDIS_URL: z.string().url().optional(),
-	// https://www.youtube.com/watch?app=desktop&v=0L0ER4pZbX4
-	REDIS_ENABLE_AUTO_PIPELINING: z.boolean().optional().default(true),
-	// Lower is better for perf, since we don't wait when there are errors
-	REDIS_MAX_RETRIES_PER_REQ: z.number().optional().default(20),
+	REDIS_URL: z.string().optional(),
+	REDIS_ENABLE_AUTO_PIPELINING: z
+		.boolean()
+		.optional()
+		.default(true)
+		.describe('https://www.youtube.com/watch?app=desktop&v=0L0ER4pZbX4'),
+	REDIS_MAX_RETRIES_PER_REQ: z
+		.number()
+		.optional()
+		.default(20)
+		.describe(
+			"Lower is better for perf, since we don't wait when there are errors. If failing fast is ok",
+		),
 	REDIS_CONNECT_TIMEOUT: z.number().optional().default(10_000),
 }
 
 const edgeConfigEnvSchema = {
-	EDGE_CONFIG: z.string().optional(),
+	EDGE_CONFIG: z
+		.string()
+		.optional()
+		.describe('Connection string for edge config'),
 	VERCEL_ENV: z.enum(['production', 'preview', 'development']),
 	APP_NAME: z.string(),
 }
@@ -49,29 +61,52 @@ const healthcheckEnvSchema = {
 	HEALTHCHECK_MAX_RSS: z
 		.number()
 		.optional()
-		.default(512 * 1024 * 1024),
+		.default(512 * 1024 * 1024)
+		.describe(
+			'Resident Set Size – the amount of memory allocated in the v8 context',
+		),
 	HEALTHCHECK_MAX_EVENT_LOOP_UTILIZATION: z.number().optional().default(0.98),
 	HEALTHCHECK_MAX_EVENT_LOOP_DELAY: z.number().optional().default(1000),
 }
 
-const envSchema = {
+const zodEnvSchema = z.object({
 	...kyselyPGEnvSchema,
 	...loggerOptsEnvSchema,
 	...redisEnvSchema,
 	...healthcheckEnvSchema,
 	...edgeConfigEnvSchema,
-	NODE_ENV: z.enum(['development', 'production', 'test']),
-	PORT: port().default(4000),
-	API_HOST: z.string().url().optional().default('127.0.0.1'),
-	FRONTEND_URL: z.string().url(),
+	NODE_ENV: z
+		.enum(['development', 'production', 'test'])
+		.default('development'),
+	PORT: PortSchema.default(4000),
+	API_HOST: z.string().optional().default('127.0.0.1'),
+	FRONTEND_URL: z.string(),
 	TRPC_ENDPOINT: z.string(),
+})
+
+const jsonSchema = zodToJsonSchema(zodEnvSchema, { errorMessages: true })
+
+export type Env = z.infer<typeof zodEnvSchema>
+
+const getDotEnv = () => {
+	if (Boolean(process.env.CI) || process.env.NODE_ENV === 'production') {
+		return false
+	}
+
+	if (process.env.NODE_ENV === 'test') {
+		return {
+			path: '.env.test',
+		}
+	}
+
+	return true
 }
 
-loadEnv()
-
-const env = parseEnv(process.env, envSchema)
-
-export type Env = typeof env
+const env = envSchema<Env>({
+	dotenv: getDotEnv(),
+	schema: jsonSchema,
+	data: process.env,
+})
 
 export interface Config {
 	env: Env

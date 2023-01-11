@@ -41,21 +41,3 @@ export class DBError extends AppError {
 		this.name = DBError.type
 	}
 }
-
-export class DomainValidationError extends AppError {
-	static type = 'VALIDATION_ERROR'
-
-	constructor(opts: ErrorOpts) {
-		super({ ...opts, type: DomainValidationError.type })
-		this.name = DomainValidationError.type
-	}
-}
-
-export class DomainOutputValidationError extends AppError {
-	static type = 'INVALID_DOMAIN_ERROR'
-
-	constructor(opts: ErrorOpts) {
-		super({ ...opts, type: DomainOutputValidationError.type })
-		this.name = DomainOutputValidationError.type
-	}
-}

@@ -1,12 +1,10 @@
 {
-	"extends": "@readit/tsconfig/esbuild-server.json",
+	"extends": "@readit/tsconfig/server.json",
 	"compilerOptions": {
-		"outDir": "./dist",
-		"rootDir": "./src",
-		"noEmit": false,
-		"baseUrl": ".",
-		"composite": true,
-		"emitDeclarationOnly": true
+		"outDir": "./dist"
+		//makes auto-import go 'src/utils' on tsc commonjs
+		//"rootDir": "./src",
+		//"baseUrl": "."
 	},
 	"include": ["src"],
 	"exclude": ["node_modules"]

@@ -1,37 +1,31 @@
-import { DateSchema, PasswordSchema } from '@readit/utils/src/schemas'
+import { PasswordSchema } from '@readit/utils/src/schemas'
 import { z } from 'zod'
 
 export * as UserDto from './user.dto'
 
-const id = z.string().uuid()
+const id = z.string()
+const email = z.string().trim().email({ message: 'Should be a valid email' })
+const firstName = z.string().trim().min(2)
+const lastName = z.string().trim().min(2)
+const password = PasswordSchema
+const createdAt = z.coerce.date()
+const updatedAt = z.coerce.date()
+const deletedAt = z.coerce.date().nullable()
 
-const registerSchema = {
-	email: z.string().trim().email({ message: 'Should be a valid email' }),
-	firstName: z.string().trim().min(2),
-	lastName: z.string().trim().min(2),
-}
-const registerOutputSchema = {
-	...registerSchema,
+export const registerInput = z.object({ email, firstName, lastName, password })
+export const registerOutput = z.object({
 	id,
-	createdAt: DateSchema,
-	updatedAt: DateSchema,
-}
-
-export const registerInput = z.object({
-	...registerSchema,
-	password: PasswordSchema,
+	email,
+	firstName,
+	lastName,
 })
-
-export const registerOutput = z.object(registerOutputSchema)
-
-export type RegisterOutput = z.infer<typeof registerOutput>
-
-export const userByIdInput = z.object({
-	id,
-})
-
+export const userByIdInput = z.object({ id })
 export const userByIdOutput = z.object({
-	...registerOutputSchema,
 	id,
-	deletedAt: DateSchema,
+	email,
+	firstName,
+	lastName,
+	createdAt,
+	updatedAt,
+	deletedAt,
 })

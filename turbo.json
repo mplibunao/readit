@@ -5,13 +5,17 @@
 			"dependsOn": ["^clean:turbo"],
 			"cache": false
 		},
+		"clean:ts": {
+			"dependsOn": ["^clean:ts"]
+		},
 		"build": {
 			"dependsOn": ["^build"],
 			"outputs": ["dist/**", ".next/**"],
 			"inputs": [
 				"src/**/*.{tsx,ts}",
 				"!src/**/*.test.{tsx,ts}",
-				"tsconfig.json"
+				"tsconfig.json",
+				"esbuild-tsconfig.json"
 			]
 		},
 		"web#build": {
@@ -41,7 +45,8 @@
 			"inputs": [
 				"src/**/*.{ts,tsx}",
 				"!src/**/*.test.{tsx,ts}",
-				"tsconfig.json"
+				"tsconfig.json",
+				"esbuild-tsconfig.json"
 			]
 		},
 		"lint:check": {
@@ -77,7 +82,7 @@
 			"cache": false
 		},
 		"typecheck": {
-			"outputs": ["types/**", "tsconfig.tsbuildinfo"],
+			"outputs": ["dts/**", "tsconfig.tsbuildinfo"],
 			"dependsOn": [],
 			"inputs": ["src/**/*.{tsx,ts}", "tsconfig.json"]
 		},

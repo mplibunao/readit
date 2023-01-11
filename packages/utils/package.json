@@ -6,6 +6,8 @@
 	"sideEffects": false,
 	"types": "./src/index.ts",
 	"scripts": {
+		"clean:turbo": "rm -rf .turbo",
+		"clean:ts": "rm -rf tsconfig.tsbuildinfo",
 		"format:fix": "prettier --ignore-path ../../.prettierignore --write 'src/**/*.{js,jsx,ts,tsx,md,mdx,graphql,css,scss,yaml,json}'",
 		"format:check": "prettier --ignore-path ../../.prettierignore --list-different 'src/**/*.{js,jsx,ts,tsx,md,mdx,graphql,css,scss,yaml,json}'",
 		"lint:check": "TIMING=1 eslint --color --cache --cache-location .eslintcache --ignore-path ../../.eslintignore ./src --ext .js,.jsx,.ts,.tsx",
@@ -18,12 +20,13 @@
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
-		"zod": "^3.19.1"
+		"zod": "^3.20.2"
 	},
 	"devDependencies": {
-		"@readit/eslint-config-server": "workspace:*",
+		"eslint-config-custom-server": "workspace:*",
 		"@readit/prettier-config": "workspace:*",
 		"@readit/tsconfig": "workspace:*",
+		"@types/node": "^17.0.12",
 		"@vitest/coverage-c8": "^0.24.5",
 		"@vitest/ui": "^0.24.5",
 		"eslint": "^8.26.0",
@@ -35,7 +38,7 @@
 	"eslintConfig": {
 		"root": true,
 		"extends": [
-			"@readit/eslint-config-server"
+			"custom-server"
 		]
 	}
 }

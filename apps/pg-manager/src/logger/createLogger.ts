@@ -10,9 +10,7 @@ export const loggerOptsEnvSchema = {
 		.default('info'),
 	IS_PROD: z.boolean(),
 }
-
 const loggerOptsSchema = z.object(loggerOptsEnvSchema)
-
 export type LoggerOpts = z.infer<typeof loggerOptsSchema>
 
 interface ErrorReportingFields {

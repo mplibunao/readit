@@ -1,5 +1,6 @@
 import { sql } from 'kysely'
-import { IDB } from 'src/db'
+
+import { IDB } from '../db'
 
 export async function up(db: IDB): Promise<void> {
 	await sql`

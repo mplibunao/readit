@@ -1,5 +1,5 @@
-import { pg } from '@api/infra/pg/client'
+import { FastifyInstance } from 'fastify'
 
-export const clearDatabase = async () => {
-	await pg.deleteFrom('users').execute()
+export const clearDatabase = async (fastify: FastifyInstance) => {
+	await fastify.pg.deleteFrom('users').execute()
 }

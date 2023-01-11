@@ -58,3 +58,7 @@ docker-compose.override.yml
 
 # esbuild analyze artifacts
 analyze
+
+# Outdir for declarations
+dts/
+

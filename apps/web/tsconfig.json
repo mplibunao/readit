@@ -6,10 +6,16 @@
 		// Fixes types likely not portable error
 		"declaration": false,
 		"declarationMap": false,
+
 		// Solution to: The inferred type of 'trpc' cannot be named without a reference to '.pnpm/some-path'. This is likely not portable.
 		// https://github.com/microsoft/TypeScript/issues/42873
 		// Causes types to be lost for trpc in monorepos
 		//"preserveSymlinks": true,
+
+		// ts-prj-references
+		// dec and dec map true?
+		//"composite": true,
+		//"noEmitOnError": true,
 		"paths": {
 			"@/*": ["src/*"],
 			"@api/*": ["../api/src/*"]

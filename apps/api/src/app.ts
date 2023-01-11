@@ -2,6 +2,7 @@ import cors from '@fastify/cors'
 import { ProcedureType, TRPCError } from '@trpc/server'
 import { fastifyTRPCPlugin } from '@trpc/server/adapters/fastify'
 import { FastifyPluginAsync, FastifyRequest } from 'fastify'
+import { ZodError } from 'zod'
 
 import { Config } from './config'
 import healthcheck from './infra/healthcheck'
@@ -38,6 +39,15 @@ export const app: FastifyPluginAsync<Config> = async (
 					req.log.fatal(
 						{ error, input, type },
 						`Something went wrong on ${path}`,
+					)
+				} else if (
+					error.code === 'BAD_REQUEST' &&
+					error.cause instanceof ZodError
+				) {
+					req.log.info(
+						`zod validation error on ${path}`,
+						error.cause.flatten(),
+						{ error, input, type },
 					)
 				} else {
 					req.log.error(

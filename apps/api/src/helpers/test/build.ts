@@ -2,11 +2,9 @@ import App from '@api/app'
 import { Config, config } from '@api/config'
 import Fastify from 'fastify'
 import fp from 'fastify-plugin'
-import { afterAll, beforeAll } from 'vitest'
+import { afterAll, afterEach, beforeAll, beforeEach } from 'vitest'
 
-//const clearDatabase = async (fastify: FastifyInstance) => {
-//await fastify.pg.sql`DELETE FROM users`
-//}
+import { clearDatabase } from './clearDatabase'
 
 // Automatically build and tear down our instance
 async function build(opts?: { config?: Partial<Config> }) {
@@ -24,16 +22,16 @@ async function build(opts?: { config?: Partial<Config> }) {
 
 	beforeAll(async () => {
 		await fastify.ready()
-		//await clearDatabase(fastify)
+		await clearDatabase(fastify)
 	})
 
-	//beforeEach(async () => {
-	//await clearDatabase(fastify)
-	//})
+	beforeEach(async () => {
+		await clearDatabase(fastify)
+	})
 
-	//afterEach(async () => {
-	//await clearDatabase(fastify)
-	//})
+	afterEach(async () => {
+		await clearDatabase(fastify)
+	})
 
 	// Tear down our app after we are done
 	afterAll(() => {
