@@ -33,6 +33,7 @@ env:
   VERCEL_ENV: development
   API_URL: http://localhost:4000/api
   NEXT_PUBLIC_API_URL: http://localhost:4000/api
+  NEXT_TELEMETRY_DISABLED: 1
 
 jobs:
   ci:
