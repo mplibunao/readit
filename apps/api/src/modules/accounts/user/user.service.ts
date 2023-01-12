@@ -1,50 +1,72 @@
 import { Deps } from '@api/helpers/deps'
+import { UserData } from '@api/infra/pg'
+import { until } from '@open-draft/until'
+import { DBError } from '@readit/utils'
 import argon2 from 'argon2'
-import { err, ok, Result, ResultAsync } from 'neverthrow'
 
+import { UserDomain } from './user.domain'
 import {
-	FindByIdError,
 	PasswordHashingError,
-	RegistrationError,
+	UserAlreadyExists,
+	UserNotFound,
 } from './user.errors'
 import { UserMutationsRepo } from './user.mutations.repo'
 import { UserQueriesRepo } from './user.queries.repo'
-import { FindByIdSchema, UserTypes } from './user.types'
 
 export const register = async (
 	deps: Deps,
-	userInput: UserTypes.CreateUserInput,
-): Promise<Result<UserTypes.CreateUserOutput, RegistrationError>> => {
-	const validatedInput = UserTypes.createUserInput.parse(userInput)
+	userInput: UserDomain.CreateUserInput,
+): Promise<UserDomain.CreateUserOutput> => {
+	const validatedInput = UserDomain.createUserInput.parse(userInput)
 	const { password, ...user } = validatedInput
 
-	return ResultAsync.fromPromise(argon2.hash(password), (err) => {
-		deps.logger.error('Password hashing failed', err, password, user)
-		return new PasswordHashingError({
-			cause: err,
+	const { error: hashingErr, data: hashedPassword } = await until<
+		Error,
+		string
+	>(() => argon2.hash(password))
+
+	if (hashingErr) {
+		deps.logger.error('Hashing password failed', {
+			password,
+			error: hashingErr,
+		})
+		throw new PasswordHashingError({
+			cause: hashingErr,
 			message: 'Registration failed',
 		})
-	})
-		.map(async (hashedPassword) => {
-			return UserMutationsRepo.create(deps, {
-				...user,
-				hashedPassword: hashedPassword,
-			})
+	}
+
+	const { error, data: createdUser } = await until<
+		DBError | UserAlreadyExists,
+		Partial<UserData>
+	>(async () => {
+		return UserMutationsRepo.create(deps, {
+			...user,
+			hashedPassword,
 		})
-		.map((user) => UserTypes.createUserOutput.parse(user))
+	})
+
+	if (error) {
+		deps.logger.error('Failed to create user', { user, error })
+		throw error
+	}
+
+	return UserDomain.createUserOutput.parse(createdUser)
 }
 
 export const findUserById = async (
 	deps: Deps,
-	id: FindByIdSchema,
-): Promise<ResultAsync<UserTypes.UserSchema, FindByIdError>> => {
-	const validatedInput = UserTypes.findByIdSchema.parse(id)
+	id: UserDomain.FindByIdInput,
+): Promise<UserDomain.UserSchema> => {
+	const validatedInput = UserDomain.findByIdInput.parse(id)
 
-	const userResult = await UserQueriesRepo.findById(deps, validatedInput)
-	if (userResult.isErr()) {
-		deps.logger.error('User was not found', userResult.error, validatedInput)
-		return err(userResult.error)
+	const { error, data } = await until<UserNotFound | DBError, UserData>(() =>
+		UserQueriesRepo.findById(deps, validatedInput),
+	)
+	if (error) {
+		deps.logger.error('User was not found', { id: validatedInput, error })
+		throw error
 	}
 
-	return ok(UserTypes.userSchema.parse(userResult.value))
+	return UserDomain.userSchema.parse(data)
 }

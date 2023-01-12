@@ -19,6 +19,7 @@ importers:
       '@cspotcode/source-map-support': ^0.8.1
       '@fastify/cors': ^8.2.0
       '@fastify/under-pressure': ^8.1.0
+      '@open-draft/until': ^2.0.0
       '@readit/edge-config': workspace:*
       '@readit/kysely-pg-config': workspace:*
       '@readit/logger': workspace:*
@@ -44,7 +45,6 @@ importers:
       globby: ^13.1.2
       kysely: ^0.22.0
       minimist: ^1.2.7
-      neverthrow: ^5.1.0
       nodemon: ^2.0.20
       npm-run-all: ^4.1.5
       pg: ^8.8.0
@@ -62,6 +62,7 @@ importers:
       '@cspotcode/source-map-support': 0.8.1
       '@fastify/cors': 8.2.0
       '@fastify/under-pressure': 8.1.0
+      '@open-draft/until': 2.0.0
       '@readit/edge-config': link:../../packages/edge-config
       '@readit/kysely-pg-config': link:../../packages/kysely-pg-config
       '@readit/logger': link:../../packages/logger
@@ -74,7 +75,6 @@ importers:
       fastify: 4.9.2
       fastify-plugin: 4.3.0
       kysely: 0.22.0
-      neverthrow: 5.1.0
       pg: 8.8.0
       pino: 8.7.0
       superjson: 1.12.0
@@ -2396,6 +2396,10 @@ packages:
     dependencies:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.13.0
+
+  /@open-draft/until/2.0.0:
+    resolution: {integrity: sha512-0zJhDjNR0aH1d68TiD6GnYr18dcuOiyTx8xV/I7fp9+z/VQ20e305aObW1/DO5/fiCOztscmvJsCjJDYDhFW6w==}
+    dev: false
 
   /@phc/format/1.0.0:
     resolution: {integrity: sha512-m7X9U6BG2+J+R1lSOdCiITLLrxm+cWlNI3HUFA92oLO77ObGNzaKdh8pMLqdZcshtkKuV84olNNXDfMc4FezBQ==}
@@ -6851,10 +6855,6 @@ packages:
     resolution: {integrity: sha512-+EUsqGPLsM+j/zdChZjsnX51g4XrHFOIXwfnCVPGlQk/k5giakcKsuxCObBRu6DSm9opw/O6slWbJdghQM4bBg==}
     engines: {node: '>= 0.6'}
     dev: true
-
-  /neverthrow/5.1.0:
-    resolution: {integrity: sha512-tgoYQZjAG+30dcUM35FL8FSQA52WQ6QPnk9laHUZBZ7CliB2vdR1aU7Svr10kyHJ3gwTzMTAajKT5xbdi0QS+Q==}
-    dev: false
 
   /next/13.0.0_mqvh5p7ejg4taogoj6tpk3gd5a:
     resolution: {integrity: sha512-puH1WGM6rGeFOoFdXXYfUxN9Sgi4LMytCV5HkQJvVUOhHfC1DoVqOfvzaEteyp6P04IW+gbtK2Q9pInVSrltPA==}

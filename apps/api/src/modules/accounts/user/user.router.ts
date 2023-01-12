@@ -1,12 +1,16 @@
 import { AccountsService } from '@api/modules/accounts'
 import { UserDto } from '@api/modules/accounts/user/user.dto'
-import { publicProcedure, router } from '@api/trpc/trpc'
+import { publicProcedure, router } from '@api/trpc/builder'
+import { until } from '@open-draft/until'
 import { AppError, DBError } from '@readit/utils'
 import { TRPCError } from '@trpc/server'
 import { ZodError } from 'zod'
 
+import { UserDomain } from './user.domain'
 import {
+	FindByIdError,
 	PasswordHashingError,
+	RegistrationError,
 	UserAlreadyExists,
 	UserNotFound,
 } from './user.errors'
@@ -16,80 +20,78 @@ export const userRouter = router({
 		.input(UserDto.registerInput)
 		.output(UserDto.registerOutput)
 		.query(async ({ ctx, input }) => {
-			try {
-				const userResult = await AccountsService.register(ctx.deps, input)
+			const { data, error } = await until<
+				RegistrationError,
+				UserDomain.CreateUserOutput
+			>(() => AccountsService.register(ctx.deps, input))
 
-				return userResult.match(
-					(user) => user,
-					(err) => {
-						if (err instanceof AppError) {
-							switch (err.constructor) {
-								case UserAlreadyExists:
-									throw new TRPCError({ ...err, code: 'CONFLICT' })
-								case DBError:
-								case PasswordHashingError:
-								default:
-									ctx.deps.logger.error('Error creating user', err)
-									throw new TRPCError({ ...err, code: 'INTERNAL_SERVER_ERROR' })
-							}
-						}
-						throw new TRPCError({
-							cause: err,
-							message: 'Unhandled exception',
-							code: 'INTERNAL_SERVER_ERROR',
-						})
-					},
-				)
-			} catch (error) {
+			if (error) {
 				if (error instanceof ZodError) {
+					console.debug('Zod error', error)
+					ctx.deps.logger.debug('Zod error', error)
 					throw new TRPCError({
 						code: 'BAD_REQUEST',
 						cause: error,
 						message: error.message,
 					})
 				}
-				throw error
+
+				if (error instanceof AppError) {
+					switch (error.constructor) {
+						case UserAlreadyExists:
+							throw new TRPCError({ ...error, code: 'CONFLICT' })
+						case DBError:
+						case PasswordHashingError:
+						default:
+							ctx.deps.logger.error('Error creating user', error)
+							throw new TRPCError({ ...error, code: 'INTERNAL_SERVER_ERROR' })
+					}
+				}
+
+				throw new TRPCError({
+					cause: error,
+					message: 'Unhandled exception',
+					code: 'INTERNAL_SERVER_ERROR',
+				})
 			}
+
+			return data
 		}),
 	byId: publicProcedure
 		.input(UserDto.userByIdInput)
 		.output(UserDto.userByIdOutput)
 		.query(async ({ ctx, input }) => {
-			try {
-				const userResult = await AccountsService.findUserById(
-					ctx.deps,
-					input.id,
-				)
+			const { error, data } = await until<FindByIdError, UserDomain.UserSchema>(
+				() => AccountsService.findUserById(ctx.deps, input.id),
+			)
 
-				return userResult.match(
-					(user) => user,
-					(err) => {
-						if (err instanceof AppError) {
-							switch (err.constructor) {
-								case UserNotFound:
-									throw new TRPCError({ ...err, code: 'NOT_FOUND' })
-								case DBError:
-								default:
-									throw new TRPCError({ ...err, code: 'INTERNAL_SERVER_ERROR' })
-							}
-						} else {
-							throw new TRPCError({
-								cause: err,
-								message: 'Unhandled exception',
-								code: 'INTERNAL_SERVER_ERROR',
-							})
-						}
-					},
-				)
-			} catch (error) {
+			if (error) {
 				if (error instanceof ZodError) {
+					ctx.deps.logger.debug('Zod error', error)
 					throw new TRPCError({
 						code: 'BAD_REQUEST',
 						cause: error,
 						message: error.message,
 					})
 				}
-				throw error
+
+				if (error instanceof AppError) {
+					switch (error.constructor) {
+						case UserNotFound:
+							throw new TRPCError({ ...error, code: 'NOT_FOUND' })
+						case DBError:
+						default:
+							throw new TRPCError({ ...error, code: 'INTERNAL_SERVER_ERROR' })
+					}
+				}
+
+				throw new TRPCError({
+					cause: error,
+					message: 'Unhandled exception',
+					code: 'INTERNAL_SERVER_ERROR',
+				})
 			}
+
+			return data
 		}),
 })

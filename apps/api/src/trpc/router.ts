@@ -1,6 +1,6 @@
 import { userRouter } from '@api/modules/accounts/user/user.router'
 
-import { publicProcedure, t } from './trpc'
+import { publicProcedure, t } from './builder'
 
 export const uptimeRouter = t.router({
 	uptime: publicProcedure.query(() => {

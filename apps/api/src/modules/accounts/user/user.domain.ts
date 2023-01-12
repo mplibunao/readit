@@ -1,7 +1,7 @@
 import { PasswordSchema } from '@readit/utils/src/schemas'
 import { z } from 'zod'
 
-export * as UserTypes from './user.types'
+export * as UserDomain from './user.domain'
 
 const id = z.string()
 const email = z.string().trim().email({ message: 'Should be a valid email' })
@@ -39,6 +39,6 @@ export const userSchema = z.object({
 
 export type UserSchema = z.infer<typeof userSchema>
 
-export const findByIdSchema = id
+export const findByIdInput = id
 
-export type FindByIdSchema = z.infer<typeof findByIdSchema>
+export type FindByIdInput = z.infer<typeof findByIdInput>

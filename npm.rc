@@ -2,6 +2,6 @@
 //node-version=18.7.0
 engine-strict=true
 save-exact=true
-//public-hoist-pattern[]=*@readit/logger*
-//public-hoist-pattern[]=*pino*
+public-hoist-pattern[]=*@readit/logger*
+public-hoist-pattern[]=*pino*
 //node-linker=hoisted

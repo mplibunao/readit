@@ -26,6 +26,7 @@
 		"@cspotcode/source-map-support": "^0.8.1",
 		"@fastify/cors": "^8.2.0",
 		"@fastify/under-pressure": "^8.1.0",
+		"@open-draft/until": "^2.0.0",
 		"@readit/edge-config": "workspace:*",
 		"@readit/kysely-pg-config": "workspace:*",
 		"@readit/logger": "workspace:*",
@@ -38,7 +39,6 @@
 		"fastify": "^4.9.2",
 		"fastify-plugin": "^4.3.0",
 		"kysely": "^0.22.0",
-		"neverthrow": "^5.1.0",
 		"pg": "^8.8.0",
 		"pino": "8.7.0",
 		"superjson": "^1.12.0",
@@ -47,7 +47,6 @@
 		"zod-to-json-schema": "^3.20.2"
 	},
 	"devDependencies": {
-		"eslint-config-custom-server": "workspace:*",
 		"@readit/pg-manager": "workspace:*",
 		"@readit/prettier-config": "workspace:*",
 		"@readit/tsconfig": "workspace:*",
@@ -58,6 +57,7 @@
 		"esbuild": "^0.15.12",
 		"esbuild-register": "^3.3.3",
 		"eslint": "^8.26.0",
+		"eslint-config-custom-server": "workspace:*",
 		"globby": "^13.1.2",
 		"minimist": "^1.2.7",
 		"nodemon": "^2.0.20",
