@@ -21,12 +21,14 @@
 		"format:check": "turbo format:check --parallel",
 		"ci": "turbo run ci --parallel",
 		"typecheck": "turbo run typecheck --parallel",
-		"docker:up": "docker-compose up -d"
+		"docker:up": "docker-compose up -d",
+		"prepare": "husky install"
 	},
 	"devDependencies": {
 		"@readit/prettier-config": "workspace:*",
 		"turbo": "1.7.0",
-		"typescript": "^4.8.4"
+		"typescript": "^4.8.4",
+		"husky": "^8.0.0"
 	},
 	"engines": {
 		"npm": ">=8.15.0",
