@@ -1,8 +1,7 @@
+import { nextUrl } from '@/utils/url'
 import wretch from 'wretch'
 
-import { clientUrl } from './url'
-
-export const nextApi = wretch(clientUrl)
+export const nextBaseUrl = wretch(nextUrl)
 	.url('/api')
 	.errorType('json')
 	.resolve((r) => r.json())

@@ -1,14 +1,14 @@
 import { Icon } from '@/components/Icon'
 import { styledLink } from '@/components/Link'
-import { useFeatureFlags } from '@/helpers/featureFlags'
+import { useFlags } from '@/helpers/api/flags'
 import Link from 'next/link'
 
 const Register = () => {
-	const { data, isLoading } = useFeatureFlags<{
+	const { data, isLoading } = useFlags<{
 		ENABLE_REGISTER: boolean
 		ENABLE_REGISTER2: boolean
 	}>({
-		flag: ['ENABLE_REGISTER', 'ENABLE_REGISTER2'],
+		flags: ['ENABLE_REGISTER', 'ENABLE_REGISTER2'],
 		fallback: [true, false],
 	})
 
