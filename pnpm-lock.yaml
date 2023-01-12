@@ -20,7 +20,7 @@ importers:
       '@fastify/cors': ^8.2.0
       '@fastify/under-pressure': ^8.1.0
       '@open-draft/until': ^2.0.0
-      '@readit/edge-config': workspace:*
+      '@readit/flags': workspace:*
       '@readit/kysely-pg-config': workspace:*
       '@readit/logger': workspace:*
       '@readit/pg-manager': workspace:*
@@ -63,7 +63,7 @@ importers:
       '@fastify/cors': 8.2.0
       '@fastify/under-pressure': 8.1.0
       '@open-draft/until': 2.0.0
-      '@readit/edge-config': link:../../packages/edge-config
+      '@readit/flags': link:../../packages/flags
       '@readit/kysely-pg-config': link:../../packages/kysely-pg-config
       '@readit/logger': link:../../packages/logger
       '@readit/utils': link:../../packages/utils
@@ -157,7 +157,7 @@ importers:
       '@radix-ui/react-accessible-icon': ^1.0.1
       '@radix-ui/react-toggle': ^1.0.1
       '@readit/api': workspace:*
-      '@readit/edge-config': workspace:*
+      '@readit/flags': workspace:*
       '@readit/prettier-config': workspace:*
       '@readit/tailwind-config': workspace:*
       '@readit/tsconfig': workspace:*
@@ -202,7 +202,7 @@ importers:
       '@radix-ui/react-accessible-icon': 1.0.1_biqbaboplfbrettd7655fr4n2y
       '@radix-ui/react-toggle': 1.0.1_biqbaboplfbrettd7655fr4n2y
       '@readit/api': link:../api
-      '@readit/edge-config': link:../../packages/edge-config
+      '@readit/flags': link:../../packages/flags
       '@tanstack/react-query': 4.20.4_biqbaboplfbrettd7655fr4n2y
       '@trpc/client': 10.5.0_@trpc+server@10.5.0
       '@trpc/react-query': 10.5.0_hkttq5uvq7kltri3tppuogqqou
@@ -245,28 +245,6 @@ importers:
       tailwindcss: 3.2.4_postcss@8.4.19
       typescript: 4.9.4
 
-  packages/edge-config:
-    specifiers:
-      '@readit/prettier-config': workspace:*
-      '@readit/tsconfig': workspace:*
-      '@types/node': ^17.0.12
-      '@vercel/edge-config': ^0.1.0
-      eslint: ^8.26.0
-      eslint-config-custom-server: workspace:*
-      prettier: 2.8.0
-      typescript: ^4.8.4
-      vitest: ^0.24.5
-    devDependencies:
-      '@readit/prettier-config': link:../prettier-config
-      '@readit/tsconfig': link:../tsconfig
-      '@types/node': 17.0.45
-      '@vercel/edge-config': 0.1.0
-      eslint: 8.27.0
-      eslint-config-custom-server: link:../eslint-config-custom-server
-      prettier: 2.8.0
-      typescript: 4.9.4
-      vitest: 0.24.5
-
   packages/eslint-config-custom:
     specifiers:
       '@typescript-eslint/eslint-plugin': ^5.42.0
@@ -306,6 +284,28 @@ importers:
       eslint-plugin-simple-import-sort: 8.0.0_eslint@8.27.0
     devDependencies:
       typescript: 4.9.4
+
+  packages/flags:
+    specifiers:
+      '@readit/prettier-config': workspace:*
+      '@readit/tsconfig': workspace:*
+      '@types/node': ^17.0.12
+      '@vercel/edge-config': ^0.1.0
+      eslint: ^8.26.0
+      eslint-config-custom-server: workspace:*
+      prettier: 2.8.0
+      typescript: ^4.8.4
+      vitest: ^0.24.5
+    devDependencies:
+      '@readit/prettier-config': link:../prettier-config
+      '@readit/tsconfig': link:../tsconfig
+      '@types/node': 17.0.45
+      '@vercel/edge-config': 0.1.0
+      eslint: 8.27.0
+      eslint-config-custom-server: link:../eslint-config-custom-server
+      prettier: 2.8.0
+      typescript: 4.9.4
+      vitest: 0.24.5
 
   packages/kysely-pg-config:
     specifiers:

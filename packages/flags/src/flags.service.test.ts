@@ -1,7 +1,8 @@
 import { createClient } from '@vercel/edge-config'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { EdgeConfig } from '.'
+import { FlagsRepo } from './flags.repo'
+import { FlagsService } from './flags.service'
 
 const mockClient = {
 	get: vi.fn(),
@@ -19,31 +20,33 @@ vi.mock('@vercel/edge-config', () => {
 	return { createClient }
 })
 
-describe('EdgeConfig', () => {
+describe('FlagsService', () => {
 	afterEach(() => {
 		vi.restoreAllMocks()
 	})
 
-	let edgeConfig: EdgeConfig
+	let Service: FlagsService
+	let Repo: FlagsRepo
 	const logSpy = vi.spyOn(mockLogger, 'error')
 
 	beforeEach(() => {
 		const client = createClient('connectionString')
-		edgeConfig = new EdgeConfig({
+		Repo = new FlagsRepo(client)
+		Service = new FlagsService({
 			appName: 'APP_NAME',
-			client,
+			flagsRepo: Repo,
 			onError: (err) => {
 				mockLogger.error(err, 'Failed to get config')
 			},
 		})
 	})
 
-	describe('getConfig', () => {
+	describe('get() gets a single flag', () => {
 		it('should return the key if it exists', async () => {
 			mockClient.get.mockResolvedValueOnce(true)
 			mockClient.has.mockResolvedValueOnce(true)
 
-			const result = await edgeConfig.getConfig('SOME_FIELD', false)
+			const result = await Service.get('SOME_FIELD', false)
 			expect(result).toBe(true)
 		})
 
@@ -51,7 +54,7 @@ describe('EdgeConfig', () => {
 			mockClient.get.mockResolvedValueOnce(undefined)
 			mockClient.has.mockResolvedValueOnce(false)
 
-			const result = await edgeConfig.getConfig('SOME_FIELD', true)
+			const result = await Service.get('SOME_FIELD', true)
 			expect(result).toBe(true)
 		})
 
@@ -59,7 +62,7 @@ describe('EdgeConfig', () => {
 			mockClient.get.mockRejectedValueOnce(new Error('Some error'))
 			mockClient.has.mockResolvedValueOnce(true)
 
-			const result = await edgeConfig.getConfig('SOME_FIELD', true)
+			const result = await Service.get('SOME_FIELD', true)
 			expect(result).toBe(true)
 			expect(logSpy).toHaveBeenCalledTimes(1)
 			expect(logSpy).toBeCalledWith(
@@ -69,12 +72,12 @@ describe('EdgeConfig', () => {
 		})
 	})
 
-	describe('getAllConfig', () => {
+	describe('getAll gets multiple flags', () => {
 		it('should return all the keys if they all exist', async () => {
 			mockClient.has.mockResolvedValueOnce(true).mockResolvedValueOnce(true)
 			mockClient.get.mockResolvedValueOnce(true).mockResolvedValueOnce(false)
 
-			const result = await edgeConfig.getAllConfig(
+			const result = await Service.getAll(
 				['SOME_FIELD', 'SOME_OTHER_FIELD'],
 				[true, true],
 			)
@@ -88,7 +91,7 @@ describe('EdgeConfig', () => {
 			mockClient.has.mockResolvedValueOnce(true).mockResolvedValueOnce(false)
 			mockClient.get.mockResolvedValueOnce(true)
 
-			const result = await edgeConfig.getAllConfig(
+			const result = await Service.getAll(
 				['SOME_FIELD', 'SOME_OTHER_FIELD'],
 				[true, true],
 			)
@@ -104,7 +107,7 @@ describe('EdgeConfig', () => {
 				.mockResolvedValueOnce(false)
 				.mockRejectedValueOnce(new Error('Some error'))
 
-			const result = await edgeConfig.getAllConfig(
+			const result = await Service.getAll(
 				['SOME_FIELD', 'SOME_OTHER_FIELD'],
 				[true, true],
 			)

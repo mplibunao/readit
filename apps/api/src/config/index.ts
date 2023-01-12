@@ -1,6 +1,6 @@
 import { routeResponseSchemaOpts, UnderPressure } from '@api/infra/healthcheck'
 import { PgPluginOpts } from '@api/infra/pg'
-import { EdgeConfigOptions } from '@readit/edge-config'
+import { FlagsServiceOptions } from '@readit/flags'
 import { kyselyPGEnvSchema } from '@readit/kysely-pg-config'
 import {
 	getLoggerConfig,
@@ -130,7 +130,7 @@ export interface Config {
 	pg: PgPluginOpts
 	//redis: FastifyRedisPluginOptions
 	underPressure: UnderPressure
-	edgeConfig: Omit<EdgeConfigOptions, 'client'> & {
+	edgeConfig: Omit<FlagsServiceOptions, 'flagsRepo'> & {
 		connectionString: Env['EDGE_CONFIG']
 		env: Env['VERCEL_ENV']
 	}

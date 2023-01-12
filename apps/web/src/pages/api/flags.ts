@@ -1,4 +1,4 @@
-import { edgeConfig } from '@/server/infra/edgeConfig'
+import { FlagsService } from '@/server/infra/flags'
 import { NextRequest } from 'next/server'
 
 export default async function getFlags(req: NextRequest) {
@@ -37,7 +37,7 @@ export default async function getFlags(req: NextRequest) {
 		)
 	}
 
-	const flags = await edgeConfig.getAllConfig(keys, fallback)
+	const flags = await FlagsService.getAll(keys, fallback)
 	return new Response(JSON.stringify({ ...flags }))
 }
 

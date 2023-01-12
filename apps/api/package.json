@@ -27,7 +27,7 @@
 		"@fastify/cors": "^8.2.0",
 		"@fastify/under-pressure": "^8.1.0",
 		"@open-draft/until": "^2.0.0",
-		"@readit/edge-config": "workspace:*",
+		"@readit/flags": "workspace:*",
 		"@readit/kysely-pg-config": "workspace:*",
 		"@readit/logger": "workspace:*",
 		"@readit/utils": "workspace:*",
