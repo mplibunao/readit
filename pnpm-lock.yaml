@@ -274,7 +274,6 @@ importers:
       eslint-config-prettier: ^8.3.0
       eslint-config-turbo: latest
       eslint-plugin-react: 7.31.8
-      eslint-plugin-simple-import-sort: ^8.0.0
       eslint-plugin-testing-library: ^5.9.1
       typescript: ^4.8.4
     dependencies:
@@ -285,7 +284,6 @@ importers:
       eslint-config-prettier: 8.5.0_eslint@8.27.0
       eslint-config-turbo: 0.0.7_eslint@8.27.0
       eslint-plugin-react: 7.31.8_eslint@8.27.0
-      eslint-plugin-simple-import-sort: 8.0.0_eslint@8.27.0
       eslint-plugin-testing-library: 5.9.1_fqmqyeinda7panflsqpj5zauc4
     devDependencies:
       typescript: 4.9.4

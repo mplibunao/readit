@@ -4,7 +4,7 @@ module.exports = {
 		ecmaVersion: 'latest',
 		sourceType: 'module',
 	},
-	plugins: ['testing-library', 'simple-import-sort', '@typescript-eslint'],
+	plugins: ['testing-library', '@typescript-eslint'],
 	extends: [
 		'plugin:@typescript-eslint/recommended',
 		'next/core-web-vitals',
@@ -24,8 +24,6 @@ module.exports = {
 			},
 		],
 		'@typescript-eslint/no-non-null-assertion': 'off',
-		'simple-import-sort/imports': 'warn',
-		'simple-import-sort/exports': 'warn',
 		'@typescript-eslint/no-empty-function': 'off',
 	},
 }
