@@ -22,7 +22,7 @@ export const kyselyPGEnvSchema = {
 	DATABASE_URL: z.string().url(),
 	APP_NAME: z.string(),
 	PG_IDLE_TIMEOUT_MS: NumberSchema.optional().default(60_000),
-	PG_SSL: BooleanSchema.optional().default(true),
+	PG_SSL: BooleanSchema.optional().default(false),
 	IS_PROD: BooleanSchema,
 }
 const kyselyPGSchema = z.object(kyselyPGEnvSchema)
