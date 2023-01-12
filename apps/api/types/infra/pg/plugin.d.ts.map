@@ -1,1 +1,0 @@
-{"version":3,"file":"plugin.d.ts","sourceRoot":"","sources":["../../../src/infra/pg/plugin.ts"],"names":[],"mappings":";AAAA,OAAO,EAAE,kBAAkB,EAAE,MAAM,SAAS,CAAA;AAE5C,OAAO,EAAkB,EAAE,EAAE,MAAM,EAAE,MAAM,gBAAgB,CAAA;AAE3D,OAAO,QAAQ,SAAS,CAAC;IACxB,UAAU,eAAe;QACxB,EAAE,EAAE,EAAE,CAAA;KACN;CACD;AAED,eAAO,MAAM,QAAQ,EAAE,kBAAkB,CAAC,MAAM,CAmB/C,CAAA;;AAED,wBAEE"}

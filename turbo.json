@@ -1,13 +1,21 @@
 {
 	"$schema": "https://turbo.build/schema.json",
 	"pipeline": {
+		"clean:turbo": {
+			"dependsOn": ["^clean:turbo"],
+			"cache": false
+		},
+		"clean:ts": {
+			"dependsOn": ["^clean:ts"]
+		},
 		"build": {
 			"dependsOn": ["^build"],
 			"outputs": ["dist/**", ".next/**"],
 			"inputs": [
 				"src/**/*.{tsx,ts}",
 				"!src/**/*.test.{tsx,ts}",
-				"tsconfig.json"
+				"tsconfig.json",
+				"esbuild-tsconfig.json"
 			]
 		},
 		"web#build": {
@@ -27,7 +35,8 @@
 				"NEXT_PUBLIC_API_URL",
 				"EDGE_CONFIG",
 				"APP_NAME",
-				"VERCEL_ENV"
+				"VERCEL_ENV",
+				"CI"
 			]
 		},
 		"build:analyze": {
@@ -36,7 +45,8 @@
 			"inputs": [
 				"src/**/*.{ts,tsx}",
 				"!src/**/*.test.{tsx,ts}",
-				"tsconfig.json"
+				"tsconfig.json",
+				"esbuild-tsconfig.json"
 			]
 		},
 		"lint:check": {
@@ -59,7 +69,7 @@
 		},
 		"test": {
 			"outputs": ["coverage/**"],
-			"dependsOn": [],
+			"dependsOn": ["db:migrate:test"],
 			"inputs": [
 				"src/**/*.{tsx,ts}",
 				"!src/**/*.stories.tsx",
@@ -68,10 +78,11 @@
 			]
 		},
 		"dev": {
+			"dependsOn": ["db:gen:types"],
 			"cache": false
 		},
 		"typecheck": {
-			"outputs": [],
+			"outputs": ["dts/**", "tsconfig.tsbuildinfo"],
 			"dependsOn": [],
 			"inputs": ["src/**/*.{tsx,ts}", "tsconfig.json"]
 		},
@@ -85,6 +96,22 @@
 		},
 		"ci": {
 			"dependsOn": ["typecheck", "lint:check", "format:check", "test"]
+		},
+		"db:gen:types": {
+			"outputs": ["src/db.d.ts"],
+			"inputs": ["src/migrations/**"],
+			"env": ["DATABASE_URL"],
+			"dependsOn": ["db:migrate:dev"]
+		},
+		"db:migrate:test": {
+			"outputs": [],
+			"inputs": ["src/migrations/**"],
+			"env": ["DATABASE_URL", "GITHUB_ENV", "GITHUB_ACTIONS"]
+		},
+		"db:migrate:dev": {
+			"outputs": [],
+			"inputs": ["src/migrations/**"],
+			"env": ["DATABASE_URL"]
 		}
 	}
 }

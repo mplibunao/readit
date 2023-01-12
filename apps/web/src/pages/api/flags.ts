@@ -1,6 +1,5 @@
+import { FlagsService } from '@/server/infra/flags'
 import { NextRequest } from 'next/server'
-
-import { edgeConfig } from '@/server/infra/edgeConfig'
 
 export default async function getFlags(req: NextRequest) {
 	if (req.method !== 'POST') {
@@ -22,7 +21,7 @@ export default async function getFlags(req: NextRequest) {
 			{
 				status: 400,
 				statusText: 'Bad Request',
-			}
+			},
 		)
 	}
 
@@ -34,11 +33,11 @@ export default async function getFlags(req: NextRequest) {
 			{
 				status: 400,
 				statusText: 'Bad Request',
-			}
+			},
 		)
 	}
 
-	const flags = await edgeConfig.getAllConfig(keys, fallback)
+	const flags = await FlagsService.getAll(keys, fallback)
 	return new Response(JSON.stringify({ ...flags }))
 }
 

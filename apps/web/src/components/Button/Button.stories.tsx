@@ -1,7 +1,7 @@
 import type { Story } from '@ladle/react'
 
-import { Icon } from '../Icon'
 import { Button, ButtonProps } from '.'
+import { Icon } from '../Icon'
 
 const buttonDefaultProps = {
 	size: 'md',

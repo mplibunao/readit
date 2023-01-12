@@ -1,7 +1,10 @@
+import { getKyselyPgConfig, KyselyPGConfigOpts } from '@readit/kysely-pg-config'
+import { DB } from '@readit/pg-manager'
 import { FastifyPluginAsync } from 'fastify'
 import fp from 'fastify-plugin'
+import { Kysely } from 'kysely'
 
-import { createPgClient, PG, PgOpts } from './createClient'
+export type PG = Kysely<DB>
 
 declare module 'fastify' {
 	interface FastifyInstance {
@@ -9,11 +12,21 @@ declare module 'fastify' {
 	}
 }
 
-export const kyselyPg: FastifyPluginAsync<PgOpts> = async (fastify, opts) => {
+export type PgPluginOpts = Omit<KyselyPGConfigOpts, 'logger'>
+
+export const kyselyPg: FastifyPluginAsync<PgPluginOpts> = async (
+	fastify,
+	opts,
+) => {
 	const name = 'pg'
 
 	try {
-		const db = createPgClient(opts, fastify.log)
+		const db = new Kysely<DB>(
+			getKyselyPgConfig({
+				...opts,
+				logger: fastify.log,
+			}),
+		)
 
 		if (fastify[name]) {
 			throw new Error(`plugin '${name}' instance has already been registered`)

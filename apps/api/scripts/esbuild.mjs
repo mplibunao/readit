@@ -1,7 +1,7 @@
-import minimist from 'minimist'
 import { build, analyzeMetafile } from 'esbuild'
-import { globby } from 'globby'
 import fs from 'fs'
+import { globby } from 'globby'
+import minimist from 'minimist'
 
 /*
  *Usage: node ./esbuild.script.js --watch --minify --types
@@ -23,10 +23,11 @@ import fs from 'fs'
  *	-w  --watch									 Watch for changes and rebuild
  *	-m	--minify								 Minify the bundle.
  *	-d	--directory							 Directory to output the bundle to. Defaults to `dist`
+ *	-i  --incremental 					 Incremental build. Defaults to false
  */
 async function main() {
 	const getPlugins = () => {
-		const plugins = []
+		const plugins = [nativeNodeModulesPlugin]
 
 		return plugins
 	}
@@ -34,10 +35,14 @@ async function main() {
 	const getExternal = () => {
 		const packageJson = JSON.parse(fs.readFileSync('./package.json', 'utf-8'))
 
-		const included = new Set(['edge-config'])
-		const external = [...Object.keys(packageJson.dependencies)].filter(
-			(deps) => !included.has(deps)
-		)
+		// Manually include/exclude any packages
+		//const included = new Set([])
+		const excluded = ['pg-native', 'hiredis']
+
+		const external = [...Object.keys(packageJson.dependencies)]
+			.filter((deps) => !deps.startsWith('@readit/'))
+			.concat(excluded)
+
 		return external
 
 		//return ['./node_modules/*']
@@ -50,6 +55,7 @@ async function main() {
 	const watch = argv.w || argv.watch
 	const minify = argv.m || argv.minify
 	const directory = argv.d || argv.directory || 'dist'
+	const incremental = argv.i || argv.incremental
 
 	const entryPoints = await globby(entrypoint)
 	const plugins = getPlugins()
@@ -69,6 +75,7 @@ async function main() {
 		plugins,
 		metafile: true,
 		watch: !!watch,
+		incremental: !!incremental,
 	})
 
 	const text = await analyzeMetafile(result.metafile, {
@@ -82,8 +89,58 @@ async function main() {
 			}
 		})
 	} else {
-		console.log(text)
+		//console.log(text)
 	}
 }
 
 main()
+
+// https://github.com/egoist/tsup/blob/dev/src/esbuild/native-node-module.ts
+const nativeNodeModulesPlugin = {
+	name: 'native-node-modules',
+	setup(build) {
+		// If a ".node" file is imported within a module in the "file" namespace, resolve
+		// it to an absolute path and put it into the "node-file" virtual namespace.
+		build.onResolve({ filter: /\.node$/, namespace: 'file' }, (args) => {
+			const resolvedId = require.resolve(args.path, {
+				paths: [args.resolveDir],
+			})
+			if (resolvedId.endsWith('.node')) {
+				return {
+					path: resolvedId,
+					namespace: 'node-file',
+				}
+			}
+			return {
+				path: resolvedId,
+			}
+		})
+
+		// Files in the "node-file" virtual namespace call "require()" on the
+		// path from esbuild of the ".node" file in the output directory.
+		build.onLoad({ filter: /.*/, namespace: 'node-file' }, (args) => {
+			return {
+				contents: `
+            import path from ${JSON.stringify(args.path)}
+            try { module.exports = require(path) }
+            catch {}
+          `,
+				resolveDir: path.dirname(args.path),
+			}
+		})
+
+		// If a ".node" file is imported within a module in the "node-file" namespace, put
+		// it in the "file" namespace where esbuild's default loading behavior will handle
+		// it. It is already an absolute path since we resolved it to one above.
+		build.onResolve({ filter: /\.node$/, namespace: 'node-file' }, (args) => ({
+			path: args.path,
+			namespace: 'file',
+		}))
+
+		// Tell esbuild's default loading behavior to use the "file" loader for
+		// these ".node" files.
+		const opts = build.initialOptions
+		opts.loader = opts.loader || {}
+		opts.loader['.node'] = 'file'
+	},
+}

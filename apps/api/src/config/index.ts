@@ -1,56 +1,46 @@
 import { routeResponseSchemaOpts, UnderPressure } from '@api/infra/healthcheck'
-import { PgOpts } from '@api/infra/pg'
-import { EdgeConfigOptions } from '@readit/edge-config'
-import { Static, Type } from '@sinclair/typebox'
+import { PgPluginOpts } from '@api/infra/pg'
+import { FlagsServiceOptions } from '@readit/flags'
+import { kyselyPGEnvSchema } from '@readit/kysely-pg-config'
+import {
+	getLoggerConfig,
+	LoggerOpts,
+	loggerOptsEnvSchema,
+} from '@readit/logger'
+import { PortSchema } from '@readit/utils'
 import envSchema from 'env-schema'
 import { PinoLoggerOptions } from 'fastify/types/logger'
+import { z } from 'zod'
+import { zodToJsonSchema } from 'zod-to-json-schema'
 
-import { getLoggerConfig, LoggerOpts } from '../infra/logger/loggerConfig'
+const redisEnvSchema = {
+	REDIS_URL: z.string().optional(),
+	REDIS_ENABLE_AUTO_PIPELINING: z
+		.boolean()
+		.optional()
+		.default(true)
+		.describe('https://www.youtube.com/watch?app=desktop&v=0L0ER4pZbX4'),
+	REDIS_MAX_RETRIES_PER_REQ: z
+		.number()
+		.optional()
+		.default(20)
+		.describe(
+			"Lower is better for perf, since we don't wait when there are errors. If failing fast is ok",
+		),
+	REDIS_CONNECT_TIMEOUT: z.number().optional().default(10_000),
+}
 
-const envJsonSchema = Type.Object({
-	NODE_ENV: Type.Union([
-		Type.Literal('development'),
-		Type.Literal('test'),
-		Type.Literal('production'),
-	]),
+const edgeConfigEnvSchema = {
+	EDGE_CONFIG: z
+		.string()
+		.optional()
+		.describe('Connection string for edge config'),
+	VERCEL_ENV: z.enum(['production', 'preview', 'development']),
+	APP_NAME: z.string(),
+}
 
-	PORT: Type.Number({ default: 4000 }),
-	CI: Type.Optional(Type.Boolean({ default: false })),
-	API_HOST: Type.Optional(Type.String()),
-	IS_PROD: Type.Boolean(),
-	FRONTEND_URL: Type.String(),
-	// Change to required later
-	REDIS_URL: Type.Optional(Type.String()),
-	// https://www.youtube.com/watch?app=desktop&v=0L0ER4pZbX4
-	REDIS_ENABLE_AUTO_PIPELINING: Type.Optional(Type.Boolean({ default: true })),
-	REDIS_MAX_RETRIES_PER_REQ: Type.Optional(Type.Number({ default: 1 })),
-	REDIS_CONNECT_TIMEOUT: Type.Optional(Type.Number({ default: 500 })),
-
-	PG_IDLE_TIMEOUT_MS: Type.Optional(Type.Number({ default: 60_000 })),
-	PG_SSL: Type.Optional(Type.Boolean({ default: false })),
-	DATABASE_URL: Type.String(),
-
-	TRPC_ENDPOINT: Type.String(),
-	TRPC_PLAYGROUND_ENDPOINT: Type.Optional(Type.String()),
-	TRPC_ENABLE_PLAYGROUND: Type.Optional(Type.Boolean({ default: false })),
-
-	//Derived from K_SERVICE env passed by cloud run
-	IS_GCP_CLOUD_RUN: Type.Boolean(),
-	APP_NAME: Type.String({ default: 'readit' }),
-	APP_VERSION: Type.String({ default: '0.0.0' }),
-	LOGGING_LEVEL: Type.Union(
-		[
-			Type.Literal('fatal'),
-			Type.Literal('error'),
-			Type.Literal('warn'),
-			Type.Literal('info'),
-			Type.Literal('debug'),
-			Type.Literal('trace'),
-		],
-		{ default: 'info' }
-	),
-
-	HEALTHCHECK_URL: Type.Optional(Type.String({ default: '/health' })),
+const healthcheckEnvSchema = {
+	HEALTHCHECK_URL: z.string().optional().default('/health'),
 
 	/*
 	 *max heap threshold to return 503 service unavaliable to prevent taking down your server
@@ -59,43 +49,44 @@ const envJsonSchema = Type.Object({
 	 *50 MB is what node:18.7.0-alpine uses on an empty container
 	 *20 is overhead for other parts of the memory like new space
 	 */
-	HEALTHCHECK_MAX_HEAP_USED: Type.Optional(
-		Type.Number({
-			default: (512 - 50 - 20) * 1024 * 1024,
-		})
-	),
+	HEALTHCHECK_MAX_HEAP_USED: z
+		.number()
+		.optional()
+		.default((512 - 50 - 20) * 1024 * 1024),
+
 	/*
 	 *512 MB
 	 *Resident Set Size – the amount of memory allocated in the v8 context
 	 */
-	HEALTHCHECK_MAX_RSS: Type.Optional(
-		Type.Number({
-			default: 512 * 1024 * 1024,
-		})
-	),
-	HEALTHCHECK_MAX_EVENT_LOOP_UTILIZATION: Type.Optional(
-		Type.Number({ default: 0.98 })
-	),
-	HEALTHCHECK_MAX_EVENT_LOOP_DELAY: Type.Optional(
-		Type.Number({ default: 1000 })
-	),
-	ENABLE_HTTP2: Type.Optional(
-		Type.Boolean({
-			default: false,
-			description: "Note: You can't use this with websockets",
-		})
-	),
-	EDGE_CONFIG: Type.String({
-		description: 'Connection string for feature flags',
-	}),
-	VERCEL_ENV: Type.Union([
-		Type.Literal('development'),
-		Type.Literal('preview'),
-		Type.Literal('production'),
-	]),
+	HEALTHCHECK_MAX_RSS: z
+		.number()
+		.optional()
+		.default(512 * 1024 * 1024)
+		.describe(
+			'Resident Set Size – the amount of memory allocated in the v8 context',
+		),
+	HEALTHCHECK_MAX_EVENT_LOOP_UTILIZATION: z.number().optional().default(0.98),
+	HEALTHCHECK_MAX_EVENT_LOOP_DELAY: z.number().optional().default(1000),
+}
+
+const zodEnvSchema = z.object({
+	...kyselyPGEnvSchema,
+	...loggerOptsEnvSchema,
+	...redisEnvSchema,
+	...healthcheckEnvSchema,
+	...edgeConfigEnvSchema,
+	NODE_ENV: z
+		.enum(['development', 'production', 'test'])
+		.default('development'),
+	PORT: PortSchema.default(4000),
+	API_HOST: z.string().optional().default('127.0.0.1'),
+	FRONTEND_URL: z.string(),
+	TRPC_ENDPOINT: z.string(),
 })
 
-export type Env = Static<typeof envJsonSchema>
+const jsonSchema = zodToJsonSchema(zodEnvSchema, { errorMessages: true })
+
+export type Env = z.infer<typeof zodEnvSchema>
 
 const getDotEnv = () => {
 	if (Boolean(process.env.CI) || process.env.NODE_ENV === 'production') {
@@ -113,11 +104,8 @@ const getDotEnv = () => {
 
 const env = envSchema<Env>({
 	dotenv: getDotEnv(),
-	schema: envJsonSchema,
-	data: {
-		...process.env,
-		IS_GCP_CLOUD_RUN: process.env.K_SERVICE !== undefined,
-	},
+	schema: jsonSchema,
+	data: process.env,
 })
 
 export interface Config {
@@ -127,7 +115,6 @@ export interface Config {
 		name: string
 	}
 	fastify: {
-		http2?: boolean
 		trustProxy: boolean
 		logger: PinoLoggerOptions
 		maxParamLength?: number
@@ -139,13 +126,11 @@ export interface Config {
 	loggerOpts: LoggerOpts
 	trpc: {
 		endpoint: string
-		playgroundEndpoint: string
-		enablePlayground?: boolean
 	}
-	pg: PgOpts
+	pg: PgPluginOpts
 	//redis: FastifyRedisPluginOptions
 	underPressure: UnderPressure
-	edgeConfig: Omit<EdgeConfigOptions, 'client'> & {
+	edgeConfig: Omit<FlagsServiceOptions, 'flagsRepo'> & {
 		connectionString: Env['EDGE_CONFIG']
 		env: Env['VERCEL_ENV']
 	}
@@ -158,7 +143,6 @@ export const config: Config = {
 		name: env.APP_NAME,
 	},
 	fastify: {
-		http2: env.ENABLE_HTTP2,
 		trustProxy: true,
 		logger: getLoggerConfig(env),
 		// for trpc
@@ -167,25 +151,13 @@ export const config: Config = {
 	server: {
 		port: env.PORT,
 		// listen to all ipv4 addresses in cloud run
-		host: env.IS_GCP_CLOUD_RUN ? '0.0.0.0' : env.API_HOST,
+		host: env.K_SERVICE ? '0.0.0.0' : env.API_HOST,
 	},
-	loggerOpts: {
-		IS_GCP_CLOUD_RUN: env.IS_GCP_CLOUD_RUN,
-		LOGGING_LEVEL: env.LOGGING_LEVEL,
-		IS_PROD: env.IS_PROD,
-	},
+	loggerOpts: env,
 	trpc: {
 		endpoint: env.TRPC_ENDPOINT,
-		playgroundEndpoint: env.TRPC_PLAYGROUND_ENDPOINT ?? '/trpc-playground',
-		enablePlayground: env.TRPC_ENABLE_PLAYGROUND,
 	},
-	pg: {
-		connectionString: env.DATABASE_URL,
-		application_name: `${env.APP_NAME}-api`,
-		idleTimeoutMillis: env.PG_IDLE_TIMEOUT_MS,
-		isProd: env.IS_PROD,
-		ssl: env.PG_SSL,
-	},
+	pg: env,
 	//redis: {
 	//enableAutoPipelining: true,
 	//connectTimeout: 500,

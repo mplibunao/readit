@@ -1,7 +1,4 @@
 import { config } from '@api/config'
-import pino from 'pino'
+import { getLogger, Logger } from '@readit/logger'
 
-import { getLoggerConfig } from './loggerConfig'
-
-const loggerConfig = getLoggerConfig(config.loggerOpts)
-export const logger = pino(loggerConfig)
+export const logger: Logger = getLogger(config.loggerOpts)

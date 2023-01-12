@@ -10,10 +10,12 @@ import fp from 'fastify-plugin'
 import { sql } from 'kysely'
 
 /*
- *This plugin is especially useful if you expect an high load
- *on your application, it measures the process load and returns
- *a 503 if the process is undergoing too much stress.
- *Also provides health check
+ * This plugin is especially useful if you expect an high load
+ * on your application, it measures the process load and returns
+ * a 503 if the process is undergoing too much stress.
+ * Also provides health check
+ *
+ * WARNING: Don't use an external logger. It seems to break the custom health check feature and only return status: ok
  */
 
 export const routeResponseSchemaOpts = {
@@ -38,7 +40,7 @@ export interface UnderPressure extends underPressure.UnderPressureOptions {
 
 export const healthCheck: FastifyPluginAsync<Config> = async (
 	fastify,
-	opts
+	opts,
 ) => {
 	fastify.register(underPressure, {
 		...opts.underPressure,
@@ -68,7 +70,7 @@ export const healthCheck: FastifyPluginAsync<Config> = async (
 		healthCheck: async (parent: FastifyInstance) => {
 			// You can return a boolean here as well. Returning false will probably return an unhealthy status code.
 			// Cool but I prefer strings so that I can add multiple alerting policies for server, db, redis and not have everything notifying when 1 component goes down
-			return {
+			const response = {
 				version: opts.underPressure.version,
 				timestamp: new Date().toISOString(),
 				status: 'ok',
@@ -76,6 +78,8 @@ export const healthCheck: FastifyPluginAsync<Config> = async (
 				db: await dbCheck(parent),
 				//redis: await redisCheck(parent),
 			}
+
+			return response
 		},
 	})
 }
@@ -89,12 +93,14 @@ async function dbCheck(server: FastifyInstance) {
 	try {
 		const result =
 			await sql<string>`select 'Hello world!'::TEXT AS message`.execute(
-				server.pg
+				server.pg,
 			)
 
 		if (result.rows.length === 1) return 'ok'
 	} catch (err) {
-		server.log.fatal({ err }, 'failed to read DB during health check')
+		if (process.env.NODE_ENV !== 'test') {
+			server.log.error({ err }, 'failed to read DB during health check')
+		}
 	}
 	return 'fail'
 }
@@ -104,7 +110,7 @@ async function dbCheck(server: FastifyInstance) {
 //const response = await server.redis.ping()
 //if (response === 'PONG') return 'ok'
 //} catch (err) {
-//server.log.debug({ err }, 'failed to read DB during health check')
+//logger.debug({ err }, 'failed to read DB during health check')
 //}
 //return 'fail'
 //}

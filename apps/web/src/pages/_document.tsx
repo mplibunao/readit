@@ -1,7 +1,6 @@
-import { Head, Html, Main, NextScript } from 'next/document'
-
 import { Favicon } from '@/components/Favicon'
 import { SEO } from '@/components/SEO'
+import { Head, Html, Main, NextScript } from 'next/document'
 
 export default function Document() {
 	return (

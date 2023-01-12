@@ -7,7 +7,8 @@
 		"lib": ["dom", "dom.iterable", "esnext"],
 		"noEmit": true,
 		"module": "esnext",
-		"jsx": "preserve"
+		"jsx": "preserve",
+		"emitDeclarationOnly": false
 	},
 	"include": ["src", "next-env.d.ts"],
 	"exclude": ["node_modules"]

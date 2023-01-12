@@ -29,7 +29,7 @@ const main = async () => {
 
 			server.log.info({ signal, manual }, 'closing application')
 			await server.close()
-		}
+		},
 	)
 
 	server.addHook('onClose', async (_instance, done) => {

@@ -1,0 +1,27 @@
+services:
+  pgadmin:
+    image: dpage/pgadmin4
+    depends_on:
+      - postgres
+    ports:
+      - '5555:80'
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+      - pgadmin_cert:/certs/server.cert
+      - pgadmin_certkey:/certs/server.key
+      - pgadmin_servers:/pgadmin4/servers.json
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: root
+    restart: '${DOCKER_RESTART_POLICY:-unless-stopped}'
+    deploy:
+      resources:
+        limits:
+          cpus: '${DOCKER_PGADMIN_CPUS-0}'
+          memory: '${DOCKER_PGADMIN_MEMORY-0}'
+
+volumes:
+  pgadmin_data:
+  pgadmin_cert:
+  pgadmin_certkey:
+  pgadmin_servers:

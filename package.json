@@ -7,27 +7,33 @@
 		"packages/*"
 	],
 	"scripts": {
-		"migrate:up": "pnpm -F api migrate:up",
-		"build": "turbo run build",
+		"clean:turbo": "turbo run clean:turbo --parallel",
+		"clean:ts": "turbo run clean:ts --parallel",
+		"build": "turbo run build --parallel",
 		"dev": "turbo run dev --parallel",
-		"test": "turbo run test",
+		"db:gen:types": "turbo run db:gen:types",
+		"prisma:studio": "pnpm -F pg-manager db:studio",
+		"test": "turbo run test --parallel",
 		"test:watch": "turbo run test:watch",
-		"lint:check": "turbo run lint:check",
-		"lint:fix": "turbo run lint:fix",
-		"format:fix": "turbo format:fix",
-		"format:check": "turbo format:check",
-		"ci": "turbo ci",
-		"docker:up": "docker-compose up -d"
+		"lint:check": "turbo run lint:check --parallel",
+		"lint:fix": "turbo run lint:fix --parallel",
+		"format:fix": "turbo format:fix --parallel",
+		"format:check": "turbo format:check --parallel",
+		"ci": "turbo run ci --parallel",
+		"typecheck": "turbo run typecheck --parallel",
+		"docker:up": "docker-compose up -d",
+		"prepare": "husky install"
 	},
 	"devDependencies": {
-		"@readit/eslint-config": "workspace:*",
-		"prettier": "latest",
-		"prettier-plugin-tailwindcss": "^0.1.13",
-		"turbo": "latest"
+		"@readit/prettier-config": "workspace:*",
+		"turbo": "1.7.0",
+		"typescript": "^4.8.4",
+		"husky": "^8.0.0"
 	},
 	"engines": {
 		"npm": ">=8.15.0",
 		"node": ">=18.12.1"
 	},
+	"prettier": "@readit/prettier-config",
 	"packageManager": "pnpm@7.14.1"
 }

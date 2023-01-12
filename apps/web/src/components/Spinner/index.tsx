@@ -68,7 +68,7 @@ const spinner = cva(
 			stroke: 'visible',
 			color: 'primary',
 		},
-	}
+	},
 )
 
 export const Spinner = ({
