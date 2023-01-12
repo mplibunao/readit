@@ -35,7 +35,6 @@ export const app: FastifyPluginAsync<Config> = async (
 			router: appRouter,
 			createContext,
 			onError: ({ error, path, req, input, type }: OnErrorParams) => {
-				console.error('ERRRORRRR')
 				if (error.code === 'INTERNAL_SERVER_ERROR') {
 					req.log.fatal(
 						{ error, input, type },

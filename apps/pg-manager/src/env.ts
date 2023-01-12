@@ -42,6 +42,7 @@ if (!PgManagerEnv.success) {
 	)
 	throw new Error('Invalid env variables')
 }
+console.log('PgManagerEnv', PgManagerEnv) // eslint-disable-line no-console
 
 export const loggerConfig: LoggerOpts = PgManagerEnv.data
 
