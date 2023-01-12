@@ -53,8 +53,7 @@ async function main() {
 	const analyze = argv.analyze
 	const entrypoint = argv.e || argv.entrypoint || 'src/index.ts'
 	const watch = argv.w || argv.watch
-	const minify = false
-	//const minify = argv.m || argv.minify
+	const minify = argv.m || argv.minify
 	const directory = argv.d || argv.directory || 'dist'
 	const incremental = argv.i || argv.incremental
 
