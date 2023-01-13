@@ -7,12 +7,6 @@ function getNextUrl() {
 }
 
 export const nextBaseUrl = getNextUrl()
-console.log('process.env.VERCEL_URL', process.env.VERCEL_URL) // eslint-disable-line no-console
-console.log(
-	'process.env.NEXT_PUBLIC_VERCEL_URL',
-	process.env.NEXT_PUBLIC_VERCEL_URL,
-) // eslint-disable-line no-console
-console.log('nextBaseUrl', nextBaseUrl) // eslint-disable-line no-console
 
 export function getApiBaseUrl() {
 	if (process.env.NEXT_PUBLIC_API_URL) return process.env.NEXT_PUBLIC_API_URL
