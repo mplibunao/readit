@@ -10,7 +10,7 @@ export const createRequest = (
 	defaultOptions.mode = defaultOptions.mode ?? 'cors'
 
 	return async <T>(
-		url: string,
+		url: URL | RequestInfo,
 		options: RequestInit = { method: 'GET' },
 		customOptions: CustomOptions = {},
 	): Promise<T> => {

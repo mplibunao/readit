@@ -1,7 +1,6 @@
 import '../styles/global.css'
 import '@fontsource/inter/variable.css'
 
-import { apiFetch } from '@/utils/request'
 import { trpc } from '@/utils/trpc'
 import { trpcUrl } from '@/utils/url'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
@@ -10,7 +9,6 @@ import type { AppProps } from 'next/app'
 import { useState } from 'react'
 import superjson from 'superjson'
 
-console.log('trpcUrl.toString()', trpcUrl) // eslint-disable-line no-console
 const links = [
 	loggerLink({
 		enabled: (opts) =>
@@ -18,10 +16,10 @@ const links = [
 			(opts.direction === 'down' && opts.result instanceof Error),
 	}),
 	httpBatchLink({
-		url: 'http://localhost:4000/trpc',
-		//fetch(url, opts) {
-		//return apiFetch(url, opts)
-		//},
+		url: trpcUrl,
+		fetch(url, opts) {
+			return fetch(url, { ...opts, credentials: 'include' })
+		},
 	}),
 ]
 
