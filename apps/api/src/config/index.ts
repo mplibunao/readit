@@ -2,11 +2,7 @@ import { routeResponseSchemaOpts, UnderPressure } from '@api/infra/healthcheck'
 import { PgPluginOpts } from '@api/infra/pg'
 import { FlagsServiceOptions } from '@readit/flags'
 import { kyselyPGEnvSchema } from '@readit/kysely-pg-config'
-import {
-	getLoggerConfig,
-	LoggerOpts,
-	loggerOptsEnvSchema,
-} from '@readit/logger'
+import { LoggerOpts, loggerOptsEnvSchema } from '@readit/logger'
 import { PortSchema } from '@readit/utils'
 import envSchema from 'env-schema'
 import { z } from 'zod'
