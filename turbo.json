@@ -28,6 +28,7 @@
 			],
 			"env": [
 				"VERCEL_URL",
+				"NEXT_PUBLIC_VERCEL_URL",
 				"PORT",
 				"NODE_ENV",
 				"ANALYZE",

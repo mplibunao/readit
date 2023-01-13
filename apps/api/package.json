@@ -31,7 +31,7 @@
 		"@readit/kysely-pg-config": "workspace:*",
 		"@readit/logger": "workspace:*",
 		"@readit/utils": "workspace:*",
-		"@trpc/server": "^10.5.0",
+		"@trpc/server": "^10.9.0",
 		"@vercel/edge-config": "^0.1.0",
 		"argon2": "^0.30.2",
 		"close-with-grace": "^1.1.0",

@@ -3,10 +3,14 @@ import Fastify from 'fastify'
 
 import app from './app'
 import { config } from './config'
+import { logger } from './infra/logger'
 
 const main = async () => {
 	// Initialize fastify
-	const server = Fastify(config.fastify)
+	const server = Fastify({
+		...config.fastify,
+		logger,
+	})
 
 	// Register your application as a normal plugin.
 	server.register(app, config)

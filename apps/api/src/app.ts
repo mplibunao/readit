@@ -26,7 +26,14 @@ export const app: FastifyPluginAsync<Config> = async (
 	fastify.register(healthcheck, config)
 
 	fastify.register(cors, {
-		origin: '*',
+		origin: [
+			'http://localhost:3000',
+			'https://readit.staging.mplibunao.tech',
+			'https://readit.mplibunao.tech',
+		],
+		methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+		allowedHeaders: ['Content-Type', 'Authorization'],
+		credentials: true,
 	})
 
 	fastify.register(fastifyTRPCPlugin, {

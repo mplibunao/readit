@@ -3,17 +3,11 @@ import '@fontsource/inter/variable.css'
 
 import { trpc } from '@/utils/trpc'
 import { trpcUrl } from '@/utils/url'
-//import { Inter } from '@next/font/google'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { httpBatchLink, loggerLink } from '@trpc/client'
 import type { AppProps } from 'next/app'
 import { useState } from 'react'
 import superjson from 'superjson'
-
-//const interVariable = Inter({
-//subsets: ['latin'],
-//variable: '--font-inter',
-//})
 
 const links = [
 	loggerLink({
@@ -21,7 +15,12 @@ const links = [
 			process.env.NODE_ENV === 'development' ||
 			(opts.direction === 'down' && opts.result instanceof Error),
 	}),
-	httpBatchLink({ url: trpcUrl }),
+	httpBatchLink({
+		url: trpcUrl,
+		fetch(url, opts) {
+			return fetch(url, { ...opts, credentials: 'include' })
+		},
+	}),
 ]
 
 function MyApp({ Component, pageProps }: AppProps) {

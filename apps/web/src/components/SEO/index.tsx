@@ -1,4 +1,4 @@
-import { clientUrl } from '@/utils/url'
+import { nextBaseUrl } from '@/utils/url'
 import Head from 'next/head'
 
 export interface SEOProps {
@@ -31,9 +31,9 @@ export const SEO = ({
 	//- If the resource has an image (eg. subreddit logo or post image), it's the caller of this component's responsibility to fetch that (included when calling the resource) and pass it as imageUrl
 	const getOgImage = () => {
 		if (imageUrl) return imageUrl
-		if (commentId) return `${clientUrl}/api/og?commentId=${commentId}`
-		if (postId) return `${clientUrl}/api/og?postId=${postId}`
-		if (subredditId) return `${clientUrl}/api/og?subredditId=${subredditId}`
+		if (commentId) return `${nextBaseUrl}/api/og?commentId=${commentId}`
+		if (postId) return `${nextBaseUrl}/api/og?postId=${postId}`
+		if (subredditId) return `${nextBaseUrl}/api/og?subredditId=${subredditId}`
 		return defaultImageUrl
 	}
 
@@ -50,7 +50,7 @@ export const SEO = ({
 			<meta name='image' content={image} key='image' />
 
 			{/* facebook cards */}
-			<meta property='og:url' content={clientUrl} key='og:url' />
+			<meta property='og:url' content={nextBaseUrl} key='og:url' />
 			<meta property='og:type' content='website' key='og:type' />
 			<meta property='og:title' content={siteTitle} key='og:title' />
 			<meta
@@ -84,7 +84,7 @@ export const SEO = ({
 			<meta key='twitter:site' name='twitter:site' content={twitterUsername} />
 			<meta name='twitter:image' content={`${image}`} key='twitter:image' />
 
-			<link rel='canonical' href={clientUrl} />
+			<link rel='canonical' href={nextBaseUrl} />
 			<link rel='shortcut icon' href='/favicon.ico' />
 		</Head>
 	)
