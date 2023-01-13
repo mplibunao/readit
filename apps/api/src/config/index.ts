@@ -9,7 +9,6 @@ import {
 } from '@readit/logger'
 import { PortSchema } from '@readit/utils'
 import envSchema from 'env-schema'
-import { PinoLoggerOptions } from 'fastify/types/logger'
 import { z } from 'zod'
 import { zodToJsonSchema } from 'zod-to-json-schema'
 
@@ -116,7 +115,6 @@ export interface Config {
 	}
 	fastify: {
 		trustProxy: boolean
-		logger: PinoLoggerOptions
 		maxParamLength?: number
 	}
 	server: {
@@ -144,7 +142,6 @@ export const config: Config = {
 	},
 	fastify: {
 		trustProxy: true,
-		logger: getLoggerConfig(env),
 		// for trpc
 		maxParamLength: 5000,
 	},

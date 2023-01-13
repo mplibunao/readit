@@ -1,6 +1,6 @@
 import { Icon } from '@/components/Icon'
 import { styledLink } from '@/components/Link'
-import { useFlags } from '@/helpers/api/flags'
+import { useFlags } from '@/helpers/flags'
 import Link from 'next/link'
 
 const Register = () => {
