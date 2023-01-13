@@ -1,5 +1,4 @@
 import { nextBaseUrl } from '@/utils/url'
-import Head from 'next/head'
 
 export interface SEOProps {
 	title?: string
@@ -39,8 +38,9 @@ export const SEO = ({
 
 	const image = getOgImage()
 
+	// Remove <Head /> since we're trying next13
 	return (
-		<Head>
+		<>
 			<title>{`${title} | ${siteTitle}`}</title>
 			<meta
 				name='description'
@@ -86,6 +86,6 @@ export const SEO = ({
 
 			<link rel='canonical' href={nextBaseUrl} />
 			<link rel='shortcut icon' href='/favicon.ico' />
-		</Head>
+		</>
 	)
 }

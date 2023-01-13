@@ -30,13 +30,17 @@ getTranspilePackages()
 const nextConfig = {
 	reactStrictMode: true,
 	swcMinify: true,
+	productionBrowserSourceMaps: true,
 	// Next.js i18n docs: https://nextjs.org/docs/advanced-features/i18n-routing
 	i18n: {
 		locales: ['en'],
 		defaultLocale: 'en',
 	},
 	experimental: {
+		appDir: true,
+		runtime: 'experimental-edge',
 		transpilePackages: getTranspilePackages(),
+		swcPlugins: [['next-superjson-plugin', {}]],
 	},
 	/** We already do linting and typechecking as separate tasks in CI */
 	eslint: { ignoreDuringBuilds: !!process.env.CI },

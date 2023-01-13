@@ -1,7 +1,7 @@
-import { trpc } from '@/utils/trpc'
+import { trpc } from '@/utils/trpc/client'
 
 const IndexPage = () => {
-	const { data, error, isLoading } = trpc.uptime.uptime.useQuery()
+	const { data, error, isLoading } = trpc.uptime.uptime.useQuery(undefined)
 	if (error) {
 		//console.log('DatabaseError.prototype.type', DBError.type) // eslint-disable-line no-console
 		//if (error.data?.type === DBError.type) {

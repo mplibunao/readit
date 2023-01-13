@@ -1,7 +1,7 @@
 import '../styles/global.css'
 import '@fontsource/inter/variable.css'
 
-import { trpc } from '@/utils/trpc'
+import { trpc } from '@/utils/trpc/client'
 import { trpcUrl } from '@/utils/url'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { httpBatchLink, loggerLink } from '@trpc/client'
