@@ -10,7 +10,7 @@ import type { AppProps } from 'next/app'
 import { useState } from 'react'
 import superjson from 'superjson'
 
-console.log('trpcUrl.toString()', trpcUrl.toString()) // eslint-disable-line no-console
+console.log('trpcUrl.toString()', trpcUrl) // eslint-disable-line no-console
 const links = [
 	loggerLink({
 		enabled: (opts) =>
