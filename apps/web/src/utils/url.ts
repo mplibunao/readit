@@ -1,7 +1,7 @@
 import { isServer } from './ssr'
 
 function getNextUrl() {
-	if (!isServer()) return '' // csr should be relative anyway
+	if (!isServer()) return location.href // relative for csr. Use with new URL()
 	if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`
 
 	return `http://localhost:${process.env.PORT ?? 3000}`

@@ -29,6 +29,7 @@
 		"@readit/flags": "workspace:*",
 		"@tanstack/react-query": "^4.22.0",
 		"@trpc/client": "^10.9.0",
+		"@trpc/next": "^10.9.0",
 		"@trpc/react-query": "^10.9.0",
 		"@trpc/server": "^10.9.0",
 		"@vercel/edge-config": "^0.1.0",
