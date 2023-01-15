@@ -33,7 +33,7 @@
 	},
 	"engines": {
 		"npm": ">=8.15.0",
-		"node": ">=18.12.1"
+		"node": ">=16.19.0"
 	},
 	"prettier": "@readit/prettier-config",
 	"packageManager": "pnpm@7.14.1"

@@ -1,7 +1,7 @@
-import { trpc } from '@/utils/trpc'
+import { client } from '@/utils/trpc/client'
 
 const IndexPage = () => {
-	const { data, error, isLoading } = trpc.uptime.uptime.useQuery(undefined, {
+	const { data, error, isLoading } = client.uptime.uptime.useQuery(undefined, {
 		trpc: { ssr: false },
 	})
 	if (error) {

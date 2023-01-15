@@ -1,7 +1,7 @@
 import '../styles/global.css'
 import '@fontsource/inter/variable.css'
 
-import { trpc } from '@/utils/trpc'
+import { client } from '@/utils/trpc/client'
 import type { AppProps } from 'next/app'
 
 function MyApp({ Component, pageProps }: AppProps) {
@@ -12,4 +12,4 @@ function MyApp({ Component, pageProps }: AppProps) {
 	)
 }
 
-export default trpc.withTRPC(MyApp)
+export default client.withTRPC(MyApp)
