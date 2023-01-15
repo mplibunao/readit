@@ -7,6 +7,7 @@
 		"packages/*"
 	],
 	"scripts": {
+		"cli": "pnpm -F cli cli",
 		"clean:turbo": "turbo run clean:turbo --parallel",
 		"clean:ts": "turbo run clean:ts --parallel",
 		"build": "turbo run build --parallel",
@@ -26,9 +27,9 @@
 	},
 	"devDependencies": {
 		"@readit/prettier-config": "workspace:*",
+		"husky": "^8.0.0",
 		"turbo": "1.7.0",
-		"typescript": "^4.8.4",
-		"husky": "^8.0.0"
+		"typescript": "^4.8.4"
 	},
 	"engines": {
 		"npm": ">=8.15.0",

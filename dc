@@ -3,14 +3,6 @@
 #NO_COLOR="\033[0m"
 #SPACING="-20s"
 
-function migrate:create { ## Create a database migration
-  if [ $# -eq 0 ]; then echo 1>&2 "Must provide a migration name
-    Usage: $0 $FUNCNAME [MIGRATION_NAME]";exit 3;fi
-
-    echo "run api pnpm -F api migrate new $@ --timestamp" 
-    run api pnpm -F api migrate new $@ --timestamp
-}
-
 function ci { ## Runs tests for the specified service as specified in the docker-compose.test.yml
   if [ $# -eq 0 ]; then echo 1>&2 "Must specify the service to run
 Usage:
@@ -46,10 +38,6 @@ function up { ## Builds infrastructure
 function run:service { ## Runs [SERVICE] with ports specificed in configuration. Use this for starting standalone services.
   echo "Starting service"
   docker-compose run --rm --service-ports "$@"
-}
-
-function secret { ## Generates a random secret that can be used for your SECRET_KEY and more
-  docker-compose run --rm --no-deps server node -e "console.log(crypto.randomBytes(64).toString('hex'));"
 }
 
 function exec { ## Uses docker exec to execute a command agains a running container
