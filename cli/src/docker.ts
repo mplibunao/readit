@@ -1,7 +1,6 @@
-import * as readline from 'node:readline/promises'
-
 import { spawn } from 'child_process'
 import { execSync } from 'child_process'
+import * as readline from 'node:readline/promises'
 import { CommandModule } from 'yargs'
 
 import { Logger } from './logger'
