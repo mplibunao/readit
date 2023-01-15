@@ -1,6 +1,6 @@
 import { spawn } from 'child_process'
 import { execSync } from 'child_process'
-import * as readline from 'node:readline/promises'
+//import * as readline from 'readline'
 import { CommandModule } from 'yargs'
 
 import { Logger } from './logger'
@@ -8,10 +8,10 @@ import { Logger } from './logger'
 const COMPOSE_FILE = '-f ../docker-compose.yml'
 const SERVICES = ['postgres', 'redis']
 
-const rl = readline.createInterface({
-	input: process.stdin,
-	output: process.stdout,
-})
+//const rl = readline.createInterface({
+//input: process.stdin,
+//output: process.stdout,
+//})
 
 export const run = (logger: Logger): CommandModule => {
 	return {
@@ -119,37 +119,37 @@ export const exec = (logger: Logger): CommandModule => {
 	}
 }
 
-export const down = (logger: Logger): CommandModule => {
-	return {
-		command: 'down',
-		describe: 'stop and remove containers, networks, images, and volumes',
-		builder: (yargs) => {
-			return yargs.option('volume', {
-				alias: 'v',
-				describe: 'remove volumes',
-				type: 'boolean',
-				default: false,
-			})
-		},
-		handler: async (argv) => {
-			if (argv.volume) {
-				const confirm = await rl.questionAsync(
-					`Are you sure you want to remove volumes as well? (Y/n): `,
-				)
-				if (['Y', 'y', 'yes'].includes(confirm)) {
-					logger.info('docker-compose down -v')
-					execSync('docker-compose down -v', { stdio: 'inherit' })
-					return
-				} else {
-					logger.info('Cancelled removing volumes')
-					logger.info('docker-compose down')
-					execSync('docker-compose down', { stdio: 'inherit' })
-					return
-				}
-			}
+//export const down = (logger: Logger): CommandModule => {
+//return {
+//command: 'down',
+//describe: 'stop and remove containers, networks, images, and volumes',
+//builder: (yargs) => {
+//return yargs.option('volume', {
+//alias: 'v',
+//describe: 'remove volumes',
+//type: 'boolean',
+//default: false,
+//})
+//},
+//handler: async (argv) => {
+//if (argv.volume) {
+//const confirm = await rl.questionAsync(
+//`Are you sure you want to remove volumes as well? (Y/n): `,
+//)
+//if (['Y', 'y', 'yes'].includes(confirm)) {
+//logger.info('docker-compose down -v')
+//execSync('docker-compose down -v', { stdio: 'inherit' })
+//return
+//} else {
+//logger.info('Cancelled removing volumes')
+//logger.info('docker-compose down')
+//execSync('docker-compose down', { stdio: 'inherit' })
+//return
+//}
+//}
 
-			logger.info('docker-compose down')
-			execSync('docker-compose down', { stdio: 'inherit' })
-		},
-	}
-}
+//logger.info('docker-compose down')
+//execSync('docker-compose down', { stdio: 'inherit' })
+//},
+//}
+//}
