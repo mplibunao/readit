@@ -37,7 +37,8 @@
 				"EDGE_CONFIG",
 				"APP_NAME",
 				"VERCEL_ENV",
-				"CI"
+				"CI",
+				"REVALIDATE_TOKEN"
 			]
 		},
 		"build:analyze": {

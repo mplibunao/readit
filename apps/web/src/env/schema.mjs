@@ -13,6 +13,7 @@ export const serverSchema = z.object({
 	EDGE_CONFIG: z.string(),
 	ANALYZE: z.optional(z.string()),
 	NEXT_TELEMETRY_DISABLED: z.coerce.number().gte(0).lte(1),
+	REVALIDATE_TOKEN: z.string(),
 })
 
 /**
