@@ -4,20 +4,15 @@ import { FastifyPluginAsync } from 'fastify'
 
 import { Config } from './config'
 import healthcheck from './infra/healthcheck'
-import pg from './infra/pg/plugin'
-import {
-	appRouter,
-	createContext,
-	onError,
-	responseMeta,
-	ResponseMetaParams,
-} from './trpc'
+import { pg } from './infra/pg/client'
+import pgPlugin from './infra/pg/plugin'
+import { appRouter, createContext, onError, responseMeta } from './trpc'
 
 export const app: FastifyPluginAsync<Config> = async (
 	fastify,
 	config,
 ): Promise<void> => {
-	fastify.register(pg, config.pg)
+	fastify.register(pgPlugin, pg)
 	fastify.register(healthcheck, config)
 
 	fastify.register(cors, {

@@ -1,3 +1,4 @@
+import { deps } from '@api/helpers/deps'
 import { AccountsService } from '@api/modules/accounts'
 import { UserDto } from '@api/modules/accounts/user/user.dto'
 import { publicProcedure, router } from '@api/trpc/builder'
@@ -19,16 +20,15 @@ export const userRouter = router({
 	register: publicProcedure
 		.input(UserDto.registerInput)
 		.output(UserDto.registerOutput)
-		.query(async ({ ctx, input }) => {
+		.query(async ({ input }) => {
 			const { data, error } = await until<
 				RegistrationError,
 				UserDomain.CreateUserOutput
-			>(() => AccountsService.register(ctx.deps, input))
+			>(() => AccountsService.register(deps, input))
 
 			if (error) {
 				if (error instanceof ZodError) {
-					console.debug('Zod error', error)
-					ctx.deps.logger.debug('Zod error', error)
+					deps.logger.debug('Zod error', error)
 					throw new TRPCError({
 						code: 'BAD_REQUEST',
 						cause: error,
@@ -43,7 +43,7 @@ export const userRouter = router({
 						case DBError:
 						case PasswordHashingError:
 						default:
-							ctx.deps.logger.error('Error creating user', error)
+							deps.logger.error('Error creating user', error)
 							throw new TRPCError({ ...error, code: 'INTERNAL_SERVER_ERROR' })
 					}
 				}
@@ -60,14 +60,14 @@ export const userRouter = router({
 	byId: publicProcedure
 		.input(UserDto.userByIdInput)
 		.output(UserDto.userByIdOutput)
-		.query(async ({ ctx, input }) => {
+		.query(async ({ input }) => {
 			const { error, data } = await until<FindByIdError, UserDomain.UserSchema>(
-				() => AccountsService.findUserById(ctx.deps, input.id),
+				() => AccountsService.findUserById(deps, input.id),
 			)
 
 			if (error) {
 				if (error instanceof ZodError) {
-					ctx.deps.logger.debug('Zod error', error)
+					deps.logger.debug('Zod error', error)
 					throw new TRPCError({
 						code: 'BAD_REQUEST',
 						cause: error,

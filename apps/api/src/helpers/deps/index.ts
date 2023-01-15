@@ -1,8 +1,7 @@
-import { PG } from '@api/infra/pg'
+import { logger } from '@api/infra/logger'
+import { PG, pg } from '@api/infra/pg/client'
 import { Logger } from '@readit/logger'
 
-export const createDeps = (deps: { pg: PG; logger: Logger }) => {
-	return deps
-}
+export const deps: Deps = { logger, pg }
 
-export type Deps = ReturnType<typeof createDeps>
+export type Deps = { logger: Logger; pg: PG }

@@ -22,15 +22,15 @@ async function build(opts?: { config?: Partial<Config> }) {
 
 	beforeAll(async () => {
 		await fastify.ready()
-		await clearDatabase(fastify)
+		await clearDatabase()
 	})
 
 	beforeEach(async () => {
-		await clearDatabase(fastify)
+		await clearDatabase()
 	})
 
 	afterEach(async () => {
-		await clearDatabase(fastify)
+		await clearDatabase()
 	})
 
 	// Tear down our app after we are done

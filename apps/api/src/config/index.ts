@@ -1,5 +1,5 @@
 import { routeResponseSchemaOpts, UnderPressure } from '@api/infra/healthcheck'
-import { PgPluginOpts } from '@api/infra/pg'
+import { PgClientOpts } from '@api/infra/pg/client'
 import { FlagsServiceOptions } from '@readit/flags'
 import { kyselyPGEnvSchema } from '@readit/kysely-pg-config'
 import { LoggerOpts, loggerOptsEnvSchema } from '@readit/logger'
@@ -121,7 +121,7 @@ export interface Config {
 	trpc: {
 		endpoint: string
 	}
-	pg: PgPluginOpts
+	pg: PgClientOpts
 	//redis: FastifyRedisPluginOptions
 	underPressure: UnderPressure
 	edgeConfig: Omit<FlagsServiceOptions, 'flagsRepo'> & {
