@@ -36,6 +36,7 @@ env:
   API_URL: http://localhost:4000/api
   NEXT_PUBLIC_API_URL: http://localhost:4000/api
   NEXT_TELEMETRY_DISABLED: 1
+  REVALIDATE_TOKEN: de18b03be86939d7484c42856706c240bfc6c5ecb5fe837ee697867c2488e697
 
 jobs:
   ci:
