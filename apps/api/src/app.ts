@@ -32,6 +32,8 @@ export const app: FastifyPluginAsync<Config> = async (
 		},
 	})
 
+	console.log('deploy me')
+
 	// broken
 	//if (config.trpc.enablePlayground) {
 	//fastify.register(
