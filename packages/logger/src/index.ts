@@ -55,6 +55,7 @@ export const getLoggerConfig = (opts: LoggerOpts): Partial<LoggerOptions> => {
 					switch (label) {
 						case 'debug':
 						case 'info':
+							return { severity: label.toUpperCase() }
 						case 'error':
 							return { severity: label.toUpperCase(), ...errorReportingFields }
 						case 'warn':
