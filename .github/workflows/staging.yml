@@ -22,6 +22,8 @@ env:
   TURBO_REMOTE_ONLY: true
   VERCEL_ORG_ID: Xl7cG8FFUpa6g9KEqzLz91Km
   VERCEL_PROJECT_ID: prj_fx8rZgSzOkAPc6w0T66BddkkpJcM
+  GCP_REGION: asia-southeast1
+  GCP_PROJECT_ID: prj-s-readit-a2b9
 
   API_HOST: 127.0.0.1
   DATABASE_URL: postgres://readit:postgres@localhost:5432/readit
@@ -77,9 +79,88 @@ jobs:
           docker-compose up -d
           pnpm ci
 
+  migration:
+    name: migration
+    needs: [ci]
+    runs-on: ubuntu-latest
+    permissions:
+      # wif
+      contents: read
+      id-token: write
+    strategy:
+      matrix:
+        service: [pg-manager]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Auth GCP Service Account
+        id: auth-gcp
+        uses: google-github-actions/auth@v1
+        with:
+          workload_identity_provider: '${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}'
+          service_account: '${{ secrets.GCP_SERVICE_ACCOUNT }}'
+          token_format: 'access_token'
+          access_token_lifetime: '600s'
+
+      - name: Build image tag
+        run: |
+          echo "IMAGE_TAG=${{ env.IMAGE_TAG_PREFIX }}/${{ env.APP_NAME }}-${{ matrix.service }}" >> $GITHUB_ENV
+          echo "DOCKERFILE=./apps/${{ matrix.service }}/Dockerfile" >> $GITHUB_ENV
+
+      - name: Setup buildx
+        uses: docker/setup-buildx-action@v2
+        id: buildx
+
+      - name: Log into registry ${{ env.REGISTRY }}
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: oauth2accesstoken
+          password: ${{ steps.auth-gcp.outputs.access_token }}
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: |
+            name=${{ env.IMAGE_TAG }},enable=true
+          tags: |
+            type=ref,event=pr
+            type=ref,event=branch
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+
+          flavor: |
+            latest=auto
+            prefix=
+            suffix=
+
+      - name: Build and push
+        id: push
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: ${{ env.DOCKERFILE }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          builder: ${{ steps.buildx.outputs.name }}
+          target: production
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Deploy to Cloud Run
+        uses: google-github-actions/deploy-cloudrun@v1
+        with:
+          image: '${{ env.IMAGE_TAG }}@${{ steps.push.outputs.digest }}'
+          service: 'readit-${{ matrix.service }}'
+          region: ${{ env.GCP_REGION }}
+          project_id: ${{ env.GCP_PROJECT_ID }}
+
   docker_staging_cloudrun_cd:
     name: docker_staging_cloudrun_cd
-    needs: [ci]
+    needs: [ci, migration]
     runs-on: ubuntu-latest
     permissions:
       # wif
@@ -154,9 +235,9 @@ jobs:
         uses: google-github-actions/deploy-cloudrun@v1
         with:
           image: '${{ env.IMAGE_TAG }}@${{ steps.push.outputs.digest }}'
-          service: readit-api
-          region: asia-southeast1
-          project_id: prj-s-readit-a2b9
+          service: 'readit-${{ matrix.service }}'
+          region: ${{ env.GCP_REGION }}
+          project_id: ${{ env.GCP_PROJECT_ID }}
 
   vercel_staging:
     needs: [ci]
