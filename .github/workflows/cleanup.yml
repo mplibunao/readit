@@ -38,5 +38,6 @@ jobs:
         with:
           args: >-
             -repo="${{ env.IMAGE_TAG_PREFIX }}/${{ env.APP_NAME }}-api"
+            -repo="${{ env.IMAGE_TAG_PREFIX }}/${{ env.APP_NAME }}-pg-manager"
             -tag-filter-any=^(\d+).(\d+).(\d+)$
-            -keep=3
+            -keep=30
