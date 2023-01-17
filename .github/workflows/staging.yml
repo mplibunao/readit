@@ -225,9 +225,8 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Deploy to Cloud Run
-        id: deploy
-        uses: 'spencercorwin/deploy-cloudrun@enable-jobs'
+      - name: Deploy to Cloud Run Job
+        uses: spencercorwin/deploy-cloudrun@enable-jobs
         with:
           job: 'readit-${{ matrix.service }}'
           gcloud_component: beta
