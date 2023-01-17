@@ -226,12 +226,13 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Deploy to Cloud Run
-        uses: google-github-actions/deploy-cloudrun@v1
+        id: deploy
+        uses: 'spencercorwin/deploy-cloudrun@enable-jobs'
         with:
-          image: '${{ env.IMAGE_TAG }}@${{ steps.push.outputs.digest }}'
-          service: 'readit-${{ matrix.service }}'
+          job: 'readit-${{ matrix.service }}'
+          gcloud_component: beta
           region: ${{ env.GCP_REGION }}
-          project_id: ${{ env.GCP_PROJECT_ID }}
+          image: '${{ env.IMAGE_TAG }}@${{ steps.push.outputs.digest }}'
 
   vercel_staging:
     needs: [ci, docker_staging_cloudrun_cd]
