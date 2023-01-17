@@ -29,10 +29,10 @@ export const db = new Kysely<DB>({
 		} else {
 			if (event.level === 'query') {
 				logger.info(`PG query sql: ${event.query.sql}`)
-				logger.info(`pg query params: ${event.query.parameters}`)
+				logger.info(`PG query params: ${event.query.parameters}`)
 			}
 			if (event.level === 'error') {
-				logger.error(`pg error: ${event.error}`)
+				logger.error(`PG error: ${event.error}`)
 			}
 		}
 	},
