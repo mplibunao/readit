@@ -66,7 +66,6 @@ gcloud beta run jobs update $JOB \
   --project=$PROJECT_ID \
   --region=$REGION \
 	--command="$COMMAND"
-  --labels="managed-by=$hostname"
 
 echo "Executing job"
 gcloud beta run jobs execute $JOB \
