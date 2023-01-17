@@ -27,7 +27,23 @@ COMMAND=""
 
 # Use provided command if provided
 if [ ! -z "$2" ]; then
-  COMMAND=$2
+  case $2 in 
+    "up")
+      COMMAND="node,dist/index.js,up"
+      ;;
+    "down")
+      COMMAND="node,dist/index.js,down"
+      ;;
+    "redo")
+      COMMAND="node,dist/index.js,redo"
+      ;;
+    "latest")
+      COMMAND="node,dist/index.js,latest"
+      ;;
+    *)
+      echo "Invalid command, please choose one of the following commands: up, down, redo, latest"
+      exit 1
+  esac
 fi
 
 # Set project and region based on environment
@@ -38,17 +54,21 @@ else
 fi
 
 # Check if job exist 
+echo "Checking if job exists"
 gcloud beta run jobs describe $JOB --project=$PROJECT_ID --region=$REGION &> /dev/null
 if [ $? -ne 0 ]; then
     echo "Job $JOB does not exist, please create it first before running the script again"
     exit 1
 fi
 
+echo "Updating job"
 gcloud beta run jobs update $JOB \
   --project=$PROJECT_ID \
   --region=$REGION \
-	--command="$COMMAND" \
+	--command="$COMMAND"
+  --labels="managed-by=$hostname"
 
+echo "Executing job"
 gcloud beta run jobs execute $JOB \
   --project="$PROJECT_ID" \
   --region=$REGION \

@@ -7,6 +7,7 @@
 		"packages/*"
 	],
 	"scripts": {
+		"migrate": "./apps/pg-manager/migrate.sh",
 		"cli": "pnpm -F cli cli",
 		"clean:turbo": "turbo run clean:turbo --parallel",
 		"clean:ts": "turbo run clean:ts --parallel",
