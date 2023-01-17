@@ -240,7 +240,7 @@ jobs:
           project_id: ${{ env.GCP_PROJECT_ID }}
 
   vercel_staging:
-    needs: [ci]
+    needs: [ci, docker_staging_cloudrun_cd]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
