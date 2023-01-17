@@ -126,15 +126,9 @@ jobs:
           images: |
             name=${{ env.IMAGE_TAG }},enable=true
           tags: |
-            type=ref,event=pr
-            type=ref,event=branch
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-
+            type=raw,value=staging
           flavor: |
             latest=auto
-            prefix=
-            suffix=
 
       - name: Build and push
         id: push
