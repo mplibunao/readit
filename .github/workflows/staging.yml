@@ -144,17 +144,12 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Deploy to Cloud Run Job
-        uses: spencercorwin/deploy-cloudrun@enable-jobs
-        with:
-          job: 'readit-${{ matrix.service }}'
-          gcloud_component: beta
-          region: ${{ env.GCP_REGION }}
-          image: '${{ env.IMAGE_TAG }}@${{ steps.push.outputs.digest }}'
-          project_id: ${{ env.GCP_PROJECT_ID }}
-
-      #- name: Execute the job
-      #uses: sp
+      - name: Execute the job
+        run: |-
+          gcloud beta run jobs execute "${{ env.APP_NAME }}-${{ matrix.service }}" \
+          --project="${{ env.GCP_PROJECT_ID }}" \
+          --region="${{ env.GCP_REGION }}" \
+          --wait
 
   docker_staging_cloudrun_cd:
     name: docker_staging_cloudrun_cd
@@ -233,7 +228,7 @@ jobs:
         uses: google-github-actions/deploy-cloudrun@v1
         with:
           image: '${{ env.IMAGE_TAG }}@${{ steps.push.outputs.digest }}'
-          service: 'readit-${{ matrix.service }}'
+          service: '${{ env.APP_NAME }}-${{ matrix.service }}'
           region: ${{ env.GCP_REGION }}
           project_id: ${{ env.GCP_PROJECT_ID }}
 
