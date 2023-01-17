@@ -151,6 +151,10 @@ jobs:
           gcloud_component: beta
           region: ${{ env.GCP_REGION }}
           image: '${{ env.IMAGE_TAG }}@${{ steps.push.outputs.digest }}'
+          project_id: ${{ env.GCP_PROJECT_ID }}
+
+      #- name: Execute the job
+      #uses: sp
 
   docker_staging_cloudrun_cd:
     name: docker_staging_cloudrun_cd
