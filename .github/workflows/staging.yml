@@ -150,7 +150,7 @@ jobs:
       # Update is needed just to make sure we're using the default cmd in case of someone modifying to rollback
       - name: Update and cxecute the job
         run: |-
-          ../../scripts/migrate_ci.sh ${{ env.GCP_PROJECT_ID }} ${{ env.GCP_REGION }} "${{ env.APP_NAME }}-${{ matrix.service }}"
+          ./scripts/migrate_ci.sh ${{ env.GCP_PROJECT_ID }} ${{ env.GCP_REGION }} "${{ env.APP_NAME }}-${{ matrix.service }}"
 
   docker_staging_cloudrun_cd:
     name: docker_staging_cloudrun_cd
