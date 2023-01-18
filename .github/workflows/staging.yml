@@ -119,6 +119,9 @@ jobs:
           username: oauth2accesstoken
           password: ${{ steps.auth-gcp.outputs.access_token }}
 
+      # We use a static staging/production tag so we don't have to update the job everytime we push a new one (we run update anyway but atleast we don't have to keep track of versions)
+      # You only need the latest version of migration image anyway then you can up/down as you wish
+      # This meta doesn't explicitly put `latest` so creating a job fails. We don't use latest since we want to differentiate between staging and prod (since we don't keep track of versions)
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v4
