@@ -124,7 +124,7 @@ jobs:
           images: |
             name=${{ env.IMAGE_TAG }},enable=true
           tags: |
-            type=raw,value=staging
+            type=raw,value=production
           flavor: |
             latest=auto
 
