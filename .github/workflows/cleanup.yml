@@ -38,7 +38,12 @@ jobs:
         with:
           args: >-
             -repo="${{ env.IMAGE_TAG_PREFIX }}/${{ env.APP_NAME }}-api"
-            -repo="${{ env.IMAGE_TAG_PREFIX }}/${{ env.APP_NAME }}-pg-manager"
             -grace=336h
             #-tag-filter-any=^(\d+).(\d+).(\d+)$
-            -keep=20
+            -keep=10
+
+      - uses: 'docker://asia-docker.pkg.dev/gcr-cleaner/gcr-cleaner/gcr-cleaner-cli'
+        with:
+          args: >-
+            -repo="${{ env.IMAGE_TAG_PREFIX }}/${{ env.APP_NAME }}-pg-manager"
+            -keep=5
