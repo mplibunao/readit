@@ -77,9 +77,78 @@ jobs:
           docker-compose up -d
           pnpm ci
 
+  migration:
+    name: migration
+    needs: [ci]
+    runs-on: ubuntu-latest
+    permissions:
+      # wif
+      contents: read
+      id-token: write
+    strategy:
+      matrix:
+        service: [pg-manager]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Auth GCP Service Account
+        id: auth-gcp
+        uses: google-github-actions/auth@v1
+        with:
+          workload_identity_provider: '${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}'
+          service_account: '${{ secrets.GCP_SERVICE_ACCOUNT }}'
+          token_format: 'access_token'
+          access_token_lifetime: '600s'
+
+      - name: Build image tag
+        run: |
+          echo "IMAGE_TAG=${{ env.IMAGE_TAG_PREFIX }}/${{ env.APP_NAME }}-${{ matrix.service }}" >> $GITHUB_ENV
+          echo "DOCKERFILE=./apps/${{ matrix.service }}/Dockerfile" >> $GITHUB_ENV
+
+      - name: Setup buildx
+        uses: docker/setup-buildx-action@v2
+        id: buildx
+
+      - name: Log into registry ${{ env.REGISTRY }}
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: oauth2accesstoken
+          password: ${{ steps.auth-gcp.outputs.access_token }}
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: |
+            name=${{ env.IMAGE_TAG }},enable=true
+          tags: |
+            type=raw,value=staging
+          flavor: |
+            latest=auto
+
+      - name: Build and push
+        id: push
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: ${{ env.DOCKERFILE }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          builder: ${{ steps.buildx.outputs.name }}
+          target: production
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Update and cxecute the job
+        run: |-
+          ../../scripts/migrate_ci.sh ${{ env.GCP_PROJECT_ID }} ${{ env.GCP_REGION }} "${{ env.APP_NAME }}-${{ matrix.service }}"
+
   docker_prod_cloudrun_cd:
     name: docker_prod_cloudrun_cd
-    needs: [ci]
+    needs: [ci, migration]
     runs-on: ubuntu-latest
     permissions:
       # wif
@@ -157,7 +226,7 @@ jobs:
             APP_VERSION=${{ steps.meta.outputs.version }}
 
   vercel_prod:
-    needs: [ci]
+    needs: [ci, docker_prod_cloudrun_cd]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

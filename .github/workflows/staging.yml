@@ -144,12 +144,10 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Execute the job
+      # Update is needed just to make sure we're using the default cmd in case of someone modifying to rollback
+      - name: Update and cxecute the job
         run: |-
-          gcloud beta run jobs execute "${{ env.APP_NAME }}-${{ matrix.service }}" \
-          --project="${{ env.GCP_PROJECT_ID }}" \
-          --region="${{ env.GCP_REGION }}" \
-          --wait
+          ../../scripts/migrate_ci.sh ${{ env.GCP_PROJECT_ID }} ${{ env.GCP_REGION }} "${{ env.APP_NAME }}-${{ matrix.service }}"
 
   docker_staging_cloudrun_cd:
     name: docker_staging_cloudrun_cd

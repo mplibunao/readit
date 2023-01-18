@@ -5,6 +5,8 @@ PRODUCTION_PROJECT_ID="prj-p-readit-5ae4"
 REGION="asia-southeast1"
 JOB="readit-pg-manager"
 
+echo "Warning this database migration script is for running migrations on the production/staging database locally as an escape hatch (eg. need to rollback). Use pg-manager's npm script for local migrations"
+
 # Check if gcloud command is installed
 which gcloud &>/dev/null
 if [ $? -ne 0 ]; then
