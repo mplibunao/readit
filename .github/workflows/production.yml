@@ -142,9 +142,9 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      #- name: Update and cxecute the job
-      #run: |-
-      #./scripts/migrate_ci.sh ${{ env.GCP_PROJECT_ID }} ${{ env.GCP_REGION }} "${{ env.APP_NAME }}-${{ matrix.service }}"
+      - name: Update and execute migration job
+        run: |-
+          ./scripts/migrate_ci.sh ${{ env.GCP_PROJECT_ID }} ${{ env.GCP_REGION }} "${{ env.APP_NAME }}-${{ matrix.service }}"
 
   docker_prod_cloudrun_cd:
     name: docker_prod_cloudrun_cd

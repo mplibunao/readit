@@ -148,7 +148,7 @@ jobs:
           cache-to: type=gha,mode=max
 
       # Update is needed just to make sure we're using the default cmd in case of someone modifying to rollback
-      - name: Update and cxecute the job
+      - name: Update and execute migration job
         run: |-
           ./scripts/migrate_ci.sh ${{ env.GCP_PROJECT_ID }} ${{ env.GCP_REGION }} "${{ env.APP_NAME }}-${{ matrix.service }}"
 
