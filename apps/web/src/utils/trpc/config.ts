@@ -9,10 +9,12 @@ import {
 import { log } from 'next-axiom'
 import superjson from 'superjson'
 
+import { isServer } from '../ssr'
+
 //import { getApiBaseUrl } from '../url'
 
 const baseUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL
-log.info('baseUrl', { baseUrl })
+log.info('baseUrl', { baseUrl, isServer: Boolean(isServer()) })
 
 export const config: CreateTRPCClientOptions<AppRouter> = {
 	links: [
