@@ -4,6 +4,7 @@ import Fastify from 'fastify'
 import app from './app'
 import { config } from './config'
 import { logger } from './infra/logger'
+import { redis } from './infra/redis/client'
 
 const main = async () => {
 	// Initialize fastify
@@ -17,7 +18,7 @@ const main = async () => {
 
 	// delay is the number of milliseconds for the graceful close to finish
 	const closeListeners = closeWithGrace(
-		{ delay: 5000 },
+		{ delay: 10000 },
 		async ({
 			err,
 			signal,
@@ -32,6 +33,7 @@ const main = async () => {
 			}
 
 			server.log.info({ signal, manual }, 'closing application')
+			await redis.quit()
 			await server.close()
 		},
 	)

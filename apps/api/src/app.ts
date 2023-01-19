@@ -6,6 +6,8 @@ import { Config } from './config'
 import healthcheck from './infra/healthcheck'
 import { pg } from './infra/pg/client'
 import pgPlugin from './infra/pg/plugin'
+import ratelimit from './infra/ratelimit'
+import { redis } from './infra/redis/client'
 import { appRouter, createContext, onError, responseMeta } from './trpc'
 
 export const app: FastifyPluginAsync<Config> = async (
@@ -14,6 +16,7 @@ export const app: FastifyPluginAsync<Config> = async (
 ): Promise<void> => {
 	fastify.register(pgPlugin, pg)
 	fastify.register(healthcheck, config)
+	fastify.register(ratelimit, { ...config.rateLimit, redis })
 
 	fastify.register(cors, {
 		origin: [config.env.FRONTEND_URL],

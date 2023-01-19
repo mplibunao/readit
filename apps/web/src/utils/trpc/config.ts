@@ -10,11 +10,6 @@ import superjson from 'superjson'
 
 import { getApiBaseUrl } from '../url'
 
-const fetchDefaults: RequestInit = {
-	credentials: 'include',
-	mode: 'cors',
-}
-
 export const config: CreateTRPCClientOptions<AppRouter> = {
 	links: [
 		loggerLink({
@@ -31,7 +26,8 @@ export const config: CreateTRPCClientOptions<AppRouter> = {
 				fetch(url, options) {
 					return fetch(url, {
 						...options,
-						...fetchDefaults,
+						credentials: 'include',
+						mode: 'cors',
 					})
 				},
 			}),
@@ -41,7 +37,8 @@ export const config: CreateTRPCClientOptions<AppRouter> = {
 				fetch(url, options) {
 					return fetch(url, {
 						...options,
-						...fetchDefaults,
+						credentials: 'include',
+						mode: 'cors',
 					})
 				},
 			}),

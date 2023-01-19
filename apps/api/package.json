@@ -25,6 +25,7 @@
 	"dependencies": {
 		"@cspotcode/source-map-support": "^0.8.1",
 		"@fastify/cors": "^8.2.0",
+		"@fastify/rate-limit": "^7.6.0",
 		"@fastify/under-pressure": "^8.1.0",
 		"@open-draft/until": "^2.0.0",
 		"@readit/flags": "workspace:*",
@@ -38,6 +39,7 @@
 		"env-schema": "^5.2.0",
 		"fastify": "^4.9.2",
 		"fastify-plugin": "^4.3.0",
+		"ioredis": "^5.2.5",
 		"kysely": "^0.22.0",
 		"pg": "^8.8.0",
 		"pino": "8.7.0",
