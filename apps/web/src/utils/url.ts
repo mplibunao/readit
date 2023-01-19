@@ -10,8 +10,16 @@ function getNextUrl() {
 export const nextBaseUrl = getNextUrl()
 
 export function getApiBaseUrl() {
+	console.log(
+		'process.env.NEXT_PUBLIC_API_URL',
+		process.env.NEXT_PUBLIC_API_URL,
+	) // eslint-disable-line no-console
+	console.log(
+		'process.env.NEXT_PUBLIC_API_URL',
+		process.env.NEXT_PUBLIC_API_URL,
+	) // eslint-disable-line no-console
 	if (process.env.NEXT_PUBLIC_API_URL) return process.env.NEXT_PUBLIC_API_URL
 	if (process.env.API_URL) return process.env.API_URL
 
-	return 'http://localhost:4000/api'
+	return 'http://localhost:4000/api//'
 }
