@@ -14,7 +14,7 @@ import { isServer } from '../ssr'
 //import { getApiBaseUrl } from '../url'
 
 const baseUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL
-log.info('baseUrl', { baseUrl, isServer: Boolean(isServer()) })
+log.info('baseUrl!', { baseUrl, isServer: Boolean(isServer()) })
 
 export const config: CreateTRPCClientOptions<AppRouter> = {
 	links: [
