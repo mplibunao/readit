@@ -14,10 +14,7 @@ export function getApiBaseUrl() {
 		'process.env.NEXT_PUBLIC_API_URL',
 		process.env.NEXT_PUBLIC_API_URL,
 	) // eslint-disable-line no-console
-	console.log(
-		'process.env.NEXT_PUBLIC_API_URL',
-		process.env.NEXT_PUBLIC_API_URL,
-	) // eslint-disable-line no-console
+	console.log('process.env.API_URL', process.env.API_URL) // eslint-disable-line no-console
 	if (process.env.NEXT_PUBLIC_API_URL) return process.env.NEXT_PUBLIC_API_URL
 	if (process.env.API_URL) return process.env.API_URL
 
