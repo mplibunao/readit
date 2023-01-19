@@ -8,7 +8,12 @@ import {
 } from '@trpc/client'
 import superjson from 'superjson'
 
-import { trpcUrl } from '../url'
+import { getApiBaseUrl } from '../url'
+
+const fetchDefaults: RequestInit = {
+	credentials: 'include',
+	mode: 'cors',
+}
 
 export const config: CreateTRPCClientOptions<AppRouter> = {
 	links: [
@@ -22,11 +27,23 @@ export const config: CreateTRPCClientOptions<AppRouter> = {
 				return op.context.skipBatch === true
 			},
 			true: httpLink({
-				url: trpcUrl,
+				url: `${getApiBaseUrl()}/trpc`,
+				fetch(url, options) {
+					return fetch(url, {
+						...options,
+						...fetchDefaults,
+					})
+				},
 			}),
 			false: httpBatchLink({
-				url: trpcUrl,
+				url: `${getApiBaseUrl()}/trpc`,
 				maxURLLength: 2083,
+				fetch(url, options) {
+					return fetch(url, {
+						...options,
+						...fetchDefaults,
+					})
+				},
 			}),
 		}),
 	],

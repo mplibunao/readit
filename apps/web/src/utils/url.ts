@@ -15,5 +15,3 @@ export function getApiBaseUrl() {
 
 	return 'http://localhost:4000/api'
 }
-
-export const trpcUrl = `${getApiBaseUrl()}/trpc`
