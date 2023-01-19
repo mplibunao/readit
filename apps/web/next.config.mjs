@@ -1,5 +1,6 @@
 // @ts-check
 import fs from 'fs'
+import { withAxiom } from 'next-axiom'
 
 import { env } from './src/env/server.mjs'
 
@@ -36,8 +37,15 @@ const nextConfig = {
 		defaultLocale: 'en',
 	},
 	experimental: {
+		scrollRestoration: true,
+		legacyBrowsers: false,
 		transpilePackages: getTranspilePackages(),
+		swcPlugins: [
+			// Allow Date/Map in getStaticProps
+			['next-superjson-plugin', {}],
+		],
 	},
+	productionBrowserSourceMaps: process.env.VERCEL_ENV !== 'production',
 	/** We already do linting and typechecking as separate tasks in CI */
 	eslint: { ignoreDuringBuilds: !!process.env.CI },
 	typescript: { ignoreBuildErrors: !!process.env.CI },
@@ -56,7 +64,7 @@ async function withBundleAnalyzer() {
 }
 
 export default async function withPlugins() {
-	const plugins = [await withBundleAnalyzer()]
+	const plugins = [await withBundleAnalyzer(), withAxiom]
 
 	return plugins.reduce((acc, next) => next(acc), nextConfig)
 }

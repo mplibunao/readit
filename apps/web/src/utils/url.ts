@@ -1,3 +1,5 @@
+import { log } from 'next-axiom'
+
 import { isServer } from './ssr'
 
 function getNextUrl() {
@@ -10,11 +12,10 @@ function getNextUrl() {
 export const nextBaseUrl = getNextUrl()
 
 export function getApiBaseUrl() {
-	console.log(
-		'process.env.NEXT_PUBLIC_API_URL',
-		process.env.NEXT_PUBLIC_API_URL,
-	) // eslint-disable-line no-console
-	console.log('process.env.API_URL', process.env.API_URL) // eslint-disable-line no-console
+	log.info('url', {
+		clientUrl: process.env.NEXT_PUBLIC_API_URL,
+		apiUrl: process.env.API_URL,
+	})
 	if (process.env.NEXT_PUBLIC_API_URL) return process.env.NEXT_PUBLIC_API_URL
 	if (process.env.API_URL) return process.env.API_URL
 
