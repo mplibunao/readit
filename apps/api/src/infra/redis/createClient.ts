@@ -27,5 +27,6 @@ export const createRedisClient = (opts: RedisOpts) => {
 		maxRetriesPerRequest: opts.REDIS_MAX_RETRIES_PER_REQ,
 		connectTimeout: opts.REDIS_CONNECT_TIMEOUT,
 		enableAutoPipelining: opts.REDIS_ENABLE_AUTO_PIPELINING,
+		family: 4,
 	})
 }
