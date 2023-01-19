@@ -1,4 +1,4 @@
-import { log } from 'next-axiom'
+//import { log } from 'next-axiom'
 
 import { isServer } from './ssr'
 
@@ -11,13 +11,13 @@ function getNextUrl() {
 
 export const nextBaseUrl = getNextUrl()
 
-export function getApiBaseUrl() {
-	log.info('url', {
-		clientUrl: process.env.NEXT_PUBLIC_API_URL,
-		apiUrl: process.env.API_URL,
-	})
-	if (process.env.NEXT_PUBLIC_API_URL) return process.env.NEXT_PUBLIC_API_URL
-	if (process.env.API_URL) return process.env.API_URL
+//export function getApiBaseUrl() {
+//log.info('url', {
+//clientUrl: process.env.NEXT_PUBLIC_API_URL,
+//apiUrl: process.env.API_URL,
+//})
+//if (process.env.NEXT_PUBLIC_API_URL) return process.env.NEXT_PUBLIC_API_URL
+//if (process.env.API_URL) return process.env.API_URL
 
-	return 'http://localhost:4000/api//'
-}
+//return 'http://localhost:4000/api//'
+//}
