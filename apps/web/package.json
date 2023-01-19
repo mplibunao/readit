@@ -36,6 +36,8 @@
 		"ariakit": "2.0.0-next.41",
 		"cva": "npm:class-variance-authority@^0.4.0",
 		"next": "13.0.0",
+		"next-axiom": "^0.16.0",
+		"next-superjson-plugin": "^0.5.4",
 		"react": "18.2.0",
 		"react-dom": "18.2.0",
 		"react-hook-form": "^7.40.0",

@@ -184,6 +184,8 @@ importers:
       jest-axe: ^7.0.0
       jest-environment-jsdom: ^29.3.1
       next: 13.0.0
+      next-axiom: ^0.16.0
+      next-superjson-plugin: ^0.5.4
       npm-run-all: ^4.1.5
       postcss: ^8.4.19
       prettier: 2.8.0
@@ -210,6 +212,8 @@ importers:
       ariakit: 2.0.0-next.41_biqbaboplfbrettd7655fr4n2y
       cva: /class-variance-authority/0.4.0_typescript@4.9.4
       next: 13.0.0_mqvh5p7ejg4taogoj6tpk3gd5a
+      next-axiom: 0.16.0_next@13.0.0
+      next-superjson-plugin: 0.5.4_acuudid5spmzwkc6hwjlp65vrm
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
       react-hook-form: 7.41.5
@@ -5614,6 +5618,12 @@ packages:
       '@babel/runtime': 7.20.1
     dev: true
 
+  /hoist-non-react-statics/3.3.2:
+    resolution: {integrity: sha512-/gGivxi8JPKWNm/W0jSmzcMPpfpPLc3dY/6GxhX2hQ9iGj3aDfklV4ET7NjKpSinLpJ5vafa9iiGIEZg10SfBw==}
+    dependencies:
+      react-is: 16.13.1
+    dev: false
+
   /hosted-git-info/2.8.9:
     resolution: {integrity: sha512-mxIDAb9Lsm6DoOJ7xH+5+X4y1LU/4Hi50L9C5sIswK3JzULS4bwk1FvjdBgvYR4bzT4tuUQiC15FE2f5HbLvYw==}
     dev: true
@@ -6941,6 +6951,27 @@ packages:
     resolution: {integrity: sha512-+EUsqGPLsM+j/zdChZjsnX51g4XrHFOIXwfnCVPGlQk/k5giakcKsuxCObBRu6DSm9opw/O6slWbJdghQM4bBg==}
     engines: {node: '>= 0.6'}
     dev: true
+
+  /next-axiom/0.16.0_next@13.0.0:
+    resolution: {integrity: sha512-WlmObMtra/OJPiJ6Gim4g8OTuLlJx9DVTeEaNmBIO3wEkR+Nt4932/xng2a9XofOVR7RgaNk1QIyPrqZW9P25w==}
+    engines: {node: '>=15'}
+    peerDependencies:
+      next: ^12.1.4 || ^13
+    dependencies:
+      next: 13.0.0_mqvh5p7ejg4taogoj6tpk3gd5a
+      whatwg-fetch: 3.6.2
+    dev: false
+
+  /next-superjson-plugin/0.5.4_acuudid5spmzwkc6hwjlp65vrm:
+    resolution: {integrity: sha512-AUAqdL+yv/jqnkd583jffimRYbfbztkKkNf7qv0WhOVUGW0cIFYdtQHbOEseeCHK95hcPy7rDZY94nujjjRseQ==}
+    peerDependencies:
+      next: ^13
+      superjson: ^1
+    dependencies:
+      hoist-non-react-statics: 3.3.2
+      next: 13.0.0_mqvh5p7ejg4taogoj6tpk3gd5a
+      superjson: 1.12.0
+    dev: false
 
   /next/13.0.0_mqvh5p7ejg4taogoj6tpk3gd5a:
     resolution: {integrity: sha512-puH1WGM6rGeFOoFdXXYfUxN9Sgi4LMytCV5HkQJvVUOhHfC1DoVqOfvzaEteyp6P04IW+gbtK2Q9pInVSrltPA==}
@@ -9195,6 +9226,10 @@ packages:
     dependencies:
       iconv-lite: 0.6.3
     dev: true
+
+  /whatwg-fetch/3.6.2:
+    resolution: {integrity: sha512-bJlen0FcuU/0EMLrdbJ7zOnW6ITZLrZMIarMUVmdKtsGvZna8vxKYaexICWPfZ8qwf9fzNq+UEIZrnSaApt6RA==}
+    dev: false
 
   /whatwg-mimetype/3.0.0:
     resolution: {integrity: sha512-nt+N2dzIutVRxARx1nghPKGv1xHikU7HKdfafKkLNLindmPU/ch3U31NOCGGA/dmPcmb1VlofO0vnKAcsm0o/Q==}

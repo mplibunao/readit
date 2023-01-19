@@ -12,4 +12,6 @@ function MyApp({ Component, pageProps }: AppProps) {
 	)
 }
 
+export { reportWebVitals } from 'next-axiom/dist/webVitals'
+
 export default client.withTRPC(MyApp)
