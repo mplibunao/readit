@@ -2,6 +2,13 @@
 
 [![ci](https://github.com/mplibunao/readit/actions/workflows/ci.yml/badge.svg)](https://github.com/mplibunao/readit/actions/workflows/ci.yml) [![staging](https://github.com/mplibunao/readit/actions/workflows/staging.yml/badge.svg)](https://github.com/mplibunao/readit/actions/workflows/staging.yml) [![production](https://github.com/mplibunao/readit/actions/workflows/production.yml/badge.svg)](https://github.com/mplibunao/readit/actions/workflows/production.yml)
 
+# URLs
+
+|           | Staging                               | Production                    |
+| Web       | readit.staging.mplibunao.tech         | readit.mplibunao.tech         |
+| Api       | readit-api-staging.mplibunao.tech     | readit-api.mplibunao.tech     |
+| Storybook | readit.stories.staging.mplibunao.tech | readit.stories.mplibunao.tech |
+
 
 # Domains
 
