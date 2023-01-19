@@ -1,4 +1,4 @@
-import { AppRouter } from '@api/trpc'
+import { AppRouter } from '@readit/api'
 import { createTRPCProxyClient } from '@trpc/client'
 
 import { config } from './config'

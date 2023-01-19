@@ -1,5 +1,8 @@
 import { routeResponseSchemaOpts, UnderPressure } from '@api/infra/healthcheck'
 import { PgClientOpts } from '@api/infra/pg/client'
+import { rateLimitEnvSchema } from '@api/infra/ratelimit'
+import { redisEnvSchema, RedisOpts } from '@api/infra/redis/createClient'
+import { RateLimitOptions } from '@fastify/rate-limit'
 import { FlagsServiceOptions } from '@readit/flags'
 import { kyselyPGEnvSchema } from '@readit/kysely-pg-config'
 import { LoggerOpts, loggerOptsEnvSchema } from '@readit/logger'
@@ -7,23 +10,6 @@ import { PortSchema } from '@readit/utils'
 import envSchema from 'env-schema'
 import { z } from 'zod'
 import { zodToJsonSchema } from 'zod-to-json-schema'
-
-const redisEnvSchema = {
-	REDIS_URL: z.string().optional(),
-	REDIS_ENABLE_AUTO_PIPELINING: z
-		.boolean()
-		.optional()
-		.default(true)
-		.describe('https://www.youtube.com/watch?app=desktop&v=0L0ER4pZbX4'),
-	REDIS_MAX_RETRIES_PER_REQ: z
-		.number()
-		.optional()
-		.default(20)
-		.describe(
-			"Lower is better for perf, since we don't wait when there are errors. If failing fast is ok",
-		),
-	REDIS_CONNECT_TIMEOUT: z.number().optional().default(10_000),
-}
 
 const edgeConfigEnvSchema = {
 	EDGE_CONFIG: z
@@ -70,6 +56,7 @@ const zodEnvSchema = z.object({
 	...redisEnvSchema,
 	...healthcheckEnvSchema,
 	...edgeConfigEnvSchema,
+	...rateLimitEnvSchema,
 	NODE_ENV: z
 		.enum(['development', 'production', 'test'])
 		.default('development'),
@@ -122,8 +109,9 @@ export interface Config {
 		endpoint: string
 	}
 	pg: PgClientOpts
-	//redis: FastifyRedisPluginOptions
+	redis: RedisOpts
 	underPressure: UnderPressure
+	rateLimit: RateLimitOptions
 	edgeConfig: Omit<FlagsServiceOptions, 'flagsRepo'> & {
 		connectionString: Env['EDGE_CONFIG']
 		env: Env['VERCEL_ENV']
@@ -151,11 +139,7 @@ export const config: Config = {
 		endpoint: env.TRPC_ENDPOINT,
 	},
 	pg: env,
-	//redis: {
-	//enableAutoPipelining: true,
-	//connectTimeout: 500,
-	//maxRetriesPerRequest: 1,
-	//},
+	redis: env,
 	underPressure: {
 		version: env.APP_VERSION,
 		maxHeapUsedBytes: env.HEALTHCHECK_MAX_HEAP_USED,
@@ -174,5 +158,9 @@ export const config: Config = {
 		connectionString: env.EDGE_CONFIG,
 		appName: env.APP_NAME,
 		env: env.VERCEL_ENV,
+	},
+	rateLimit: {
+		max: env.RATELIMIT_MAX,
+		timeWindow: env.RATELIMIT_TIMEWINDOW,
 	},
 }
