@@ -1,8 +1,6 @@
 import Redis from 'ioredis'
 import { z } from 'zod'
 
-import { logger } from '../logger'
-
 export const redisEnvSchema = {
 	REDIS_URL: z.string(),
 	REDIS_ENABLE_AUTO_PIPELINING: z
@@ -33,7 +31,7 @@ export const createRedisClient = (opts: RedisOpts) => {
 			family: 4,
 		})
 	} catch (error) {
-		logger.error('Creating redis client failed', { error })
+		console.error('Creating redis client failed', { error })
 		throw error
 	}
 }
