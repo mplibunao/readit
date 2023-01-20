@@ -25,10 +25,8 @@ env:
   GCP_PROJECT_ID: prj-s-readit-a2b9
   APP_NAME: readit # Note this will overwrite web's envs
 
-# Vercel build needs vercel pull to get the env from the dashboard
-# However, `vercel env pull` will prioritize process.env thus use process.env set globally for tests
-# https://nextjs.org/docs/basic-features/environment-variables#environment-variable-load-order
-# Therefore we need to isolate envs used for ci to be only set in the ci level to prevent overwriting env from dashboard
+# We don't deploy staging/preview here anymore since it's already deployed in vercel
+# Doesn't affect trunk-based dev workflow, faster cicd, cheaper costs
 
 jobs:
   ci:
@@ -43,10 +41,10 @@ jobs:
       TRPC_ENDPOINT: /trpc
       EDGE_CONFIG: ''
       VERCEL_ENV: development
+      API_URL: http://localhost:4000/api
       NEXT_PUBLIC_API_URL: http://localhost:4000/api
       NEXT_TELEMETRY_DISABLED: 1
       REVALIDATE_TOKEN: de18b03be86939d7484c42856706c240bfc6c5ecb5fe837ee697867c2488e697
-      API_URL: http://localhost:4000/api
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -239,28 +237,3 @@ jobs:
           service: '${{ env.APP_NAME }}-${{ matrix.service }}'
           region: ${{ env.GCP_REGION }}
           project_id: ${{ env.GCP_PROJECT_ID }}
-
-  vercel_staging:
-    needs: [ci, docker_staging_cloudrun_cd]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Install Vercel CLI
-        run: npm install --global vercel@latest
-
-      - uses: pnpm/action-setup@v2.2.4
-        name: Install pnpm
-        id: pnpm-install
-        with:
-          run_install: false
-
-      - name: Pull Vercel Environment Information
-        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
-
-      - name: Build Project Artifacts
-        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
-
-      - name: Deploy Project Artifacts to Vercel
-        run: vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
