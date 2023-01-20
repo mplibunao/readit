@@ -1,6 +1,8 @@
 import Redis from 'ioredis'
 import { z } from 'zod'
 
+import { logger } from '../logger'
+
 export const redisEnvSchema = {
 	REDIS_URL: z.string(),
 	REDIS_ENABLE_AUTO_PIPELINING: z
@@ -23,10 +25,15 @@ const redisSchema = z.object(redisEnvSchema)
 export type RedisOpts = z.infer<typeof redisSchema>
 
 export const createRedisClient = (opts: RedisOpts) => {
-	return new Redis(opts.REDIS_URL, {
-		maxRetriesPerRequest: opts.REDIS_MAX_RETRIES_PER_REQ,
-		connectTimeout: opts.REDIS_CONNECT_TIMEOUT,
-		enableAutoPipelining: opts.REDIS_ENABLE_AUTO_PIPELINING,
-		family: 4,
-	})
+	try {
+		return new Redis(opts.REDIS_URL, {
+			maxRetriesPerRequest: opts.REDIS_MAX_RETRIES_PER_REQ,
+			connectTimeout: opts.REDIS_CONNECT_TIMEOUT,
+			enableAutoPipelining: opts.REDIS_ENABLE_AUTO_PIPELINING,
+			family: 4,
+		})
+	} catch (error) {
+		logger.error('Creating redis client failed', { error })
+		throw error
+	}
 }
