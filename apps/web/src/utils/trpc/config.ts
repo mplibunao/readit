@@ -6,15 +6,11 @@ import {
 	loggerLink,
 	splitLink,
 } from '@trpc/client'
-import { log } from 'next-axiom'
 import superjson from 'superjson'
 
-import { isServer } from '../ssr'
+import { trpcUrl } from '../url'
 
 //import { getApiBaseUrl } from '../url'
-
-const baseUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL
-log.info('baseUrl!', { baseUrl, isServer: Boolean(isServer()) })
 
 export const config: CreateTRPCClientOptions<AppRouter> = {
 	links: [
@@ -29,7 +25,7 @@ export const config: CreateTRPCClientOptions<AppRouter> = {
 			},
 			true: httpLink({
 				//url: `${getApiBaseUrl()}/trpc`,
-				url: `${baseUrl}/trpc`,
+				url: trpcUrl,
 				fetch(url, options) {
 					return fetch(url, {
 						...options,
@@ -40,7 +36,7 @@ export const config: CreateTRPCClientOptions<AppRouter> = {
 			}),
 			false: httpBatchLink({
 				//url: `${getApiBaseUrl()}/trpc`,
-				url: `${baseUrl}/trpc`,
+				url: trpcUrl,
 				maxURLLength: 2083,
 				fetch(url, options) {
 					return fetch(url, {
