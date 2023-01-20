@@ -155,6 +155,7 @@ importers:
       '@babel/core': ^7.0.0
       '@fontsource/inter': ^4.5.14
       '@headlessui/react': ^1.7.5
+      '@hookform/resolvers': ^2.9.10
       '@ladle/react': ^2.4.5
       '@next/bundle-analyzer': ^13.0.6
       '@radix-ui/react-accessible-icon': ^1.0.1
@@ -203,6 +204,7 @@ importers:
     dependencies:
       '@fontsource/inter': 4.5.14
       '@headlessui/react': 1.7.5_biqbaboplfbrettd7655fr4n2y
+      '@hookform/resolvers': 2.9.10_react-hook-form@7.41.5
       '@radix-ui/react-accessible-icon': 1.0.1_biqbaboplfbrettd7655fr4n2y
       '@radix-ui/react-toggle': 1.0.1_biqbaboplfbrettd7655fr4n2y
       '@readit/api': link:../api
@@ -1984,6 +1986,14 @@ packages:
       client-only: 0.0.1
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
+    dev: false
+
+  /@hookform/resolvers/2.9.10_react-hook-form@7.41.5:
+    resolution: {integrity: sha512-JIL1DgJIlH9yuxcNGtyhsWX/PgNltz+5Gr6+8SX9fhXc/hPbEIk6wPI82nhgvp3uUb6ZfAM5mqg/x7KR7NAb+A==}
+    peerDependencies:
+      react-hook-form: ^7.0.0
+    dependencies:
+      react-hook-form: 7.41.5
     dev: false
 
   /@humanwhocodes/config-array/0.11.7:
