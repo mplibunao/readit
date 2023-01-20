@@ -61,7 +61,7 @@ fi
 gcloud beta run jobs update "$JOB_NAME" \
   --project="$PROJECT_ID" \
   --region="$REGION" \
-  --command="$COMMAND" \
+  --command="$COMMAND"
 
 gcloud beta run jobs execute "$JOB_NAME" \
   --project="$PROJECT_ID" \
