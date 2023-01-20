@@ -21,7 +21,7 @@ const edgeConfigEnvSchema = {
 }
 
 const healthcheckEnvSchema = {
-	HEALTHCHECK_URL: z.string().optional().default('/health'),
+	HEALTHCHECK_URL: z.string().optional().default('/health/server'),
 
 	/*
 	 *max heap threshold to return 503 service unavaliable to prevent taking down your server
