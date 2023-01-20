@@ -1,7 +1,7 @@
 import { build } from '@api/helpers/test/build'
 import { describe, expect, test } from 'vitest'
 
-import { routeResponseSchemaOpts } from '.'
+import { routeResponseSchemaOpts } from './server'
 
 describe('health check', () => {
 	test('should return response status of 200 with the correct payload', async () => {
@@ -51,7 +51,7 @@ describe('health check', () => {
 			maxEventLoopDelay: 1_000,
 			exposeStatusRoute: {
 				routeResponseSchemaOpts,
-				url: '/health',
+				url: '/health/server',
 				routeOpts: {
 					logLevel: 'debug',
 				},

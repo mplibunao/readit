@@ -22,7 +22,6 @@ export const routeResponseSchemaOpts = {
 	version: { type: 'string' },
 	timestamp: { type: 'string', format: 'date-time' },
 	db: { type: 'string' },
-	//redis: { type: 'string' },
 	metrics: {
 		type: 'object',
 		properties: {
@@ -86,7 +85,6 @@ export const healthCheck: FastifyPluginAsync<Config> = async (
 
 export default fp(healthCheck, {
 	name: 'healthCheck',
-	dependencies: ['pg'],
 })
 
 async function dbCheck(server: FastifyInstance) {
