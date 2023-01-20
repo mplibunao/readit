@@ -1,4 +1,7 @@
-import { routeResponseSchemaOpts, UnderPressure } from '@api/infra/healthcheck'
+import {
+	routeResponseSchemaOpts,
+	UnderPressure,
+} from '@api/infra/healthcheck/server'
 import { PgClientOpts } from '@api/infra/pg/client'
 import { rateLimitEnvSchema } from '@api/infra/ratelimit'
 import { redisEnvSchema, RedisOpts } from '@api/infra/redis/createClient'
@@ -21,7 +24,7 @@ const edgeConfigEnvSchema = {
 }
 
 const healthcheckEnvSchema = {
-	HEALTHCHECK_URL: z.string().optional().default('/health/server'),
+	HEALTHCHECK_BASE_URL: z.string().optional().default('/health'),
 
 	/*
 	 *max heap threshold to return 503 service unavaliable to prevent taking down your server
@@ -111,6 +114,9 @@ export interface Config {
 	pg: PgClientOpts
 	redis: RedisOpts
 	underPressure: UnderPressure
+	healthcheckDeps: {
+		baseUrl: string
+	}
 	rateLimit: RateLimitOptions
 	edgeConfig: Omit<FlagsServiceOptions, 'flagsRepo'> & {
 		connectionString: Env['EDGE_CONFIG']
@@ -148,11 +154,14 @@ export const config: Config = {
 		maxEventLoopDelay: env.HEALTHCHECK_MAX_EVENT_LOOP_DELAY,
 		exposeStatusRoute: {
 			routeResponseSchemaOpts,
-			url: env.HEALTHCHECK_URL,
+			url: `${env.HEALTHCHECK_BASE_URL}/server`,
 			routeOpts: {
 				logLevel: 'debug',
 			},
 		},
+	},
+	healthcheckDeps: {
+		baseUrl: env.HEALTHCHECK_BASE_URL,
 	},
 	edgeConfig: {
 		connectionString: env.EDGE_CONFIG,

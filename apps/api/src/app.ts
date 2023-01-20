@@ -3,7 +3,8 @@ import { fastifyTRPCPlugin } from '@trpc/server/adapters/fastify'
 import { FastifyPluginAsync } from 'fastify'
 
 import { Config } from './config'
-import healthcheck from './infra/healthcheck'
+import healthcheckDeps from './infra/healthcheck/deps'
+import healthcheck from './infra/healthcheck/server'
 import { pg } from './infra/pg/client'
 import pgPlugin from './infra/pg/plugin'
 import ratelimit from './infra/ratelimit'
@@ -17,6 +18,7 @@ export const app: FastifyPluginAsync<Config> = async (
 	fastify.register(pgPlugin, pg)
 	fastify.register(healthcheck, config)
 	fastify.register(ratelimit, { ...config.rateLimit, redis })
+	fastify.register(healthcheckDeps, { prefix: config.healthcheckDeps.baseUrl })
 
 	fastify.register(cors, {
 		origin: [config.env.FRONTEND_URL],
