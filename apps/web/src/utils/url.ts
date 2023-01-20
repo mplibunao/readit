@@ -9,11 +9,6 @@ function getNextUrl() {
 
 export const nextBaseUrl = getNextUrl()
 
-export function getApiBaseUrl() {
-	if (process.env.NEXT_PUBLIC_API_URL) return process.env.NEXT_PUBLIC_API_URL
-	if (process.env.API_URL) return process.env.API_URL
+const apiBaseUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL
 
-	return 'http://localhost:4000/api/'
-}
-
-export const trpcUrl = `${getApiBaseUrl()}/trpc`
+export const trpcUrl = `${apiBaseUrl}/trpc`

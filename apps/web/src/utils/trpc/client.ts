@@ -7,5 +7,5 @@ export const client = createTRPCNext<AppRouter>({
 	config() {
 		return config
 	},
-	ssr: false,
+	ssr: true,
 })

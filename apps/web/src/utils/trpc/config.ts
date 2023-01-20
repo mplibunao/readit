@@ -10,8 +10,6 @@ import superjson from 'superjson'
 
 import { trpcUrl } from '../url'
 
-//import { getApiBaseUrl } from '../url'
-
 export const config: CreateTRPCClientOptions<AppRouter> = {
 	links: [
 		loggerLink({
@@ -24,7 +22,6 @@ export const config: CreateTRPCClientOptions<AppRouter> = {
 				return op.context.skipBatch === true
 			},
 			true: httpLink({
-				//url: `${getApiBaseUrl()}/trpc`,
 				url: trpcUrl,
 				fetch(url, options) {
 					return fetch(url, {
@@ -35,7 +32,6 @@ export const config: CreateTRPCClientOptions<AppRouter> = {
 				},
 			}),
 			false: httpBatchLink({
-				//url: `${getApiBaseUrl()}/trpc`,
 				url: trpcUrl,
 				maxURLLength: 2083,
 				fetch(url, options) {
