@@ -1,11 +1,8 @@
 import type { AppRouter } from '@readit/api'
-import { createTRPCNext } from '@trpc/next'
+import { createTRPCReact } from '@trpc/react-query'
 
 import { config } from './config'
 
-export const client = createTRPCNext<AppRouter>({
-	config() {
-		return config
-	},
-	ssr: true,
-})
+export const client = createTRPCReact<AppRouter>()
+
+export const clientTrpc = client.createClient(config)

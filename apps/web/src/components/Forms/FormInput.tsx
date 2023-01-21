@@ -1,3 +1,4 @@
+import debounce from 'lodash-es/debounce'
 import { useFormContext, RegisterOptions } from 'react-hook-form'
 
 import { InputGroup, InputGroupProps } from '../Input/InputGroup'
@@ -16,8 +17,13 @@ export const FormInput = ({
 }: FormInputProps) => {
 	const {
 		register,
+		trigger,
 		formState: { errors, isDirty },
 	} = useFormContext()
+
+	const onChange = debounce(async () => {
+		await trigger(name)
+	}, 500)
 
 	return (
 		<InputGroup
@@ -26,6 +32,7 @@ export const FormInput = ({
 			isDirty={isDirty}
 			{...register(name, registerOptions)}
 			{...props}
+			onChange={onChange}
 		/>
 	)
 }
