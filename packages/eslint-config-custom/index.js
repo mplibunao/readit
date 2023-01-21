@@ -14,7 +14,7 @@ module.exports = {
 	],
 	rules: {
 		'@next/next/no-html-link-for-pages': 'off',
-		'testing-library/no-unnecessary-act': 'warn',
+		'testing-library/no-unnecessary-act': 'off',
 		'@typescript-eslint/no-unused-vars': [
 			'error',
 			{

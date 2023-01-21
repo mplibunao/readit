@@ -1,6 +1,6 @@
 import { useFormContext, RegisterOptions } from 'react-hook-form'
 
-import { InputGroup, InputGroupProps } from './InputGroup'
+import { InputGroup, InputGroupProps } from '../Input/InputGroup'
 
 export type OmittedTypes = 'errors'
 

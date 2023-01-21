@@ -1,8 +1,13 @@
 import { Icon } from '@/components/Icon'
 import { styledLink } from '@/components/Link'
+//import { useZodForm } from '@/helpers/forms/useZodForm'
+//import { registerInput } from '@api/modules/accounts/user/user.dto'
 import Link from 'next/link'
+import React from 'react'
 
 const Register = () => {
+	//const [showPassword, setShowPassword] = React.useState(false)
+	//const { register, handleSubmit } = useZodForm({ schema: registerInput })
 	return (
 		<div className='flex min-h-full flex-col justify-center py-12 sm:px-6 lg:px-8'>
 			<div className='sm:mx-auto sm:w-full sm:max-w-md'>

@@ -1,9 +1,8 @@
 import { renderWithReactHookForm } from '@/helpers/test/render'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { fireEvent, act, screen, waitFor } from '@testing-library/react'
 import { z } from 'zod'
 
-import { FormInput, FormInputProps } from '../FormInput'
+import { FormInput } from '../FormInput'
 
 describe('FormInput', () => {
 	test('should show validation errors value is invalid', async () => {
@@ -19,21 +18,17 @@ describe('FormInput', () => {
 					defaultValues: {
 						firstName: '',
 					},
-					resolver: zodResolver(
-						z.object({
-							firstName: z
-								.string()
-								.min(3, { message: 'Please enter at least 3 characters.' }),
-						}),
-					),
+					schema: z.object({
+						firstName: z
+							.string()
+							.min(3, { message: 'Please enter at least 3 characters.' }),
+					}),
 				},
 			},
 		)
 
-		await act(() => {
-			fireEvent.input(screen.getByTestId('input', { name: /email/i }), {
-				target: { value: 'ab' },
-			})
+		fireEvent.input(screen.getByTestId('input', { name: /email/i }), {
+			target: { value: 'ab' },
 		})
 
 		expect(screen.getByTestId('input', { name: /email/i }).value).toBe('ab')
@@ -56,13 +51,11 @@ describe('FormInput', () => {
 					defaultValues: {
 						firstName: '',
 					},
-					resolver: zodResolver(
-						z.object({
-							firstName: z
-								.string()
-								.min(3, { message: 'Please enter at least 3 characters.' }),
-						}),
-					),
+					schema: z.object({
+						firstName: z
+							.string()
+							.min(3, { message: 'Please enter at least 3 characters.' }),
+					}),
 				},
 			},
 		)
