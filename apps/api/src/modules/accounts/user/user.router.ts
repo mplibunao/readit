@@ -20,7 +20,7 @@ export const userRouter = router({
 	register: publicProcedure
 		.input(UserDto.registerInput)
 		.output(UserDto.registerOutput)
-		.query(async ({ input }) => {
+		.mutation(async ({ input }) => {
 			const { data, error } = await until<
 				RegistrationError,
 				UserDomain.CreateUserOutput
