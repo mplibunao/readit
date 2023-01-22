@@ -18,7 +18,6 @@ export const PasswordSchema = z
 			ctx.addIssue({
 				message: 'Password should contain at least one lowercase letter',
 				code: z.ZodIssueCode.custom,
-				path: ['password'],
 			})
 		}
 
@@ -26,7 +25,6 @@ export const PasswordSchema = z
 			ctx.addIssue({
 				message: 'Password should contain at least one uppercase letter',
 				code: z.ZodIssueCode.custom,
-				path: ['password'],
 			})
 		}
 
@@ -34,7 +32,6 @@ export const PasswordSchema = z
 			ctx.addIssue({
 				message: 'Password should contain at least one number',
 				code: z.ZodIssueCode.custom,
-				path: ['password'],
 			})
 		}
 	})
