@@ -2,7 +2,7 @@ import {
 	Separator as Component,
 	SeparatorProps as Props,
 } from 'ariakit/Separator'
-import { cx } from 'cva'
+import { twMerge } from 'tailwind-merge'
 
 export type SeparatorProps = Props
 
@@ -12,7 +12,7 @@ export const Separator = ({
 }: SeparatorProps): JSX.Element => {
 	return (
 		<Component
-			className={cx(['w-full border-t border-neutral-300', className])}
+			className={twMerge('w-full border-t border-neutral-300', className)}
 			{...props}
 		/>
 	)
