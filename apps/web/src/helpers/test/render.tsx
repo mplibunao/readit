@@ -1,5 +1,6 @@
 import { RenderOptions } from '@testing-library/react'
 import { render } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import * as React from 'react'
 import { FormProvider } from 'react-hook-form'
 import { ZodSchema } from 'zod'
@@ -20,6 +21,7 @@ export async function renderWithReactHookForm<Z extends ZodSchema>(
 		return <FormProvider {...methods}>{children}</FormProvider>
 	}
 	return {
+		user: userEvent.setup(),
 		...render(ui, { wrapper: Wrapper, ...renderOptions }),
 	}
 }

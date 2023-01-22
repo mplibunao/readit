@@ -166,8 +166,10 @@ importers:
       '@readit/tailwind-config': workspace:*
       '@readit/tsconfig': workspace:*
       '@tanstack/react-query': ^4.22.0
+      '@testing-library/dom': ^8.20.0
       '@testing-library/jest-dom': ^5.16.5
       '@testing-library/react': ^13.4.0
+      '@testing-library/user-event': ^14.4.3
       '@trpc/client': ^10.9.0
       '@trpc/react-query': ^10.9.0
       '@trpc/server': ^10.9.0
@@ -240,8 +242,10 @@ importers:
       '@readit/prettier-config': link:../../packages/prettier-config
       '@readit/tailwind-config': link:../../packages/tailwind-config
       '@readit/tsconfig': link:../../packages/tsconfig
+      '@testing-library/dom': 8.20.0
       '@testing-library/jest-dom': 5.16.5
       '@testing-library/react': 13.4.0_biqbaboplfbrettd7655fr4n2y
+      '@testing-library/user-event': 14.4.3_yxlyej73nftwmh2fiao7paxmlm
       '@types/jest': 29.2.4
       '@types/jest-axe': 3.5.5
       '@types/lodash-es': 4.17.6
@@ -2757,6 +2761,15 @@ packages:
       '@types/react-dom': 18.0.8
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
+    dev: true
+
+  /@testing-library/user-event/14.4.3_yxlyej73nftwmh2fiao7paxmlm:
+    resolution: {integrity: sha512-kCUc5MEwaEMakkO5x7aoD+DLi02ehmEM2QCGWvNqAS1dV/fAvORWEjnjsEIvml59M7Y5kCkWN6fCCyPOe8OL6Q==}
+    engines: {node: '>=12', npm: '>=6'}
+    peerDependencies:
+      '@testing-library/dom': '>=7.21.4'
+    dependencies:
+      '@testing-library/dom': 8.20.0
     dev: true
 
   /@tootallnate/once/2.0.0:
