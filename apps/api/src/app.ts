@@ -36,18 +36,6 @@ export const app: FastifyPluginAsync<Config> = async (
 			responseMeta,
 		},
 	})
-
-	// broken
-	//if (config.trpc.enablePlayground) {
-	//fastify.register(
-	//await getFastifyPlugin({
-	//playgroundEndpoint: config.trpc.playgroundEndpoint,
-	//trpcApiEndpoint: config.trpc.endpoint,
-	//router: appRouter,
-	//}),
-	//{ prefix: config.trpc.playgroundEndpoint }
-	//)
-	//}
 }
 
 export default app
