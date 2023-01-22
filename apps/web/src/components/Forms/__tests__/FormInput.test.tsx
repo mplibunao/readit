@@ -27,11 +27,11 @@ describe('FormInput', () => {
 			},
 		)
 
-		fireEvent.input(screen.getByTestId('input', { name: /email/i }), {
+		fireEvent.input(screen.getByTestId('input'), {
 			target: { value: 'ab' },
 		})
 
-		expect(screen.getByTestId('input', { name: /email/i }).value).toBe('ab')
+		expect(screen.getByTestId('input')).toHaveValue('ab')
 
 		expect(
 			await screen.findByText('Please enter at least 3 characters.'),
@@ -60,13 +60,13 @@ describe('FormInput', () => {
 			},
 		)
 
-		await act(() => {
-			fireEvent.input(screen.getByTestId('input', { name: /email/i }), {
+		await act(async () => {
+			fireEvent.input(screen.getByTestId('input'), {
 				target: { value: 'abcd' },
 			})
 		})
 
-		expect(screen.getByTestId('input', { name: /email/i }).value).toBe('abcd')
+		expect(screen.getByTestId('input')).toHaveValue('abcd')
 
 		await waitFor(() => {
 			expect(
