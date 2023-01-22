@@ -15,7 +15,7 @@ import Link from 'next/link'
 import React from 'react'
 import { z } from 'zod'
 
-//type RegisterInput = z.infer<typeof registerInput>
+type RegisterInput = z.infer<typeof registerInput>
 
 const Register = () => {
 	const [showPassword, setShowPassword] = React.useState(false)
@@ -23,7 +23,7 @@ const Register = () => {
 		schema: registerInput,
 	})
 
-	const handleRegister = client.user.register.useMutation({
+	const registerMutation = client.user.register.useMutation({
 		onError: (error) => {
 			if (error.data?.type === UserAlreadyExists.type) {
 				errorToast({
@@ -44,16 +44,9 @@ const Register = () => {
 		},
 	})
 
-	//const handleRegister = async (_params: RegisterInput) => {
-	//console.log('_params', _params) // eslint-disable-line no-console
-	//toast.custom((t) => (
-	//<SuccessToast
-	//title='User registered'
-	//message='User account successfully created'
-	//toast={t}
-	///>
-	//))
-	//}
+	const handleRegister = async (params: RegisterInput) => {
+		registerMutation.mutate(params)
+	}
 
 	return (
 		<>
