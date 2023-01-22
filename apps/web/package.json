@@ -5,7 +5,8 @@
 	"scripts": {
 		"dev": "run-p dev:*",
 		"dev:start": "next dev",
-		"dev:icons": "node --watch ./scripts/make-icons.js",
+		"dev:icons": "nodemon --watch src/icons/raw ./scripts/make-icons.js",
+		"_dev:icons": "node --watch ./scripts/make-icons.js",
 		"build": "next build",
 		"start": "next start",
 		"lint:check": "TIMING=1 next lint --cache --cache-location .eslintcache --ignore-path ../../.eslintignore",

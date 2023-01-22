@@ -1,5 +1,5 @@
 import { Button as AriaButton } from 'ariakit/button'
-import { cva, cx, VariantProps } from 'cva'
+import { cva, VariantProps } from 'cva'
 
 import { Spinner } from '../Spinner'
 
@@ -125,7 +125,7 @@ export const Button = ({
 				size,
 				color,
 				intent,
-				class: cx([className]),
+				class: className,
 			})}
 			disabled={Boolean(disabled || loading)}
 			{...props}
@@ -135,7 +135,7 @@ export const Button = ({
 			{loading && (
 				<Spinner
 					size='em'
-					className={cx([loadingText ? 'relative mr-2' : 'absolute mr-0'])}
+					className={loadingText ? 'relative mr-2' : 'absolute mr-0'}
 				/>
 			)}
 
