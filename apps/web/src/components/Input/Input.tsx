@@ -1,6 +1,6 @@
-import { clsx } from '@/helpers/styles/clsx'
-import { cva, cx, VariantProps } from 'cva'
+import { cva, VariantProps } from 'cva'
 import React from 'react'
+import { twMerge } from 'tailwind-merge'
 
 const input = cva(
 	[
@@ -66,21 +66,21 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
 				aria-labelledby={`${id}-${name}-label`}
 				aria-required={required}
 				aria-readonly={readOnly}
-				aria-describedby={cx([
-					clsx(withHelperText && !isInvalid, `${id}-${name}-description`),
-					clsx(isInvalid, `${id}-${name}-error`),
-					clsx(withCornerHint, `${id}-${name}-hint`),
-				])}
+				aria-describedby={twMerge(
+					withHelperText && !isInvalid && `${id}-${name}-description`,
+					isInvalid && `${id}-${name}-error`,
+					withCornerHint && `${id}-${name}-hint`,
+				)}
 				className={input({
 					color,
 					disabled,
 					isInvalid,
-					class: cx([
+					class: twMerge(
 						'flex w-full flex-grow appearance-none',
 						'rounded-md border px-3 py-2 shadow-sm',
 						'focus:outline-none sm:text-sm',
 						className,
-					]),
+					),
 				})}
 				{...props}
 			/>

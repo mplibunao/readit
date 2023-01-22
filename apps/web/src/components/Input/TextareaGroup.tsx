@@ -1,4 +1,3 @@
-import { cx } from 'cva'
 import React, { useId } from 'react'
 import { FieldErrors } from 'react-hook-form'
 
@@ -18,68 +17,66 @@ export interface TextareaGroupProps
 		label?: string
 	}
 	hideLabel?: boolean
-	isDirty?: boolean
 }
 
-export const TextareaGroup = React.memo(
-	React.forwardRef<HTMLTextAreaElement, TextareaGroupProps>(
-		(
-			{
-				name,
-				label,
-				errors,
-				helperText,
-				cornerHint,
-				classNames = {},
-				required = false,
-				hideLabel = false,
-				isDirty: _isDirty,
-				...props
-			},
-			ref,
-		) => {
-			const error = errors[name]
-			const id = useId()
-
-			return (
-				<div role='group' data-testid='input-control'>
-					<Label
-						id={id}
-						fieldName={name}
-						label={label}
-						hideLabel={hideLabel}
-						className={classNames.label}
-						showRequired={required}
-						cornerHint={cornerHint}
-					/>
-
-					<div className={'mt-1 flex rounded-md shadow-sm'}>
-						<div className='relative flex flex-grow items-stretch focus-within:z-10'>
-							<Textarea
-								name={name}
-								id={id}
-								ref={ref}
-								required={required}
-								isInvalid={!!error}
-								withHelperText={!!helperText}
-								withCornerHint={!!cornerHint}
-								className={cx([classNames.input])}
-								{...props}
-							/>
-						</div>
-					</div>
-
-					<ErrorMessage
-						message={error?.message as string}
-						helperText={helperText}
-						id={id}
-						fieldName={name}
-					/>
-				</div>
-			)
+export const TextareaGroup = React.forwardRef<
+	HTMLTextAreaElement,
+	TextareaGroupProps
+>(
+	(
+		{
+			name,
+			label,
+			errors,
+			helperText,
+			cornerHint,
+			classNames = {},
+			required = false,
+			hideLabel = false,
+			...props
 		},
-	),
-	(prevProps, nextProps) => prevProps.isDirty === nextProps.isDirty,
+		ref,
+	) => {
+		const error = errors[name]
+		const id = useId()
+
+		return (
+			<div role='group' data-testid='input-control'>
+				<Label
+					id={id}
+					fieldName={name}
+					label={label}
+					hideLabel={hideLabel}
+					className={classNames.label}
+					showRequired={required}
+					cornerHint={cornerHint}
+				/>
+
+				<div className={'mt-1 flex rounded-md shadow-sm'}>
+					<div className='relative flex flex-grow items-stretch focus-within:z-10'>
+						<Textarea
+							name={name}
+							id={id}
+							ref={ref}
+							required={required}
+							isInvalid={!!error}
+							withHelperText={!!helperText}
+							withCornerHint={!!cornerHint}
+							className={classNames.input}
+							{...props}
+						/>
+					</div>
+				</div>
+
+				<ErrorMessage
+					message={error?.message as string}
+					helperText={helperText}
+					id={id}
+					fieldName={name}
+				/>
+			</div>
+		)
+	},
 )
 
 TextareaGroup.displayName = 'InputGroup'

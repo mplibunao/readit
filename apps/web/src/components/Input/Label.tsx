@@ -1,5 +1,4 @@
-import { clsx } from '@/helpers/styles/clsx'
-import { cx } from 'cva'
+import { twMerge } from 'tailwind-merge'
 
 export interface LabelProps
 	extends React.LabelHTMLAttributes<HTMLLabelElement> {
@@ -25,11 +24,11 @@ export const Label = ({
 			<label
 				id={`${id}-${name}-label`}
 				htmlFor={`${id}-${name}-input`}
-				className={cx([
+				className={twMerge(
 					'block text-sm font-medium text-neutral-700',
-					clsx(hideLabel, 'sr-only'),
+					hideLabel && 'sr-only',
 					className,
-				])}
+				)}
 			>
 				{label}
 

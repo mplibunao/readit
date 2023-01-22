@@ -1,35 +1,31 @@
+import { DEBOUNCE_DELAY } from '@/constants'
 import debounce from 'lodash-es/debounce'
 import { useFormContext, RegisterOptions } from 'react-hook-form'
 
 import { InputGroup, InputGroupProps } from '../Input/InputGroup'
 
-export type OmittedTypes = 'errors'
-
-export interface FormInputProps extends Omit<InputGroupProps, OmittedTypes> {
+export interface FormInputProps extends Omit<InputGroupProps, 'errors'> {
 	registerOptions?: RegisterOptions
+	debounceDelay?: number
 }
 
 export const FormInput = ({
 	name,
 	label,
 	registerOptions,
+	debounceDelay = DEBOUNCE_DELAY,
 	...props
 }: FormInputProps) => {
-	const {
-		register,
-		trigger,
-		formState: { errors, isDirty },
-	} = useFormContext()
+	const { register, trigger, formState } = useFormContext()
 
 	const onChange = debounce(async () => {
 		await trigger(name)
-	}, 500)
+	}, debounceDelay)
 
 	return (
 		<InputGroup
 			label={label}
-			errors={errors}
-			isDirty={isDirty}
+			errors={formState.errors}
 			{...register(name, registerOptions)}
 			{...props}
 			onChange={onChange}

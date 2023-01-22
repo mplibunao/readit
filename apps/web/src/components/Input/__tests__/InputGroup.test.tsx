@@ -57,7 +57,6 @@ describe('a11y', () => {
 				}}
 				readOnly
 				cornerHint='This is a corner hint'
-				isDirty
 			/>,
 		)
 
@@ -101,7 +100,7 @@ describe('indicators', () => {
 		expect(screen.getByText('Invalid email')).toBeInTheDocument()
 		expect(screen.getByTestId('input-error-icon')).toBeInTheDocument()
 
-		rerender(<InputGroup {...inputGroupDefaultProps} isDirty />)
+		rerender(<InputGroup {...inputGroupDefaultProps} />)
 
 		expect(screen.queryByText('Invalid email')).not.toBeInTheDocument()
 		expect(screen.queryByTestId('input-error-icon')).not.toBeInTheDocument()
@@ -131,7 +130,7 @@ describe('indicators', () => {
 		expect(indicator).toBeVisible()
 		expect(indicator).toHaveTextContent('*')
 
-		rerender(<InputGroup {...inputGroupDefaultProps} isDirty />)
+		rerender(<InputGroup {...inputGroupDefaultProps} />)
 
 		expect(
 			screen.queryByRole('presentation', { hidden: true }),

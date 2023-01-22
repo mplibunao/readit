@@ -1,4 +1,4 @@
-import { cx } from 'cva'
+import { twMerge } from 'tailwind-merge'
 
 export interface CardProps {
 	children?: React.ReactNode
@@ -8,10 +8,10 @@ export interface CardProps {
 export const Card = ({ children, className }: CardProps): JSX.Element => {
 	return (
 		<div
-			className={cx([
+			className={twMerge(
 				'bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10',
 				className,
-			])}
+			)}
 		>
 			{children}
 		</div>
