@@ -1,7 +1,7 @@
 import {
 	Separator as Component,
 	SeparatorProps as Props,
-} from 'ariakit/Separator'
+} from 'ariakit/separator'
 import { twMerge } from 'tailwind-merge'
 
 export type SeparatorProps = Props
