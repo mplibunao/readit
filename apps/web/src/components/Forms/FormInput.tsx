@@ -18,17 +18,25 @@ export const FormInput = ({
 }: FormInputProps) => {
 	const { register, trigger, formState } = useFormContext()
 
-	const onChange = debounce(async () => {
+	const { onChange, ...rest } = register(name, registerOptions)
+
+	const debouncedValidate = debounce(async () => {
 		await trigger(name)
 	}, debounceDelay)
+
+	const handleOnChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+		onChange(e)
+		await debouncedValidate()
+	}
 
 	return (
 		<InputGroup
 			label={label}
 			errors={formState.errors}
-			{...register(name, registerOptions)}
+			{...rest}
 			{...props}
-			onChange={onChange}
+			onChange={handleOnChange}
+			isDirty={formState.isDirty}
 		/>
 	)
 }

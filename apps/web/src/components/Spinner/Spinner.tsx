@@ -1,4 +1,5 @@
 import { cva, VariantProps } from 'cva'
+import { twMerge } from 'tailwind-merge'
 
 export interface SpinnerProps
 	extends Omit<React.HTMLAttributes<HTMLDivElement>, 'children' | 'color'>,
@@ -80,12 +81,14 @@ export const Spinner = ({
 }: SpinnerProps): JSX.Element => {
 	return (
 		<div
-			className={spinner({
-				size,
-				stroke,
-				color,
-				class: className,
-			})}
+			className={twMerge(
+				spinner({
+					size,
+					stroke,
+					color,
+					className,
+				}),
+			)}
 		>
 			<span className='sr-only'>{label}</span>
 		</div>

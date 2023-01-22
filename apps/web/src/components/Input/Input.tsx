@@ -71,17 +71,14 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
 					isInvalid && `${id}-${name}-error`,
 					withCornerHint && `${id}-${name}-hint`,
 				)}
-				className={input({
-					color,
-					disabled,
-					isInvalid,
-					class: twMerge(
-						'flex w-full flex-grow appearance-none',
-						'rounded-md border px-3 py-2 shadow-sm',
-						'focus:outline-none sm:text-sm',
+				className={twMerge(
+					input({
+						color,
+						disabled,
+						isInvalid,
 						className,
-					),
-				})}
+					}),
+				)}
 				{...props}
 			/>
 		)

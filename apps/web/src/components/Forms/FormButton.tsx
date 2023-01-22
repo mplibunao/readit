@@ -1,7 +1,7 @@
 import React from 'react'
 import { useFormContext } from 'react-hook-form'
 
-import { Button, ButtonProps } from '../Button'
+import { Button, ButtonProps } from '../Button/Button'
 
 export type FormButtonProps = ButtonProps
 

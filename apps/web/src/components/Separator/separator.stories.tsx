@@ -1,6 +1,6 @@
 import { Story } from '@ladle/react'
 
-import { Separator, SeparatorProps } from '.'
+import { Separator, SeparatorProps } from './Separator'
 
 export const Horizontal: Story<SeparatorProps> = (props) => {
 	return <Separator {...props} />

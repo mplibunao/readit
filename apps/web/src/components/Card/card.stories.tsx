@@ -1,6 +1,6 @@
 import { Story } from '@ladle/react'
 
-import { Card, CardProps } from '.'
+import { Card, CardProps } from './Card'
 
 export const Default: Story<CardProps> = (props) => {
 	return (

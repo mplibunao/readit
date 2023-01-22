@@ -57,6 +57,7 @@ describe('a11y', () => {
 				}}
 				readOnly
 				cornerHint='This is a corner hint'
+				isDirty
 			/>,
 		)
 
@@ -100,7 +101,7 @@ describe('indicators', () => {
 		expect(screen.getByText('Invalid email')).toBeInTheDocument()
 		expect(screen.getByTestId('input-error-icon')).toBeInTheDocument()
 
-		rerender(<TextareaGroup {...textareaGroupDefaultProps} />)
+		rerender(<TextareaGroup {...textareaGroupDefaultProps} isDirty />)
 
 		expect(screen.queryByText('Invalid email')).not.toBeInTheDocument()
 		expect(screen.queryByTestId('input-error-icon')).not.toBeInTheDocument()
@@ -113,6 +114,7 @@ describe('indicators', () => {
 						message: 'Invalid password',
 					} as FieldError,
 				}}
+				isDirty
 			/>,
 		)
 
@@ -130,7 +132,7 @@ describe('indicators', () => {
 		expect(indicator).toBeVisible()
 		expect(indicator).toHaveTextContent('*')
 
-		rerender(<TextareaGroup {...textareaGroupDefaultProps} />)
+		rerender(<TextareaGroup {...textareaGroupDefaultProps} isDirty />)
 
 		expect(
 			screen.queryByRole('presentation', { hidden: true }),

@@ -1,9 +1,10 @@
 import { Button as AriaButton } from 'ariakit/button'
 import { cva, VariantProps } from 'cva'
+import { twMerge } from 'tailwind-merge'
 
-import { Spinner } from '../Spinner'
+import { Spinner } from '../Spinner/Spinner'
 
-const button = cva(
+export const button = cva(
 	[
 		'inline-flex items-center justify-center rounded',
 		'border font-medium shadow-sm focus:outline-none',
@@ -27,6 +28,7 @@ const button = cva(
 				primary: 'border-transparent text-white',
 				secondary: 'border-trasparent',
 				outline: 'bg-white',
+				ghost: 'bg-transparent border-transparent',
 			},
 			disabled: {
 				true: 'cursor-not-allowed opacity-60 shadow-none',
@@ -119,15 +121,20 @@ export const Button = ({
 	rightIcon,
 	...props
 }: ButtonProps): JSX.Element => {
+	const isDisabled = Boolean(disabled || loading)
 	return (
 		<AriaButton
-			className={button({
-				size,
-				color,
-				intent,
-				class: className,
-			})}
-			disabled={Boolean(disabled || loading)}
+			className={twMerge(
+				button({
+					size,
+					color,
+					intent,
+					disabled: isDisabled,
+					loading,
+					className,
+				}),
+			)}
+			disabled={isDisabled}
 			{...props}
 		>
 			{leftIcon && !loading ? leftIcon : null}

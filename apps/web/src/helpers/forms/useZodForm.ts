@@ -12,7 +12,6 @@ export const useZodForm = <Z extends ZodSchema>({
 	...formProps
 }: UseZodFormProps<Z>) =>
 	useForm({
-		mode: 'onChange',
 		...formProps,
 		resolver: zodResolver(schema),
 	})

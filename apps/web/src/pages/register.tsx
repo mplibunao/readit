@@ -1,38 +1,59 @@
-import { Card } from '@/components/Card'
+import { Card } from '@/components/Card/Card'
 import { Form } from '@/components/Forms/Form'
 import { FormButton } from '@/components/Forms/FormButton'
 import { FormInput } from '@/components/Forms/FormInput'
 import { Icon } from '@/components/Icon'
-import { styledLink } from '@/components/Link'
-import { Separator } from '@/components/Separator'
-import { SuccessToast } from '@/components/Toast'
+import { styledLink } from '@/components/Link/Link'
+import { Separator } from '@/components/Separator/Separator'
+import { errorToast, successToast } from '@/components/Toast/useToast'
 import { useZodForm } from '@/helpers/forms/useZodForm'
 import { client } from '@/utils/trpc/client'
 import { registerInput } from '@api/modules/accounts/user/user.dto'
+import { UserAlreadyExists } from '@api/modules/accounts/user/user.errors'
 import * as Toggle from '@radix-ui/react-toggle'
 import Link from 'next/link'
 import React from 'react'
-import { toast } from 'react-hot-toast'
 import { z } from 'zod'
 
-type RegisterInput = z.infer<typeof registerInput>
+//type RegisterInput = z.infer<typeof registerInput>
 
 const Register = () => {
 	const [showPassword, setShowPassword] = React.useState(false)
-	const form = useZodForm({ schema: registerInput })
+	const form = useZodForm({
+		schema: registerInput,
+	})
 
-	//client.user.register.useMutation({onError})
+	const handleRegister = client.user.register.useMutation({
+		onError: (error) => {
+			if (error.data?.type === UserAlreadyExists.type) {
+				errorToast({
+					title: 'Registration failed',
+					message: 'User already exists',
+				})
+			}
+			errorToast({
+				title: 'Registration Failed',
+				message: 'Something went wrong',
+			})
+		},
+		onSuccess() {
+			successToast({
+				title: 'Registration successful',
+				message: 'User successfully created',
+			})
+		},
+	})
 
-	const handleRegister = async (_params: RegisterInput) => {
-		console.log('_params', _params) // eslint-disable-line no-console
-		toast.custom((t) => (
-			<SuccessToast
-				title='User registered'
-				message='User account successfully created'
-				toast={t}
-			/>
-		))
-	}
+	//const handleRegister = async (_params: RegisterInput) => {
+	//console.log('_params', _params) // eslint-disable-line no-console
+	//toast.custom((t) => (
+	//<SuccessToast
+	//title='User registered'
+	//message='User account successfully created'
+	//toast={t}
+	///>
+	//))
+	//}
 
 	return (
 		<>

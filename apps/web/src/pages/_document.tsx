@@ -1,5 +1,5 @@
-import { Favicon } from '@/components/Favicon'
-import { SEO } from '@/components/SEO'
+import { Favicon } from '@/components/Head/Favicon'
+import { SEO } from '@/components/Head/SEO'
 import { Head, Html, Main, NextScript } from 'next/document'
 
 export default function Document() {

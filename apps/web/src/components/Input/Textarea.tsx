@@ -71,17 +71,14 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
 					isInvalid && `${id}-${name}-error`,
 					withCornerHint && `${id}-${name}-hint`,
 				)}
-				className={textarea({
-					color,
-					disabled,
-					isInvalid,
-					class: twMerge(
-						'flex w-full flex-grow appearance-none',
-						'rounded-md border px-3 py-2 shadow-sm',
-						'focus:outline-none sm:text-sm',
+				className={twMerge(
+					textarea({
+						color,
+						disabled,
+						isInvalid,
 						className,
-					),
-				})}
+					}),
+				)}
 				{...props}
 			/>
 		)
