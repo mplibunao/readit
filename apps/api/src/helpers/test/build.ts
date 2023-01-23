@@ -34,8 +34,8 @@ async function build(opts?: { config?: Partial<Config> }) {
 	})
 
 	// Tear down our app after we are done
-	afterAll(() => {
-		fastify.close()
+	afterAll(async () => {
+		await fastify.close()
 	})
 
 	return fastify
