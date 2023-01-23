@@ -1,5 +1,8 @@
+import cookie from '@fastify/cookie'
 import cors from '@fastify/cors'
+import session from '@fastify/session'
 import { fastifyTRPCPlugin } from '@trpc/server/adapters/fastify'
+import connectRedis, { RedisStoreOptions } from 'connect-redis'
 import { FastifyPluginAsync } from 'fastify'
 
 import { Config } from './config'
@@ -19,6 +22,14 @@ export const app: FastifyPluginAsync<Config> = async (
 	fastify.register(healthcheck, config)
 	fastify.register(ratelimit, { ...config.rateLimit, redis })
 	fastify.register(healthcheckDeps, { prefix: config.healthcheckDeps.baseUrl })
+	fastify.register(cookie)
+	fastify.register(session, {
+		...config.session,
+		store: initRedisStore({
+			...config.sessionRedisStore,
+			client: redis as any,
+		}),
+	})
 
 	fastify.register(cors, {
 		origin: [config.env.FRONTEND_URL],
@@ -36,6 +47,11 @@ export const app: FastifyPluginAsync<Config> = async (
 			responseMeta,
 		},
 	})
+}
+
+function initRedisStore(opts: RedisStoreOptions) {
+	const RedisStore = connectRedis(session as any)
+	return new RedisStore(opts) as any
 }
 
 export default app
