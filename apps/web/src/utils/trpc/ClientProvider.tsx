@@ -8,7 +8,7 @@ export function TrpcClientProvider({ children }: { children: ReactNode }) {
 	const [queryClient] = useState(
 		() =>
 			new QueryClient({
-				defaultOptions: { queries: { staleTime: 20 } },
+				defaultOptions: { queries: { staleTime: 20 * 1000 } },
 			}),
 	)
 	const [trpcClient] = useState(() => clientTrpc)
