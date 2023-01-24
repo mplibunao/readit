@@ -1,7 +1,9 @@
 import { inferAsyncReturnType } from '@trpc/server'
 import type { CreateFastifyContextOptions } from '@trpc/server/adapters/fastify'
 
-export type CreateContextOptions = {}
+export type CreateContextOptions = {
+	session?: CreateFastifyContextOptions['req']['session']
+}
 
 /**
  * Inner context. Will always be available in your procedures, in contrast to the outer context.
@@ -12,8 +14,10 @@ export type CreateContextOptions = {}
  *
  * @see https://trpc.io/docs/context#inner-and-outer-context
  */
-export const createContextInner = async (_: CreateContextOptions) => {
-	return {}
+export const createContextInner = async ({ session }: CreateContextOptions) => {
+	return {
+		session,
+	}
 }
 
 /**
@@ -21,11 +25,11 @@ export const createContextInner = async (_: CreateContextOptions) => {
  *
  * @see https://trpc.io/docs/context#inner-and-outer-context
  */
-export async function createContext(_: CreateFastifyContextOptions) {
+export async function createContext({ req }: CreateFastifyContextOptions) {
 	//const user = { name: req.headers.username ?? 'anonymous' }
 
 	//return { req, res, pg: req.server.pg }
-	return await createContextInner({})
+	return await createContextInner({ session: req.session })
 }
 
 export type Context = inferAsyncReturnType<typeof createContext>
