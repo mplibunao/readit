@@ -1,6 +1,8 @@
 import Cors from '@fastify/cors'
+import Helmet from '@fastify/helmet'
 import { fastifyTRPCPlugin } from '@trpc/server/adapters/fastify'
 import { FastifyPluginAsync } from 'fastify'
+import NoIcon from 'fastify-no-icon'
 
 import { Config } from './config'
 import HealthcheckDeps from './infra/healthcheck/deps'
@@ -16,6 +18,10 @@ export const app: FastifyPluginAsync<Config> = async (
 	fastify,
 	config,
 ): Promise<void> => {
+	fastify.register(
+		Helmet,
+		config.env.IS_PROD ? { contentSecurityPolicy: false } : {},
+	)
 	fastify.register(PgPlugin, pg)
 	fastify.register(Healthcheck, config)
 	fastify.register(Ratelimit, { ...config.rateLimit, redis })
@@ -31,6 +37,8 @@ export const app: FastifyPluginAsync<Config> = async (
 		allowedHeaders: ['Content-Type', 'Authorization'],
 		credentials: true,
 	})
+
+	fastify.register(NoIcon)
 
 	fastify.register(fastifyTRPCPlugin, {
 		prefix: config.trpc.endpoint,
