@@ -1,37 +1,31 @@
-import cookie from '@fastify/cookie'
-import cors from '@fastify/cors'
-import session from '@fastify/session'
+import Cors from '@fastify/cors'
 import { fastifyTRPCPlugin } from '@trpc/server/adapters/fastify'
-import connectRedis, { RedisStoreOptions } from 'connect-redis'
 import { FastifyPluginAsync } from 'fastify'
 
 import { Config } from './config'
-import healthcheckDeps from './infra/healthcheck/deps'
-import healthcheck from './infra/healthcheck/server'
+import HealthcheckDeps from './infra/healthcheck/deps'
+import Healthcheck from './infra/healthcheck/server'
 import { pg } from './infra/pg/client'
-import pgPlugin from './infra/pg/plugin'
-import ratelimit from './infra/ratelimit'
+import PgPlugin from './infra/pg/plugin'
+import Ratelimit from './infra/ratelimit'
 import { redis } from './infra/redis/client'
+import Session from './infra/session'
 import { appRouter, createContext, onError, responseMeta } from './trpc'
 
 export const app: FastifyPluginAsync<Config> = async (
 	fastify,
 	config,
 ): Promise<void> => {
-	fastify.register(pgPlugin, pg)
-	fastify.register(healthcheck, config)
-	fastify.register(ratelimit, { ...config.rateLimit, redis })
-	fastify.register(healthcheckDeps, { prefix: config.healthcheckDeps.baseUrl })
-	fastify.register(cookie)
-	fastify.register(session, {
-		...config.session,
-		store: initRedisStore({
-			...config.sessionRedisStore,
-			client: redis as any,
-		}),
+	fastify.register(PgPlugin, pg)
+	fastify.register(Healthcheck, config)
+	fastify.register(Ratelimit, { ...config.rateLimit, redis })
+	fastify.register(HealthcheckDeps, { prefix: config.healthcheckDeps.baseUrl })
+	fastify.register(Session, {
+		session: config.session,
+		sessionRedisStore: { ...config.sessionRedisStore, client: redis as any },
 	})
 
-	fastify.register(cors, {
+	fastify.register(Cors, {
 		origin: [config.env.FRONTEND_URL],
 		methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
 		allowedHeaders: ['Content-Type', 'Authorization'],
@@ -47,11 +41,6 @@ export const app: FastifyPluginAsync<Config> = async (
 			responseMeta,
 		},
 	})
-}
-
-function initRedisStore(opts: RedisStoreOptions) {
-	const RedisStore = connectRedis(session as any)
-	return new RedisStore(opts) as any
 }
 
 export default app
