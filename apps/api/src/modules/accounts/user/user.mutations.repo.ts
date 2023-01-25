@@ -1,31 +1,38 @@
-import { Deps } from '@api/helpers/deps'
-import { InsertableUser, UserData } from '@api/infra/pg'
+import { Dependencies } from '@api/infra/diConfig'
+import { InsertableUser, UserData } from '@api/infra/pg/types'
 import { DBError } from '@readit/utils'
 import Pg from 'pg'
 
 import { UserAlreadyExists } from './user.errors'
 
-export * as UserMutationsRepo from './user.mutations.repo'
+export interface UserMutationsRepo {
+	create: (
+		user: InsertableUser,
+	) => Promise<Pick<UserData, 'id' | 'email' | 'firstName' | 'lastName'>>
+}
 
-export const create = (
-	deps: Deps,
-	user: InsertableUser,
-): Promise<Partial<UserData>> => {
-	try {
-		return deps.pg
-			.insertInto('users')
-			.values(user)
-			.returning(['id', 'email', 'firstName', 'lastName'])
-			.executeTakeFirstOrThrow()
-	} catch (error) {
-		if (error instanceof Pg.DatabaseError) {
-			if (error.code === '23505') {
-				throw new UserAlreadyExists({ cause: error })
+export const buildUserMutationsRepo = (deps: Dependencies) => {
+	const userMutationsRepo: UserMutationsRepo = {
+		async create(user) {
+			try {
+				return deps.pg
+					.insertInto('users')
+					.values(user)
+					.returning(['id', 'email', 'firstName', 'lastName'])
+					.executeTakeFirstOrThrow()
+			} catch (error) {
+				if (error instanceof Pg.DatabaseError) {
+					if (error.code === '23505') {
+						throw new UserAlreadyExists({ cause: error })
+					}
+				}
+				throw new DBError({
+					cause: error,
+					message: 'Database error occurred while creating user',
+				})
 			}
-		}
-		throw new DBError({
-			cause: error,
-			message: 'Database error occurred while creating user',
-		})
+		},
 	}
+
+	return userMutationsRepo
 }

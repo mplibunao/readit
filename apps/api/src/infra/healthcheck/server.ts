@@ -1,4 +1,4 @@
-import { Config } from '@api/config'
+import { Config } from '@api/infra/config'
 import underPressure, {
 	TYPE_EVENT_LOOP_DELAY,
 	TYPE_EVENT_LOOP_UTILIZATION,

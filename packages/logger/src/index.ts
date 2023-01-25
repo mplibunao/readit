@@ -32,6 +32,7 @@ export const getLoggerConfig = (opts: LoggerOpts): Partial<LoggerOptions> => {
 			{ cause: error },
 		)
 	}
+
 	if (opts.K_SERVICE) {
 		// https://cloud.google.com/error-reporting/docs/formatting-error-messages
 		const errorReportingFields: ErrorReportingFields = {

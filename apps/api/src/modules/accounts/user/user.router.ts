@@ -1,5 +1,3 @@
-import { deps } from '@api/helpers/deps'
-import { AccountsService } from '@api/modules/accounts'
 import { UserDto } from '@api/modules/accounts/user/user.dto'
 import { publicProcedure, router } from '@api/trpc/builder'
 import { until } from '@open-draft/until'
@@ -7,7 +5,6 @@ import { AppError, DBError } from '@readit/utils'
 import { TRPCError } from '@trpc/server'
 import { ZodError } from 'zod'
 
-import { UserDomain } from './user.domain'
 import {
 	FindByIdError,
 	PasswordHashingError,
@@ -15,20 +12,21 @@ import {
 	UserAlreadyExists,
 	UserNotFound,
 } from './user.errors'
+import { User } from './user.types'
 
 export const userRouter = router({
 	register: publicProcedure
 		.input(UserDto.registerInput)
 		.output(UserDto.registerOutput)
-		.mutation(async ({ input }) => {
+		.mutation(async ({ input, ctx: { UserService, logger } }) => {
 			const { data, error } = await until<
 				RegistrationError,
-				UserDomain.CreateUserOutput
-			>(() => AccountsService.register(deps, input))
+				Awaited<User.CreateUserOutput>
+			>(() => UserService.register(input))
 
 			if (error) {
 				if (error instanceof ZodError) {
-					deps.logger.debug('Zod error', error)
+					logger.debug('Zod error', error)
 					throw new TRPCError({
 						code: 'BAD_REQUEST',
 						cause: error,
@@ -43,7 +41,7 @@ export const userRouter = router({
 						case DBError:
 						case PasswordHashingError:
 						default:
-							deps.logger.error('Error creating user', error)
+							logger.error('Error creating user', error)
 							throw new TRPCError({ ...error, code: 'INTERNAL_SERVER_ERROR' })
 					}
 				}
@@ -60,14 +58,15 @@ export const userRouter = router({
 	byId: publicProcedure
 		.input(UserDto.userByIdInput)
 		.output(UserDto.userByIdOutput)
-		.query(async ({ input }) => {
-			const { error, data } = await until<FindByIdError, UserDomain.UserSchema>(
-				() => AccountsService.findUserById(deps, input.id),
-			)
+		.query(async ({ input, ctx: { UserService, logger } }) => {
+			const { error, data } = await until<
+				FindByIdError,
+				Awaited<User.UserSchema>
+			>(() => UserService.findById(input.id))
 
 			if (error) {
 				if (error instanceof ZodError) {
-					deps.logger.debug('Zod error', error)
+					logger.debug('Zod error', error)
 					throw new TRPCError({
 						code: 'BAD_REQUEST',
 						cause: error,

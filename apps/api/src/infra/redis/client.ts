@@ -1,5 +1,50 @@
-import { config } from '@api/config'
+import { Disposer } from 'awilix'
+import Redis from 'ioredis'
+import { z } from 'zod'
 
-import { createRedisClient } from './createClient'
+import { Dependencies } from '../diConfig'
 
-export const redis = createRedisClient(config.redis)
+export const redisEnvSchema = {
+	REDIS_URL: z.string(),
+	REDIS_ENABLE_AUTO_PIPELINING: z
+		.boolean()
+		.optional()
+		.default(true)
+		.describe('https://www.youtube.com/watch?app=desktop&v=0L0ER4pZbX4'),
+	REDIS_MAX_RETRIES_PER_REQ: z
+		.number()
+		.optional()
+		.default(20)
+		.describe(
+			"Lower is better for perf, since we don't wait when there are errors. If failing fast is ok",
+		),
+	REDIS_CONNECT_TIMEOUT: z.number().optional().default(10_000),
+}
+
+const redisSchema = z.object(redisEnvSchema)
+
+export type RedisOpts = z.infer<typeof redisSchema>
+
+export const createRedisClient = (deps: Dependencies) => {
+	try {
+		return new Redis(deps.config.redis.REDIS_URL, {
+			maxRetriesPerRequest: deps.config.redis.REDIS_MAX_RETRIES_PER_REQ,
+			connectTimeout: deps.config.redis.REDIS_CONNECT_TIMEOUT,
+			enableAutoPipelining: deps.config.redis.REDIS_ENABLE_AUTO_PIPELINING,
+			family: 4,
+		})
+	} catch (error) {
+		const err = `Creating redis client failed: ${error}`
+		deps.logger.error(err)
+		throw err
+	}
+}
+
+export const closeRedisClient: Disposer<Redis> = (redis) => {
+	return new Promise((resolve, reject) => {
+		redis.quit((err, result) => {
+			if (err) return reject(err)
+			return resolve(result)
+		})
+	})
+}

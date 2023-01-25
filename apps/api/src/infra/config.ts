@@ -2,18 +2,18 @@ import {
 	routeResponseSchemaOpts,
 	UnderPressure,
 } from '@api/infra/healthcheck/server'
-import { PgClientOpts } from '@api/infra/pg/client'
 import { rateLimitEnvSchema } from '@api/infra/ratelimit'
-import { redisEnvSchema, RedisOpts } from '@api/infra/redis/createClient'
+import { redisEnvSchema, RedisOpts } from '@api/infra/redis/client'
 import { sessionEnvSchema } from '@api/infra/session'
 import { RateLimitOptions } from '@fastify/rate-limit'
 import { FastifySessionOptions } from '@fastify/session'
 import { FlagsServiceOptions } from '@readit/flags'
-import { kyselyPGEnvSchema } from '@readit/kysely-pg-config'
-import { LoggerOpts, loggerOptsEnvSchema } from '@readit/logger'
+import { kyselyPGEnvSchema, KyselyPGSchema } from '@readit/kysely-pg-config'
+import { getLoggerConfig, loggerOptsEnvSchema } from '@readit/logger'
 import { PortSchema } from '@readit/utils'
 import { RedisStoreOptions } from 'connect-redis'
 import envSchema from 'env-schema'
+import { PinoLoggerOptions } from 'fastify/types/logger'
 import { z } from 'zod'
 import { zodToJsonSchema } from 'zod-to-json-schema'
 
@@ -106,16 +106,16 @@ export interface Config {
 	fastify: {
 		trustProxy: boolean
 		maxParamLength?: number
+		logger: PinoLoggerOptions
 	}
 	server: {
 		host?: string
 		port: number
 	}
-	loggerOpts: LoggerOpts
 	trpc: {
 		endpoint: string
 	}
-	pg: PgClientOpts
+	pg: KyselyPGSchema
 	redis: RedisOpts
 	underPressure: UnderPressure
 	healthcheckDeps: {
@@ -140,13 +140,19 @@ export const config: Config = {
 		trustProxy: true,
 		// for trpc
 		maxParamLength: 5000,
+		logger: getLoggerConfig({
+			APP_NAME: env.APP_NAME,
+			APP_VERSION: env.APP_VERSION,
+			IS_PROD: env.IS_PROD,
+			LOGGING_LEVEL: env.LOGGING_LEVEL,
+			K_SERVICE: env.K_SERVICE,
+		}),
 	},
 	server: {
 		port: env.PORT,
 		// listen to all ipv4 addresses in cloud run
 		host: env.K_SERVICE ? '0.0.0.0' : env.API_HOST,
 	},
-	loggerOpts: env,
 	trpc: {
 		endpoint: env.TRPC_ENDPOINT,
 	},

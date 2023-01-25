@@ -1,4 +1,4 @@
-import { config } from '@api/config'
+import { config } from '@api/infra/config'
 import * as FlagModule from '@readit/flags'
 import { createClient } from '@vercel/edge-config'
 

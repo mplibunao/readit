@@ -13,6 +13,8 @@ export const kyselyPGEnvSchema = {
 
 const kyselyPGSchema = z.object(kyselyPGEnvSchema)
 
+export type KyselyPGSchema = z.infer<typeof kyselyPGSchema>
+
 export type KyselyPGConfigOpts = z.infer<typeof kyselyPGSchema> & {
 	logger: Logger
 }

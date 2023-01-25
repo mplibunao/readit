@@ -1,8 +1,8 @@
-import { Config } from '@api/config'
+import { Config } from '@api/infra/config'
 import Cookie from '@fastify/cookie'
 import Session from '@fastify/session'
 import connectRedis, { RedisStoreOptions } from 'connect-redis'
-import { FastifyPluginAsync } from 'fastify'
+import { FastifyPluginAsync, FastifyRequest } from 'fastify'
 import fp from 'fastify-plugin'
 import { z } from 'zod'
 
@@ -11,6 +11,8 @@ declare module 'fastify' {
 		readsid: string
 	}
 }
+
+export type Session = FastifyRequest['session']
 
 export const sessionEnvSchema = {
 	SESSION_SECRET: z.string(),
