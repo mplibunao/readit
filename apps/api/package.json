@@ -5,7 +5,7 @@
 	"type": "module",
 	"scripts": {
 		"test:migrate": "pnpm -F pg-manager db:migrate:test",
-		"test": "pnpm test:migrate && vitest --run --coverage",
+		"test": "pnpm test:migrate && vitest --run --coverage --no-threads",
 		"test:watch": "pnpm test:migrate && vitest watch --coverage --ui",
 		"build": "node ./scripts/esbuild.mjs --minify",
 		"build:analyze": "node ./scripts/esbuild.mjs --app server --analyze --saveAnalyze --minify",

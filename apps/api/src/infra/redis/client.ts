@@ -25,17 +25,19 @@ const redisSchema = z.object(redisEnvSchema)
 
 export type RedisOpts = z.infer<typeof redisSchema>
 
-export const createRedisClient = (deps: Dependencies) => {
+export const createRedisClient = ({ config, logger }: Dependencies) => {
 	try {
-		return new Redis(deps.config.redis.REDIS_URL, {
-			maxRetriesPerRequest: deps.config.redis.REDIS_MAX_RETRIES_PER_REQ,
-			connectTimeout: deps.config.redis.REDIS_CONNECT_TIMEOUT,
-			enableAutoPipelining: deps.config.redis.REDIS_ENABLE_AUTO_PIPELINING,
+		return new Redis(config.redis.REDIS_URL, {
+			maxRetriesPerRequest: config.redis.REDIS_MAX_RETRIES_PER_REQ,
+			connectTimeout: config.redis.REDIS_CONNECT_TIMEOUT,
+			enableAutoPipelining: config.redis.REDIS_ENABLE_AUTO_PIPELINING,
 			family: 4,
 		})
 	} catch (error) {
 		const err = `Creating redis client failed: ${error}`
-		deps.logger.error(err)
+		if (config.env.NODE_ENV !== 'test') {
+			logger.error(err)
+		}
 		throw err
 	}
 }

@@ -56,7 +56,9 @@ async function redisCheck(redis: Redis, logger: Logger) {
 		const response = await redis.ping()
 		if (response === 'PONG') return 'ok'
 	} catch (err) {
-		logger.debug({ err }, 'failed to read DB during health check')
+		if (process.env.NODE_ENV !== 'test') {
+			logger.debug({ err }, 'failed to read DB during health check')
+		}
 	}
 	return 'fail'
 }

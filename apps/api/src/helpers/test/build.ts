@@ -33,10 +33,6 @@ async function build(opts?: {
 		await clearDatabase(fastify.diContainer.cradle.pg)
 	})
 
-	afterEach(async () => {
-		await clearDatabase(fastify.diContainer.cradle.pg)
-	})
-
 	// Tear down our app after we are done
 	afterAll(async () => {
 		await fastify.close()
