@@ -1,16 +1,21 @@
-import { PasswordSchema } from '@readit/utils/src/schemas'
+import {
+	createdAt,
+	deletedAt,
+	PasswordSchema,
+	updatedAt,
+} from '@readit/utils/src/schemas'
 import { z } from 'zod'
 
 export * as User from './user.types'
 
-const id = z.string()
-const email = z.string().trim().email({ message: 'Should be a valid email' })
-const firstName = z.string().trim().min(2)
-const lastName = z.string().trim().min(2)
-const password = PasswordSchema
-const createdAt = z.coerce.date()
-const updatedAt = z.coerce.date()
-const deletedAt = z.coerce.date().nullable()
+export const id = z.string()
+export const email = z
+	.string()
+	.trim()
+	.email({ message: 'Should be a valid email' })
+export const firstName = z.string().trim().min(2)
+export const lastName = z.string().trim().min(2)
+export const password = PasswordSchema
 
 export const userSchema = z.promise(
 	z.object({
