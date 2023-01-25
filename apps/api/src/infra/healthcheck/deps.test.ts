@@ -1,6 +1,6 @@
 import { build } from '@api/helpers/test/build'
 import { asFunction, Lifetime } from 'awilix'
-import { describe, expect, it, test } from 'vitest'
+import { describe, expect, it } from 'vitest'
 
 import { closePgClient, createPgClient } from '../pg/createClient'
 import { closeRedisClient, createRedisClient } from '../redis/client'
@@ -115,7 +115,7 @@ describe('healthcheck redis', () => {
 		expect(res.redis).toEqual('ok')
 	})
 
-	test('should return fail for the redis field if redis is not', async () => {
+	it('should return fail for the redis field if redis is not', async () => {
 		const baseUrl = '/health'
 
 		const fastify = await build({
