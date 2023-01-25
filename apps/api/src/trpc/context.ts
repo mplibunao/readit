@@ -1,4 +1,5 @@
 import { Dependencies } from '@api/infra/diConfig'
+import { diContainer } from '@fastify/awilix'
 import { inferAsyncReturnType } from '@trpc/server'
 import type { CreateFastifyContextOptions } from '@trpc/server/adapters/fastify'
 
@@ -24,11 +25,11 @@ export const createContextInner = async ({ deps }: CreateContextOptions) => {
  *
  * @see https://trpc.io/docs/context#inner-and-outer-context
  */
-export async function createContext({ req }: CreateFastifyContextOptions) {
+export async function createContext(_: CreateFastifyContextOptions) {
 	//const user = { name: req.headers.username ?? 'anonymous' }
 
 	//return { req, res, pg: req.server.pg }
-	return await createContextInner({ deps: req.diScope.cradle })
+	return await createContextInner({ deps: diContainer.cradle })
 }
 
 export type Context = inferAsyncReturnType<typeof createContext>

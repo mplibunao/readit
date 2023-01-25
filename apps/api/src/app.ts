@@ -62,7 +62,6 @@ export const app: FastifyPluginAsync<AppProps> = async (
 		done()
 	})
 
-	console.log('done') // eslint-disable-line no-console
 	fastify.register(Cors, {
 		origin: [config.env.FRONTEND_URL],
 		methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
