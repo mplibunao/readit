@@ -4,6 +4,7 @@
 		"outDir": "./dist",
 		"rootDir": "./src",
 		"importHelpers": true,
+		"noEmit": false,
 		"baseUrl": ".",
 		"paths": {
 			"@api/*": ["src/*"]
