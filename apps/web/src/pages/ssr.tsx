@@ -5,7 +5,7 @@ export interface SSRProps {
 }
 
 export default function SSR(props: SSRProps): JSX.Element {
-	return <div>SSR: {props.hello}</div>
+	return <div>SSR:: {props.hello}</div>
 }
 
 export async function getServerSideProps() {

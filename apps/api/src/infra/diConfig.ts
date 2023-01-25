@@ -10,7 +10,9 @@ import {
 	buildUserService,
 	UserService,
 } from '@api/modules/accounts/user/user.service'
+import { FlagsRepo, FlagsService } from '@readit/flags'
 import { Logger } from '@readit/logger'
+import { EdgeConfigClient } from '@vercel/edge-config'
 import {
 	asFunction,
 	asValue,
@@ -22,6 +24,7 @@ import { FastifyInstance } from 'fastify'
 import Redis from 'ioredis'
 
 import { Config } from './config'
+import { buildEdgeConfig, buildFlagsRepo, buildFlagsService } from './flags'
 import { closePgClient, createPgClient, PG } from './pg/createClient'
 import { closeRedisClient, createRedisClient } from './redis/client'
 import { Session } from './session'
@@ -43,6 +46,9 @@ export interface Dependencies {
 	UserQueriesRepo: UserQueriesRepo
 	UserMutationsRepo: UserMutationsRepo
 	UserService: UserService
+	edgeConfig: EdgeConfigClient
+	FlagsRepo: FlagsRepo
+	FlagsService: FlagsService
 }
 
 /*
@@ -61,6 +67,12 @@ declare module '@fastify/awilix' {
 		redis: Redis
 		pg: PG
 		//session: Session
+		UserQueriesRepo: UserQueriesRepo
+		UserMutationsRepo: UserMutationsRepo
+		UserService: UserService
+		edgeConfig: EdgeConfigClient
+		FlagsRepo: FlagsRepo
+		FlagsService: FlagsService
 	}
 
 	interface RequestCradle extends Dependencies {
@@ -69,6 +81,12 @@ declare module '@fastify/awilix' {
 		redis: Redis
 		pg: PG
 		session: Session
+		UserQueriesRepo: UserQueriesRepo
+		UserMutationsRepo: UserMutationsRepo
+		UserService: UserService
+		edgeConfig: EdgeConfigClient
+		FlagsRepo: FlagsRepo
+		FlagsService: FlagsService
 	}
 }
 
@@ -91,6 +109,9 @@ export function registerDependencies(
 		UserQueriesRepo: asFunction(buildUserQueriesRepo, SINGLETON_CONFIG),
 		UserMutationsRepo: asFunction(buildUserMutationsRepo, SINGLETON_CONFIG),
 		UserService: asFunction(buildUserService, { lifetime: 'SCOPED' }),
+		edgeConfig: asFunction(buildEdgeConfig, SINGLETON_CONFIG),
+		FlagsRepo: asFunction(buildFlagsRepo, SINGLETON_CONFIG),
+		FlagsService: asFunction(buildFlagsService, SINGLETON_CONFIG),
 	}
 
 	diContainer.register(diConfig)

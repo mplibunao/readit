@@ -5,8 +5,8 @@ import { describe, expect, test } from 'vitest'
 
 describe('TRPC user router', () => {
 	test('user.register should create a user and fetch the same user using user.byId', async () => {
-		await build()
-		const ctx = await createContextInner({})
+		const fastify = await build()
+		const ctx = await createContextInner({ deps: fastify.diContainer.cradle })
 		const caller = appRouter.createCaller(ctx)
 		const input: inferProcedureInput<AppRouter['user']['register']> = {
 			email: 'john@example.com',

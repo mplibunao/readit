@@ -26,15 +26,15 @@ async function build(opts?: {
 
 	beforeAll(async () => {
 		await fastify.ready()
-		await clearDatabase()
+		await clearDatabase(fastify.diContainer.cradle.pg)
 	})
 
 	beforeEach(async () => {
-		await clearDatabase()
+		await clearDatabase(fastify.diContainer.cradle.pg)
 	})
 
 	afterEach(async () => {
-		await clearDatabase()
+		await clearDatabase(fastify.diContainer.cradle.pg)
 	})
 
 	// Tear down our app after we are done
