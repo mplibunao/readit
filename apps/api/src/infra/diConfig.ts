@@ -61,33 +61,9 @@ export type DependencyOverrides = Partial<
 >
 
 declare module '@fastify/awilix' {
-	interface Cradle extends Dependencies {
-		config: Config
-		logger: Logger
-		redis: Redis
-		pg: PG
-		//session: Session
-		UserQueriesRepo: UserQueriesRepo
-		UserMutationsRepo: UserMutationsRepo
-		UserService: UserService
-		edgeConfig: EdgeConfigClient
-		FlagsRepo: FlagsRepo
-		FlagsService: FlagsService
-	}
+	interface Cradle extends Dependencies {}
 
-	interface RequestCradle extends Dependencies {
-		config: Config
-		logger: Logger
-		redis: Redis
-		pg: PG
-		session: Session
-		UserQueriesRepo: UserQueriesRepo
-		UserMutationsRepo: UserMutationsRepo
-		UserService: UserService
-		edgeConfig: EdgeConfigClient
-		FlagsRepo: FlagsRepo
-		FlagsService: FlagsService
-	}
+	interface RequestCradle extends Dependencies {}
 }
 
 export function registerDependencies(
