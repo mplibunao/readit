@@ -3,7 +3,7 @@ import { Config, config } from '@api/infra/config'
 import { DependencyOverrides } from '@api/infra/diConfig'
 import Fastify from 'fastify'
 import fp from 'fastify-plugin'
-import { afterAll, afterEach, beforeAll, beforeEach } from 'vitest'
+import { afterAll, beforeAll, beforeEach } from 'vitest'
 
 import { clearDatabase } from './clearDatabase'
 
