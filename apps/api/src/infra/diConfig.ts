@@ -1,15 +1,19 @@
 import {
 	buildUserMutationsRepo,
 	UserMutationsRepo,
-} from '@api/modules/accounts/user/user.mutations.repo'
+} from '@api/modules/accounts/repositories/user.mutations.repo'
 import {
 	buildUserQueriesRepo,
 	UserQueriesRepo,
-} from '@api/modules/accounts/user/user.queries.repo'
+} from '@api/modules/accounts/repositories/user.queries.repo'
+import {
+	buildSessionService,
+	SessionService,
+} from '@api/modules/accounts/services/session.service'
 import {
 	buildUserService,
 	UserService,
-} from '@api/modules/accounts/user/user.service'
+} from '@api/modules/accounts/services/user.service'
 import { FlagsRepo, FlagsService } from '@readit/flags'
 import { Logger } from '@readit/logger'
 import { EdgeConfigClient } from '@vercel/edge-config'
@@ -42,13 +46,14 @@ export interface Dependencies {
 	logger: Logger
 	redis: Redis
 	pg: PG
-	session?: Session
+	session: Session
 	UserQueriesRepo: UserQueriesRepo
 	UserMutationsRepo: UserMutationsRepo
 	UserService: UserService
 	edgeConfig: EdgeConfigClient
 	FlagsRepo: FlagsRepo
 	FlagsService: FlagsService
+	SessionService: SessionService
 }
 
 /*
@@ -84,6 +89,7 @@ export function registerDependencies(
 		}),
 		UserQueriesRepo: asFunction(buildUserQueriesRepo, SINGLETON_CONFIG),
 		UserMutationsRepo: asFunction(buildUserMutationsRepo, SINGLETON_CONFIG),
+		SessionService: asFunction(buildSessionService, { lifetime: 'SCOPED' }),
 		UserService: asFunction(buildUserService, { lifetime: 'SCOPED' }),
 		edgeConfig: asFunction(buildEdgeConfig, SINGLETON_CONFIG),
 		FlagsRepo: asFunction(buildFlagsRepo, SINGLETON_CONFIG),

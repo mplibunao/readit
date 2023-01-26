@@ -9,9 +9,9 @@ import {
 	PasswordHashingError,
 	UserAlreadyExists,
 	UserNotFound,
-} from './user.errors'
-import { UserMutationsRepo } from './user.mutations.repo'
-import { CreateUserOutput, User, UserSchema } from './user.types'
+} from '../domain/user.errors'
+import { CreateUserOutput, User, UserSchema } from '../domain/user.types'
+import { UserMutationsRepo } from '../repositories/user.mutations.repo'
 
 export interface UserService {
 	register: (user: User.CreateUserInput) => CreateUserOutput
@@ -22,6 +22,7 @@ export const buildUserService = ({
 	logger,
 	UserMutationsRepo,
 	UserQueriesRepo,
+	SessionService,
 }: Dependencies): UserService => {
 	return {
 		register: z
@@ -61,6 +62,8 @@ export const buildUserService = ({
 					logger.error('Failed to create user', { user, error })
 					throw error
 				}
+
+				SessionService.setUser({ id: createdUser.id })
 
 				return createdUser
 			}),

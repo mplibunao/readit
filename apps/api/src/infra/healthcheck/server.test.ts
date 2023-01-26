@@ -1,4 +1,4 @@
-import { build } from '@api/helpers/test/build'
+import { build } from '@api/test/build'
 import { describe, expect, test } from 'vitest'
 
 import { routeResponseSchemaOpts } from './server'

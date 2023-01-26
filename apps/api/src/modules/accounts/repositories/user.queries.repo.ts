@@ -3,7 +3,7 @@ import { UserData } from '@api/infra/pg/types'
 import { DBError } from '@readit/utils'
 import { NoResultError } from 'kysely'
 
-import { UserNotFound } from './user.errors'
+import { UserNotFound } from '../domain/user.errors'
 
 export interface UserQueriesRepo {
 	findById: (id: UserData['id']) => Promise<UserData>

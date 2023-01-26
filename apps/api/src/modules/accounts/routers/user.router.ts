@@ -1,4 +1,4 @@
-import { UserDto } from '@api/modules/accounts/user/user.dto'
+import { UserDto } from '@api/modules/accounts/domain/user.dto'
 import { publicProcedure, router } from '@api/trpc/builder'
 import { until } from '@open-draft/until'
 import { AppError, DBError } from '@readit/utils'
@@ -11,8 +11,8 @@ import {
 	RegistrationError,
 	UserAlreadyExists,
 	UserNotFound,
-} from './user.errors'
-import { User } from './user.types'
+} from '../domain/user.errors'
+import { User } from '../domain/user.types'
 
 export const userRouter = router({
 	register: publicProcedure
@@ -84,6 +84,7 @@ export const userRouter = router({
 					}
 				}
 
+				console.log('error', error) // eslint-disable-line no-console
 				throw new TRPCError({
 					cause: error,
 					message: 'Unhandled exception',

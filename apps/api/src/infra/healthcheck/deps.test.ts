@@ -1,4 +1,4 @@
-import { build } from '@api/helpers/test/build'
+import { build } from '@api/test/build'
 import { asFunction, Lifetime } from 'awilix'
 import { describe, expect, it } from 'vitest'
 

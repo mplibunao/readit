@@ -3,7 +3,7 @@ import { InsertableUser, UserData } from '@api/infra/pg/types'
 import { DBError } from '@readit/utils'
 import Pg from 'pg'
 
-import { UserAlreadyExists } from './user.errors'
+import { UserAlreadyExists } from '../domain/user.errors'
 
 export interface UserMutationsRepo {
 	create: (

@@ -1,4 +1,4 @@
-import { userRouter } from '@api/modules/accounts/user/user.router'
+import { userRouter } from '@api/modules/accounts/routers/user.router'
 
 import { publicProcedure, t } from './builder'
 
