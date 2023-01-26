@@ -3,6 +3,8 @@ import { FastifyPluginAsync } from 'fastify'
 import fp from 'fastify-plugin'
 import { z } from 'zod'
 
+import { Config, Env } from '../config'
+
 export const rateLimitEnvSchema = {
 	RATELIMIT_MAX: z
 		.number()
@@ -36,4 +38,9 @@ const rateLimit: FastifyPluginAsync<RateLimitPluginOptions> = async (
 
 export default fp(rateLimit, {
 	name: 'rateLimit',
+})
+
+export const getRateLimitOpts = (env: Env): Config['rateLimit'] => ({
+	max: env.RATELIMIT_MAX,
+	timeWindow: env.RATELIMIT_TIMEWINDOW,
 })

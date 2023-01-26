@@ -1,4 +1,4 @@
-import { Config } from '@api/infra/config'
+import { Config, Env } from '@api/infra/config'
 import Cookie from '@fastify/cookie'
 import Session from '@fastify/session'
 import connectRedis, { RedisStoreOptions } from 'connect-redis'
@@ -82,3 +82,23 @@ function initRedisStore(opts: RedisStoreOptions) {
 	const RedisStore = connectRedis(Session as any)
 	return new RedisStore(opts) as any
 }
+
+export const getSessionOpts = (env: Env): Config['session'] => ({
+	secret: env.SESSION_SECRET,
+	cookieName: env.SESSION_COOKIE_NAME,
+	cookiePrefix: env.SESSION_COOKIE_PREFIX, // for compatibility with express
+	cookie: {
+		maxAge: env.SESSION_COOKIE_MAX_AGE, // 10 years
+		httpOnly: true,
+		secure: env.SESSION_SECURE_COOKIE,
+		sameSite: env.SESSION_COOKIE_SAME_SITE,
+		domain: env.SESSION_COOKIE_DOMAIN,
+	},
+	saveUninitialized: env.SESSION_SAVE_UNINITIALIZED,
+})
+
+export const getSessionRedisStoreOpts = (
+	env: Env,
+): Config['sessionRedisStore'] => ({
+	disableTouch: env.SESSION_STORE_DISABLE_TOUCH,
+})

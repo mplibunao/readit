@@ -2,6 +2,7 @@ import { Disposer } from 'awilix'
 import Redis from 'ioredis'
 import { z } from 'zod'
 
+import { Config, Env } from '../config'
 import { Dependencies } from '../diConfig'
 
 export const redisEnvSchema = {
@@ -50,3 +51,10 @@ export const closeRedisClient: Disposer<Redis> = (redis) => {
 		})
 	})
 }
+
+export const getRedisClientOpts = (env: Env): Config['redis'] => ({
+	REDIS_URL: env.REDIS_URL,
+	REDIS_ENABLE_AUTO_PIPELINING: env.REDIS_ENABLE_AUTO_PIPELINING,
+	REDIS_MAX_RETRIES_PER_REQ: env.REDIS_MAX_RETRIES_PER_REQ,
+	REDIS_CONNECT_TIMEOUT: env.REDIS_CONNECT_TIMEOUT,
+})
