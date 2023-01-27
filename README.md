@@ -20,6 +20,11 @@
 - Search: Search posts, subreddits. 
 - Discovery: Recommendation of content based on interests (posts and subreddits)
 
+# Documentation
+
+- [Migrations](./apps/pg-manager/README.md)
+- [Tunneling](./docs/tunnel.md)
+
 # Reddit Clone v2
 
 This is a more production-ready rewrite of [reddit clone](https://github.com/mplibunao/reddit-clone) based on the things that I've learned in the past year or so
