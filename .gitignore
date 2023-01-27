@@ -62,3 +62,5 @@ analyze
 # Outdir for declarations
 dts/
 
+service_account_key.json
+credentials.json
