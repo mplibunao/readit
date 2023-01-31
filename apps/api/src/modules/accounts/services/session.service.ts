@@ -12,8 +12,10 @@ export interface SessionService {
 
 export const buildSessionService = ({
 	session,
-}: Dependencies): SessionService => ({
-	setUser: (user) => session?.set('user', user),
-	getUser: () => session?.get('user'),
-	destroy: () => session?.destroy(),
-})
+}: Dependencies): SessionService => {
+	return {
+		setUser: (user) => session.set('user', user),
+		getUser: () => session.get('user'),
+		destroy: () => session.destroy(),
+	}
+}

@@ -60,7 +60,7 @@ export interface Dependencies {
 	logger: Logger
 	redis: Redis
 	pg: PG
-	session?: Session
+	session: Session
 	edgeConfig: EdgeConfigClient
 	FlagsRepo: FlagsRepo
 	FlagsService: FlagsService
@@ -118,8 +118,10 @@ export function registerDependencies(
 		MailerService: asFunction(buildMailerService, SINGLETON_CONFIG),
 		UserQueriesRepo: asFunction(buildUserQueriesRepo, SINGLETON_CONFIG),
 		UserMutationsRepo: asFunction(buildUserMutationsRepo, SINGLETON_CONFIG),
-		SessionService: asFunction(buildSessionService),
-		UserService: asFunction(buildUserService),
+		SessionService: asFunction(buildSessionService, {
+			lifetime: Lifetime.SCOPED,
+		}),
+		UserService: asFunction(buildUserService, { lifetime: Lifetime.SCOPED }),
 	}
 
 	diContainer.register(diConfig)

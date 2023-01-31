@@ -56,9 +56,7 @@ export const app: FastifyPluginAsync<AppProps> = async (
 	 * Register session and other values dependent on req so we don't get stale session data
 	 */
 	fastify.addHook('onRequest', (req, _, done) => {
-		req.diScope.register({
-			session: asValue(req.session),
-		})
+		diContainer.register('session', asValue(req.session))
 		done()
 	})
 
