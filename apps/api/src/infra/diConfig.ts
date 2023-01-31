@@ -1,4 +1,12 @@
 import {
+	AccountEvents,
+	buildAccountEvents,
+} from '@api/modules/accounts/events/accounts.event'
+import {
+	buildTokenMutationsRepo,
+	TokenMutationsRepo,
+} from '@api/modules/accounts/repositories/token.mutations.repo'
+import {
 	buildUserMutationsRepo,
 	UserMutationsRepo,
 } from '@api/modules/accounts/repositories/user.mutations.repo'
@@ -14,6 +22,7 @@ import {
 	buildUserService,
 	UserService,
 } from '@api/modules/accounts/services/user.service'
+import { PubSub } from '@google-cloud/pubsub'
 import { FlagsRepo, FlagsService } from '@readit/flags'
 import { Logger } from '@readit/logger'
 import { EdgeConfigClient } from '@vercel/edge-config'
@@ -29,7 +38,12 @@ import Redis from 'ioredis'
 
 import { Config } from './config'
 import { buildEdgeConfig, buildFlagsRepo, buildFlagsService } from './flags'
+import { buildMailerService, MailerService } from './mailer/MailerService'
+import { EmailClient } from './mailer/postmarkClient'
+import { registerEmailClient } from './mailer/registerEmailClient'
 import { closePgClient, createPgClient, PG } from './pg/createClient'
+import { buildPubSubService, PubSubService } from './pubsub/PubSubService'
+import { buildPubSubClient } from './pubsub/client'
 import { closeRedisClient, createRedisClient } from './redis/client'
 import { Session } from './session'
 
@@ -46,13 +60,19 @@ export interface Dependencies {
 	logger: Logger
 	redis: Redis
 	pg: PG
-	session: Session
-	UserQueriesRepo: UserQueriesRepo
-	UserMutationsRepo: UserMutationsRepo
-	UserService: UserService
+	session?: Session
 	edgeConfig: EdgeConfigClient
 	FlagsRepo: FlagsRepo
 	FlagsService: FlagsService
+	pubsub: PubSub
+	PubSubService: PubSubService
+	AccountEvents: AccountEvents
+	emailClient: EmailClient
+	TokenMutationsRepo: TokenMutationsRepo
+	MailerService: MailerService
+	UserQueriesRepo: UserQueriesRepo
+	UserMutationsRepo: UserMutationsRepo
+	UserService: UserService
 	SessionService: SessionService
 }
 
@@ -87,13 +107,19 @@ export function registerDependencies(
 			dispose: closePgClient,
 			lifetime: Lifetime.SINGLETON,
 		}),
-		UserQueriesRepo: asFunction(buildUserQueriesRepo, SINGLETON_CONFIG),
-		UserMutationsRepo: asFunction(buildUserMutationsRepo, SINGLETON_CONFIG),
-		SessionService: asFunction(buildSessionService, { lifetime: 'SCOPED' }),
-		UserService: asFunction(buildUserService, { lifetime: 'SCOPED' }),
 		edgeConfig: asFunction(buildEdgeConfig, SINGLETON_CONFIG),
 		FlagsRepo: asFunction(buildFlagsRepo, SINGLETON_CONFIG),
 		FlagsService: asFunction(buildFlagsService, SINGLETON_CONFIG),
+		pubsub: asFunction(buildPubSubClient, SINGLETON_CONFIG),
+		PubSubService: asFunction(buildPubSubService, SINGLETON_CONFIG),
+		AccountEvents: asFunction(buildAccountEvents, SINGLETON_CONFIG),
+		emailClient: asFunction(registerEmailClient, SINGLETON_CONFIG),
+		TokenMutationsRepo: asFunction(buildTokenMutationsRepo, SINGLETON_CONFIG),
+		MailerService: asFunction(buildMailerService, SINGLETON_CONFIG),
+		UserQueriesRepo: asFunction(buildUserQueriesRepo, SINGLETON_CONFIG),
+		UserMutationsRepo: asFunction(buildUserMutationsRepo, SINGLETON_CONFIG),
+		SessionService: asFunction(buildSessionService),
+		UserService: asFunction(buildUserService),
 	}
 
 	diContainer.register(diConfig)

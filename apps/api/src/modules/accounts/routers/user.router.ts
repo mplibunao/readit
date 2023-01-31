@@ -21,7 +21,7 @@ export const userRouter = router({
 		.mutation(async ({ input, ctx: { UserService, logger } }) => {
 			const { data, error } = await until<
 				RegistrationError,
-				Awaited<User.CreateUserOutput>
+				Awaited<Promise<User.CreateUserOutput>>
 			>(() => UserService.register(input))
 
 			if (error) {
@@ -61,7 +61,7 @@ export const userRouter = router({
 		.query(async ({ input, ctx: { UserService, logger } }) => {
 			const { error, data } = await until<
 				FindByIdError,
-				Awaited<User.UserSchema>
+				Awaited<Promise<User.UserSchema>>
 			>(() => UserService.findById(input.id))
 
 			if (error) {
@@ -84,7 +84,6 @@ export const userRouter = router({
 					}
 				}
 
-				console.log('error', error) // eslint-disable-line no-console
 				throw new TRPCError({
 					cause: error,
 					message: 'Unhandled exception',

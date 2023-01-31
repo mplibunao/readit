@@ -14,8 +14,9 @@ import { CreateUserOutput, User, UserSchema } from '../domain/user.types'
 import { UserMutationsRepo } from '../repositories/user.mutations.repo'
 
 export interface UserService {
-	register: (user: User.CreateUserInput) => CreateUserOutput
-	findById: (id: string) => UserSchema
+	register: (user: User.CreateUserInput) => Promise<CreateUserOutput>
+	findById: (id: string) => Promise<UserSchema>
+	getProfileUrl: (username: string) => string
 }
 
 export const buildUserService = ({
@@ -23,12 +24,14 @@ export const buildUserService = ({
 	UserMutationsRepo,
 	UserQueriesRepo,
 	SessionService,
+	config,
+	AccountEvents,
 }: Dependencies): UserService => {
 	return {
 		register: z
 			.function()
 			.args(User.createUserInput)
-			.returns(User.createUserOutput)
+			.returns(z.promise(User.createUserOutput))
 			.implement(async (input) => {
 				const { password, ...user } = input
 
@@ -63,6 +66,7 @@ export const buildUserService = ({
 					throw error
 				}
 
+				await AccountEvents.publishConfirmEmail({ userId: createdUser.id })
 				SessionService.setUser({ id: createdUser.id })
 
 				return createdUser
@@ -71,7 +75,7 @@ export const buildUserService = ({
 		findById: z
 			.function()
 			.args(User.findByIdInput)
-			.returns(User.userSchema)
+			.returns(z.promise(User.userSchema))
 			.implement(async (id) => {
 				const { error, data } = await until<UserNotFound | DBError, UserData>(
 					() => UserQueriesRepo.findById(id),
@@ -83,5 +87,11 @@ export const buildUserService = ({
 
 				return data
 			}),
+
+		getProfileUrl: z
+			.function()
+			.args(User.username)
+			.returns(User.profileUrl)
+			.implement((username) => `${config.env.FRONTEND_URL}/user/${username}`),
 	}
 }

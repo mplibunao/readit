@@ -5,15 +5,15 @@ type User = {
 }
 
 export interface SessionService {
-	setUser: (user: User) => void
-	getUser: () => User
-	destroy: () => Promise<void>
+	setUser: (user: User) => void | undefined
+	getUser: () => User | undefined
+	destroy: () => Promise<void> | undefined
 }
 
 export const buildSessionService = ({
 	session,
 }: Dependencies): SessionService => ({
-	setUser: (user) => session.set('user', user),
-	getUser: () => session.get('user'),
-	destroy: () => session.destroy(),
+	setUser: (user) => session?.set('user', user),
+	getUser: () => session?.get('user'),
+	destroy: () => session?.destroy(),
 })

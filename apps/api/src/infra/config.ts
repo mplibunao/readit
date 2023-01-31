@@ -27,6 +27,11 @@ import { z } from 'zod'
 import { zodToJsonSchema } from 'zod-to-json-schema'
 
 import { edgeConfigEnvSchema, getEdgeConfigOpts } from './flags'
+import {
+	getPostmarkOpts,
+	PostmarkConfig,
+	postmarkEnvSchema,
+} from './mailer/postmarkClient'
 
 const zodEnvSchema = z.object({
 	...kyselyPGEnvSchema,
@@ -36,6 +41,7 @@ const zodEnvSchema = z.object({
 	...edgeConfigEnvSchema,
 	...rateLimitEnvSchema,
 	...sessionEnvSchema,
+	...postmarkEnvSchema,
 	NODE_ENV: z
 		.enum(['development', 'production', 'test'])
 		.default('development'),
@@ -43,6 +49,7 @@ const zodEnvSchema = z.object({
 	API_HOST: z.string().optional().default('127.0.0.1'),
 	FRONTEND_URL: z.string(),
 	TRPC_ENDPOINT: z.string(),
+	API_URL: z.string(),
 })
 
 const jsonSchema = zodToJsonSchema(zodEnvSchema, { errorMessages: true })
@@ -100,6 +107,7 @@ export interface Config {
 	}
 	session: FastifySessionOptions
 	sessionRedisStore: RedisStoreOptions
+	postmark: PostmarkConfig
 }
 
 export const config: Config = {
@@ -138,4 +146,5 @@ export const config: Config = {
 	rateLimit: getRateLimitOpts(env),
 	session: getSessionOpts(env),
 	sessionRedisStore: getSessionRedisStoreOpts(env),
+	postmark: getPostmarkOpts(env),
 }

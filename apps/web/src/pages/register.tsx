@@ -8,8 +8,8 @@ import { Separator } from '@/components/Separator/Separator'
 import { errorToast, successToast } from '@/components/Toast/useToast'
 import { useZodForm } from '@/helpers/forms/useZodForm'
 import { client } from '@/utils/trpc/client'
-import { registerInput } from '@api/modules/accounts/user/user.dto'
-import { UserAlreadyExists } from '@api/modules/accounts/user/user.errors'
+import { registerInput } from '@api/modules/accounts/domain/user.dto'
+import { UserAlreadyExists } from '@api/modules/accounts/domain/user.errors'
 import * as Toggle from '@radix-ui/react-toggle'
 import Link from 'next/link'
 import React from 'react'
@@ -96,6 +96,14 @@ const Register = () => {
 								name='email'
 								label='Email'
 								placeholder='Enter your email'
+								required
+							/>
+
+							<FormInput
+								type='text'
+								name='username'
+								label='Username'
+								placeholder='Enter your username'
 								required
 							/>
 

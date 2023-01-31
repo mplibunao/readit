@@ -8,7 +8,9 @@ import { UserAlreadyExists } from '../domain/user.errors'
 export interface UserMutationsRepo {
 	create: (
 		user: InsertableUser,
-	) => Promise<Pick<UserData, 'id' | 'email' | 'firstName' | 'lastName'>>
+	) => Promise<
+		Pick<UserData, 'id' | 'email' | 'firstName' | 'lastName' | 'username'>
+	>
 }
 
 export const buildUserMutationsRepo = (deps: Dependencies) => {
@@ -18,7 +20,7 @@ export const buildUserMutationsRepo = (deps: Dependencies) => {
 				return deps.pg
 					.insertInto('users')
 					.values(user)
-					.returning(['id', 'email', 'firstName', 'lastName'])
+					.returning(['id', 'email', 'firstName', 'lastName', 'username'])
 					.executeTakeFirstOrThrow()
 			} catch (error) {
 				if (error instanceof Pg.DatabaseError) {

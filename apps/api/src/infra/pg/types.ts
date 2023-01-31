@@ -9,3 +9,9 @@ export type UserTable = DB['users']
 export type UserData = Selectable<UserTable>
 export type InsertableUser = Insertable<UserTable>
 export type UpdatableUser = Updateable<UserTable>
+
+export type TokenType = 'accountActivation'
+export type TokenTable = DB['tokens']
+export type TokenData = Selectable<TokenTable>
+export type InsertableToken = Insertable<TokenTable> & { type: TokenType }
+export type UpdatableToken = Updateable<TokenTable> & { type?: TokenType }

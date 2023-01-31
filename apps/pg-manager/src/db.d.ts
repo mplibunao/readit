@@ -10,7 +10,17 @@ export type Timestamp = ColumnType<
 	Date | string | RawBuilder
 >
 
+export interface Tokens {
+	createdAt: Generated<Timestamp>
+	id: Generated<string>
+	type: string
+	updatedAt: Generated<Timestamp>
+	usedAt: Timestamp | null
+	userId: string
+}
+
 export interface Users {
+	activatedAt: Timestamp | null
 	createdAt: Generated<Timestamp>
 	deletedAt: Timestamp | null
 	email: string
@@ -19,8 +29,10 @@ export interface Users {
 	id: Generated<string>
 	lastName: string
 	updatedAt: Generated<Timestamp>
+	username: string
 }
 
 export interface DB {
+	tokens: Tokens
 	users: Users
 }

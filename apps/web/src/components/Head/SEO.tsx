@@ -86,6 +86,12 @@ export const SEO = ({
 
 			<link rel='canonical' href={nextBaseUrl} />
 			<link rel='shortcut icon' href='/favicon.ico' />
+			{/* Ignored by twitter but can be used by slack
+			 *<meta name='twitter:label1' value='Opens in Theaters' />
+			 *<meta name='twitter:data1' value='December 1, 2015' />
+			 *<meta name='twitter:label2' value='Or on demand' />
+			 *<meta name='twitter:data2' value='at Hulu.com' />
+			 */}
 		</Head>
 	)
 }

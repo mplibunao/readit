@@ -12,39 +12,49 @@ export const id = z.string()
 export const email = z
 	.string()
 	.trim()
-	.email({ message: 'Should be a valid email' })
-export const firstName = z.string().trim().min(2)
-export const lastName = z.string().trim().min(2)
+	.email({ message: 'Please enter a valid email' })
+export const firstName = z
+	.string()
+	.trim()
+	.min(3, 'Please enter at least 3 characters')
+export const lastName = z
+	.string()
+	.trim()
+	.min(3, 'Please enter at least 3 characters')
+export const username = z
+	.string()
+	.trim()
+	.min(3, 'Please enter at least 3 characters')
 export const password = PasswordSchema
+export const profileUrl = z.string().url()
 
-export const userSchema = z.promise(
-	z.object({
-		id,
-		email,
-		firstName,
-		lastName,
-		createdAt,
-		updatedAt,
-		deletedAt,
-	}),
-)
+export const userSchema = z.object({
+	id,
+	email,
+	firstName,
+	lastName,
+	username,
+	createdAt,
+	updatedAt,
+	deletedAt,
+})
 export type UserSchema = z.infer<typeof userSchema>
 
 export const createUserInput = z.object({
 	email,
 	firstName,
 	lastName,
+	username,
 	password,
 })
 export type CreateUserInput = z.infer<typeof createUserInput>
-export const createUserOutput = z.promise(
-	z.object({
-		id,
-		email,
-		firstName,
-		lastName,
-	}),
-)
+export const createUserOutput = z.object({
+	id,
+	email,
+	firstName,
+	lastName,
+	username,
+})
 export type CreateUserOutput = z.infer<typeof createUserOutput>
 
 export const findByIdInput = id

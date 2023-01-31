@@ -1,16 +1,30 @@
 import { createdAt, deletedAt, updatedAt } from '@readit/utils'
 import { z } from 'zod'
 
-import { email, firstName, id, lastName, password } from './user.types'
+import {
+	email,
+	firstName,
+	id,
+	lastName,
+	password,
+	username,
+} from './user.types'
 
 export * as UserDto from './user.dto'
 
-export const registerInput = z.object({ email, firstName, lastName, password })
+export const registerInput = z.object({
+	email,
+	firstName,
+	lastName,
+	password,
+	username,
+})
 export const registerOutput = z.object({
 	id,
 	email,
 	firstName,
 	lastName,
+	username,
 })
 export const userByIdInput = z.object({ id })
 export const userByIdOutput = z.object({
@@ -18,6 +32,7 @@ export const userByIdOutput = z.object({
 	email,
 	firstName,
 	lastName,
+	username,
 	createdAt,
 	updatedAt,
 	deletedAt,

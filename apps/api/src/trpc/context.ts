@@ -27,7 +27,6 @@ export const createContextInner = async ({ deps }: CreateContextOptions) => {
  */
 export async function createContext(_: CreateFastifyContextOptions) {
 	//const user = { name: req.headers.username ?? 'anonymous' }
-
 	//return { req, res, pg: req.server.pg }
 	return await createContextInner({ deps: diContainer.cradle })
 }

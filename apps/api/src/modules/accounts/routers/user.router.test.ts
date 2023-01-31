@@ -1,4 +1,5 @@
 import { build } from '@api/test/build'
+import { createMockPubSubClient } from '@api/test/mocks/pubsub'
 import { createMockSession } from '@api/test/mocks/session'
 import { AppRouter, appRouter, createContextInner } from '@api/trpc'
 import { inferProcedureInput } from '@trpc/server'
@@ -8,8 +9,12 @@ import { describe, expect, test } from 'vitest'
 describe('TRPC user router', () => {
 	test('user.register should create a user and fetch the same user using user.byId', async () => {
 		const mockedSession = createMockSession()
+		const mockedPubSubClient = createMockPubSubClient()
 		const fastify = await build({
-			dependencyOverrides: { session: asValue(mockedSession) },
+			dependencyOverrides: {
+				session: asValue(mockedSession),
+				pubsub: asValue(mockedPubSubClient),
+			},
 		})
 
 		const ctx = await createContextInner({ deps: fastify.diContainer.cradle })
@@ -19,6 +24,7 @@ describe('TRPC user router', () => {
 			firstName: 'John',
 			lastName: 'Doe',
 			password: 'Password1!',
+			username: 'mplibunao',
 		}
 
 		const user = await caller.user.register(input)
@@ -30,6 +36,7 @@ describe('TRPC user router', () => {
 
 		expect(mockedSession.set).toHaveBeenCalledTimes(1)
 		expect(mockedSession.set).toHaveBeenCalledWith('user', { id: user.id })
+		expect(mockedPubSubClient.publishMessage).toHaveBeenCalledTimes(1)
 
 		const userById = await caller.user.byId({ id: user.id })
 

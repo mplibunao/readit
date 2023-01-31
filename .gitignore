@@ -62,5 +62,6 @@ analyze
 # Outdir for declarations
 dts/
 
+# GCP sa keys
 service_account_key.json
 credentials.json
