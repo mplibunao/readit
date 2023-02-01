@@ -14,7 +14,7 @@
 		"dev": "run-p dev:*",
 		"dev:start": "node --watch dist/index.js -r @cspotcode/source-map-support/register",
 		"_dev:start": "nodemon --watch src -r @cspotcode/source-map-support/register dist/index.js",
-		"dev:build": "node ./scripts/esbuild.mjs --watch --minify",
+		"dev:build": "node ./scripts/esbuild.mjs --watch",
 		"_dev:types": "tsc --watch --emitDeclarationOnly --declaration --project tsconfig.json --outDir types",
 		"format:fix": "prettier --ignore-path ../../.prettierignore --write 'src/**/*.{js,jsx,ts,tsx,md,mdx,graphql,css,scss,yaml,json}'",
 		"format:check": "prettier --ignore-path ../../.prettierignore --list-different 'src/**/*.{js,jsx,ts,tsx,md,mdx,graphql,css,scss,yaml,json}'",
