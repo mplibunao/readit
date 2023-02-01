@@ -37,10 +37,14 @@ const Register = () => {
 			})
 		},
 		onSuccess() {
-			successToast({
-				title: 'Registration successful',
-				message: 'User successfully created',
-			})
+			successToast(
+				{
+					title: 'Registration successful',
+					message:
+						'We sent you a link to verify your email. Check your inbox and click the link to continue',
+				},
+				{ duration: Infinity },
+			)
 		},
 	})
 
