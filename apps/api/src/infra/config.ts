@@ -50,6 +50,7 @@ const zodEnvSchema = z.object({
 	FRONTEND_URL: z.string(),
 	TRPC_ENDPOINT: z.string(),
 	API_URL: z.string(),
+	GCP_PROJECT_ID: z.string(),
 })
 
 const jsonSchema = zodToJsonSchema(zodEnvSchema, { errorMessages: true })

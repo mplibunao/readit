@@ -1,13 +1,17 @@
 import { SendConfirmEmailError } from '@api/infra/mailer/email.errors'
-import { errorSchema, responseStatusOk } from '@api/utils/schema'
+import { PubSubPushSchema } from '@api/infra/pubsub/PubSubService'
+import { errorSchema, responseStatusOk } from '@api/utils/schema/schema'
+import { $ref } from '@api/utils/schema/zodJsonSchema'
 import { until } from '@open-draft/until'
 import { AppError } from '@readit/utils'
 import { FastifyPluginAsync, FastifyRequest } from 'fastify'
 import createError from 'http-errors'
 import { ZodError } from 'zod'
 
-import { SendConfirmEmailInput } from '../domain/accounts.events.dto'
-import { $ref } from '../domain/accounts.schemas'
+import {
+	SendConfirmEmailInput,
+	sendConfirmEmailInput,
+} from '../domain/accounts.events.dto'
 import { FindByIdError, UserNotFound } from '../domain/user.errors'
 
 export const CONFIRM_EMAIL_TOPIC = 'CONFIRM_EMAIL'
@@ -17,7 +21,7 @@ export const confirmEmailRoute: FastifyPluginAsync = async (fastify) => {
 		'/confirm-email',
 		{
 			schema: {
-				body: $ref('sendConfirmEmailInput'),
+				body: $ref('pubSubPushSchema'),
 				response: {
 					'2xx': responseStatusOk,
 					'4xx': errorSchema,
@@ -25,13 +29,17 @@ export const confirmEmailRoute: FastifyPluginAsync = async (fastify) => {
 				},
 			},
 		},
-		async function (req: FastifyRequest<{ Body: SendConfirmEmailInput }>) {
-			const { UserService, MailerService } = req.diScope.cradle
+		async function (req: FastifyRequest<{ Body: PubSubPushSchema }>) {
+			const { UserService, MailerService, PubSubService } = req.diScope.cradle
 			const { data, error } = await until<
 				FindByIdError | SendConfirmEmailError,
 				Awaited<Promise<'ok'>>
 			>(async () => {
-				const user = await UserService.findById(req.body.userId)
+				const message = PubSubService.decodePushMessage<SendConfirmEmailInput>(
+					req.body,
+					sendConfirmEmailInput,
+				)
+				const user = await UserService.findById(message.userId)
 				const profileUrl = UserService.getProfileUrl(user.username)
 
 				return MailerService.sendConfirmEmail({ profileUrl, ...user })

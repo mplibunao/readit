@@ -6,7 +6,3 @@ export const sendConfirmEmailInput = z.object({
 	userId: id,
 })
 export type SendConfirmEmailInput = z.infer<typeof sendConfirmEmailInput>
-
-export const AccountEventsDtos = {
-	sendConfirmEmailInput,
-}

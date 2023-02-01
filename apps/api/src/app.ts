@@ -12,7 +12,9 @@ import HealthcheckDeps from './infra/healthcheck/deps'
 import Healthcheck from './infra/healthcheck/server'
 import Ratelimit from './infra/ratelimit'
 import Session from './infra/session'
+import { AccountRoutes } from './modules/accounts/routes'
 import { appRouter, createContext, onError, responseMeta } from './trpc'
+import { schemas } from './utils/schema/zodJsonSchema'
 
 type AppProps = {
 	config: Config
@@ -78,6 +80,12 @@ export const app: FastifyPluginAsync<AppProps> = async (
 			responseMeta,
 		},
 	})
+
+	for (const schema of schemas) {
+		fastify.addSchema(schema)
+	}
+
+	fastify.register(AccountRoutes, { prefix: '/api' })
 }
 
 export default app

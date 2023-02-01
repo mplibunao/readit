@@ -47,7 +47,6 @@
 		"fastify": "^4.9.2",
 		"fastify-no-icon": "^6.0.0",
 		"fastify-plugin": "^4.3.0",
-		"fastify-zod": "^1.2.0",
 		"http-errors": "^2.0.0",
 		"ioredis": "^5.2.5",
 		"kysely": "^0.22.0",
