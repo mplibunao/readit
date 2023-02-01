@@ -113,7 +113,7 @@ export function registerDependencies(
 		pubsub: asFunction(buildPubSubClient, SINGLETON_CONFIG),
 		PubSubService: asFunction(buildPubSubService, SINGLETON_CONFIG),
 		AccountEvents: asFunction(buildAccountEvents, SINGLETON_CONFIG),
-		emailClient: asFunction(registerEmailClient, SINGLETON_CONFIG),
+		emailClient: registerEmailClient(dependencies.config),
 		TokenMutationsRepo: asFunction(buildTokenMutationsRepo, SINGLETON_CONFIG),
 		MailerService: asFunction(buildMailerService, SINGLETON_CONFIG),
 		UserQueriesRepo: asFunction(buildUserQueriesRepo, SINGLETON_CONFIG),

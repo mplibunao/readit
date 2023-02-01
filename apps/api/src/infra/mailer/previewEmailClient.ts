@@ -5,11 +5,13 @@ import { EmailClient } from './postmarkClient'
 
 type CustomOptions = Options & { openSimulator?: boolean }
 
-export const buildPreviewEmailClient = async ({ logger }: Dependencies) => {
-	const { default: previewEmail } = await import('preview-email')
+export const buildPreviewEmailClient = ({ logger }: Dependencies) => {
 	const previewEmailClient: EmailClient = {
 		sendEmail: async ({ data, templateAlias, ...props }) => {
 			try {
+				// Injecting this module fails if it's async so we either have to import at top or lazy-load in the actual methods
+				// Since this is just used in dev, it's okay load slowly or repeatedly
+				const { default: previewEmail } = await import('preview-email')
 				await previewEmail(
 					{
 						...props,
