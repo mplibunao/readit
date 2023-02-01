@@ -5,7 +5,7 @@
  */
 
 import { z, ZodType } from 'zod'
-import zodToJsonSchema from 'zod-to-json-schema'
+import { zodToJsonSchema } from 'zod-to-json-schema'
 
 export type Models<Key extends string = string> = {
 	readonly [K in Key]: ZodType<unknown>
