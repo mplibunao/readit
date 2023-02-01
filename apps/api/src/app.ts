@@ -11,6 +11,7 @@ import { DependencyOverrides, registerDependencies } from './infra/diConfig'
 import HealthcheckDeps from './infra/healthcheck/deps'
 import Healthcheck from './infra/healthcheck/server'
 import Ratelimit from './infra/ratelimit'
+import reverseRoutes from './infra/reverse-routes'
 import Session from './infra/session'
 import { AccountRoutes } from './modules/accounts/routes'
 import { appRouter, createContext, onError, responseMeta } from './trpc'
@@ -45,6 +46,7 @@ export const app: FastifyPluginAsync<AppProps> = async (
 		...config.rateLimit,
 		redis: diContainer.cradle.redis,
 	})
+	fastify.register(reverseRoutes)
 	fastify.register(HealthcheckDeps, { prefix: config.healthcheckDeps.baseUrl })
 	fastify.register(Session, {
 		session: config.session,

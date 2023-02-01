@@ -61,6 +61,7 @@ importers:
       minimist: ^1.2.7
       nodemon: ^2.0.20
       npm-run-all: ^4.1.5
+      path-to-regexp: ^6.2.1
       pg: ^8.8.0
       pino: 8.7.0
       pino-pretty: ^9.1.1
@@ -103,6 +104,7 @@ importers:
       http-errors: 2.0.0
       ioredis: 5.2.5
       kysely: 0.22.0
+      path-to-regexp: 6.2.1
       pg: 8.8.0
       pino: 8.7.0
       postmark: 3.0.15
@@ -8349,6 +8351,10 @@ packages:
   /path-to-regexp/0.1.7:
     resolution: {integrity: sha512-5DFkuoqlv1uYQKxy8omFBeJPQcdoE07Kv2sferDCrAq1ohOU+MSDswDIbnx3YAM60qIOnYa53wBhXW0EbMonrQ==}
     dev: true
+
+  /path-to-regexp/6.2.1:
+    resolution: {integrity: sha512-JLyh7xT1kizaEvcaXOQwOc2/Yhw6KZOvPf1S8401UyLk86CU79LN3vl7ztXGm/pZ+YjoyAJ4rxmHwbkBXJX+yw==}
+    dev: false
 
   /path-type/3.0.0:
     resolution: {integrity: sha512-T2ZUsdZFHgA3u4e5PfPbjd7HDDpxPnQb5jN0SrDsjNSuVXHJqtwTnWqG0B1jZrgmJ/7lj1EmVIByWt1gxGkWvg==}

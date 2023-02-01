@@ -3,6 +3,7 @@ import { capitalize, getFullName } from '@api/utils/string'
 import { z } from 'zod'
 
 import { Dependencies } from '../diConfig'
+import { reverse } from '../reverse-routes'
 
 const to = z.string().email()
 
@@ -61,7 +62,8 @@ export const buildMailerService = ({
 			return handleSendConfirmEmail({
 				to: userWithProfile.email,
 				data: {
-					action_url: `${env.API_URL}/confirm-email/${token.id}`,
+					//action_url: `${env.API_URL}/api/confirm-email/${token.id}`,
+					action_url: reverse('confirmEmail', { token: token.id }),
 					company_address,
 					company_name,
 					name: getFullName(userWithProfile),

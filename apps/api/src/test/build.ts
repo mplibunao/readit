@@ -35,11 +35,13 @@ async function build(opts?: {
 
 	afterEach(async () => {
 		await clearDatabase(fastify.diContainer.cradle.pg)
+		fastify.routes.clear()
 	})
 
 	// Tear down our app after we are done
 	afterAll(async () => {
 		await fastify.close()
+		fastify.routes.clear()
 	})
 
 	return fastify
