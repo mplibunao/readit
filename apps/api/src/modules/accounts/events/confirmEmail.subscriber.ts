@@ -16,20 +16,22 @@ import { FindByIdError, UserNotFound } from '../domain/user.errors'
 
 export const CONFIRM_EMAIL_TOPIC = 'CONFIRM_EMAIL'
 
-export const confirmEmailRoute: FastifyPluginAsync = async (fastify) => {
-	fastify.post(
-		'/confirm-email',
-		{
-			schema: {
-				body: $ref('pubSubPushSchema'),
-				response: {
-					'2xx': responseStatusOk,
-					'4xx': errorSchema,
-					'500': errorSchema,
-				},
+export const confirmEmailSubscriberRoute: FastifyPluginAsync = async (
+	fastify,
+) => {
+	fastify.route({
+		url: '/confirm-email',
+		method: 'POST',
+		name: 'confirmEmailSubscriber',
+		schema: {
+			body: $ref('pubSubPushSchema'),
+			response: {
+				'2xx': responseStatusOk,
+				'4xx': errorSchema,
+				'500': errorSchema,
 			},
 		},
-		async function (req: FastifyRequest<{ Body: PubSubPushSchema }>) {
+		handler: async function (req: FastifyRequest<{ Body: PubSubPushSchema }>) {
 			const { UserService, MailerService, PubSubService } = req.diScope.cradle
 			const { data, error } = await until<
 				FindByIdError | SendConfirmEmailError,
@@ -59,5 +61,5 @@ export const confirmEmailRoute: FastifyPluginAsync = async (fastify) => {
 
 			return { status: data }
 		},
-	)
+	})
 }

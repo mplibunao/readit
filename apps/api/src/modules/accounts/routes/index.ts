@@ -1,7 +1,7 @@
 import { FastifyPluginAsync } from 'fastify'
 
-import { confirmEmailRoute } from '../events/confirmEmail.consumer'
+import { confirmEmailSubscriberRoute } from '../events/confirmEmail.subscriber'
 
 export const AccountRoutes: FastifyPluginAsync = async (fastify) => {
-	fastify.register(confirmEmailRoute, { prefix: '/events' })
+	fastify.register(confirmEmailSubscriberRoute, { prefix: '/events' })
 }
