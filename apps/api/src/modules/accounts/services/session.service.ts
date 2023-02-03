@@ -1,12 +1,12 @@
 import { Dependencies } from '@api/infra/diConfig'
 
-type User = {
+export type UserSession = {
 	id: string
 }
 
 export interface SessionService {
-	setUser: (user: User) => void | undefined
-	getUser: () => User | undefined
+	setUser: (user: UserSession) => void | undefined
+	getUser: () => UserSession | undefined
 	destroy: () => Promise<void> | undefined
 }
 

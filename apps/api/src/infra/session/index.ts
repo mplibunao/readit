@@ -1,4 +1,5 @@
 import { Config, Env } from '@api/infra/config'
+import { UserSession } from '@api/modules/accounts/services/session.service'
 import Cookie from '@fastify/cookie'
 import Session from '@fastify/session'
 import connectRedis, { RedisStoreOptions } from 'connect-redis'
@@ -9,6 +10,7 @@ import { z } from 'zod'
 declare module 'fastify' {
 	interface Session {
 		readsid: string
+		user: UserSession
 	}
 }
 
