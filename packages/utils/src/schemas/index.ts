@@ -16,6 +16,7 @@ export * from './password'
 
 export const PortSchema = z.number().int().nonnegative().lte(65535)
 
+export const id = z.string()
 export const createdAt = z.coerce.date()
 export const updatedAt = z.coerce.date()
 export const deletedAt = z.coerce.date().nullable()

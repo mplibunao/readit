@@ -20,7 +20,7 @@ export interface Tokens {
 }
 
 export interface Users {
-	activatedAt: Timestamp | null
+	confirmedAt: Timestamp | null
 	createdAt: Generated<Timestamp>
 	deletedAt: Timestamp | null
 	email: string

@@ -1,6 +1,7 @@
 import {
 	createdAt,
 	deletedAt,
+	id,
 	PasswordSchema,
 	updatedAt,
 } from '@readit/utils/src/schemas'
@@ -8,7 +9,6 @@ import { z } from 'zod'
 
 export * as User from './user.types'
 
-export const id = z.string()
 export const email = z
 	.string()
 	.trim()

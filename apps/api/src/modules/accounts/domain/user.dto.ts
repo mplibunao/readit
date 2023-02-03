@@ -1,14 +1,7 @@
-import { createdAt, deletedAt, updatedAt } from '@readit/utils'
+import { createdAt, deletedAt, id, updatedAt } from '@readit/utils'
 import { z } from 'zod'
 
-import {
-	email,
-	firstName,
-	id,
-	lastName,
-	password,
-	username,
-} from './user.types'
+import { email, firstName, lastName, password, username } from './user.types'
 
 export * as UserDto from './user.dto'
 

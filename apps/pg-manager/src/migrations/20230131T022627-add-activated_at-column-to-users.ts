@@ -3,7 +3,7 @@ import { IDB } from '../db'
 export async function up(db: IDB): Promise<void> {
 	await db.schema
 		.alterTable('users')
-		.addColumn('activatedAt', 'timestamptz')
+		.addColumn('confirmedAt', 'timestamptz')
 		.execute()
 }
 

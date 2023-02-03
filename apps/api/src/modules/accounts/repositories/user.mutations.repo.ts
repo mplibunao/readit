@@ -1,6 +1,7 @@
 import { Dependencies } from '@api/infra/diConfig'
 import { InsertableUser, UserData } from '@api/infra/pg/types'
 import { DBError } from '@readit/utils'
+import { sql } from 'kysely'
 import Pg from 'pg'
 
 import { UserAlreadyExists } from '../domain/user.errors'
@@ -11,13 +12,14 @@ export interface UserMutationsRepo {
 	) => Promise<
 		Pick<UserData, 'id' | 'email' | 'firstName' | 'lastName' | 'username'>
 	>
+	confirmUser: (id: string) => Promise<void>
 }
 
-export const buildUserMutationsRepo = (deps: Dependencies) => {
+export const buildUserMutationsRepo = ({ pg }: Dependencies) => {
 	const userMutationsRepo: UserMutationsRepo = {
 		async create(user) {
 			try {
-				return deps.pg
+				return pg
 					.insertInto('users')
 					.values(user)
 					.returning(['id', 'email', 'firstName', 'lastName', 'username'])
@@ -31,6 +33,20 @@ export const buildUserMutationsRepo = (deps: Dependencies) => {
 				throw new DBError({
 					cause: error,
 					message: 'Database error occurred while creating user',
+				})
+			}
+		},
+
+		async confirmUser(id) {
+			try {
+				pg.updateTable('users')
+					.where('id', '=', id)
+					.set({ confirmedAt: sql`NOW()` })
+					.executeTakeFirstOrThrow()
+			} catch (error) {
+				throw new DBError({
+					cause: error,
+					message: 'Database error occurred while confirming user',
 				})
 			}
 		},

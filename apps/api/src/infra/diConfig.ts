@@ -1,11 +1,15 @@
 import {
-	AccountEvents,
-	buildAccountEvents,
-} from '@api/modules/accounts/events/accounts.event'
+	AccountEventsPublisher,
+	buildAccountEventsPublisher,
+} from '@api/modules/accounts/events/accountsEvents.publisher'
 import {
 	buildTokenMutationsRepo,
 	TokenMutationsRepo,
 } from '@api/modules/accounts/repositories/token.mutations.repo'
+import {
+	buildTokenQueriesRepo,
+	TokenQueriesRepo,
+} from '@api/modules/accounts/repositories/token.queries.repo'
 import {
 	buildUserMutationsRepo,
 	UserMutationsRepo,
@@ -66,9 +70,10 @@ export interface Dependencies {
 	FlagsService: FlagsService
 	pubsub: PubSub
 	PubSubService: PubSubService
-	AccountEvents: AccountEvents
+	AccountEventsPublisher: AccountEventsPublisher
 	emailClient: EmailClient
 	TokenMutationsRepo: TokenMutationsRepo
+	TokenQueriesRepo: TokenQueriesRepo
 	MailerService: MailerService
 	UserQueriesRepo: UserQueriesRepo
 	UserMutationsRepo: UserMutationsRepo
@@ -112,9 +117,13 @@ export function registerDependencies(
 		FlagsService: asFunction(buildFlagsService, SINGLETON_CONFIG),
 		pubsub: asFunction(buildPubSubClient, SINGLETON_CONFIG),
 		PubSubService: asFunction(buildPubSubService, SINGLETON_CONFIG),
-		AccountEvents: asFunction(buildAccountEvents, SINGLETON_CONFIG),
+		AccountEventsPublisher: asFunction(
+			buildAccountEventsPublisher,
+			SINGLETON_CONFIG,
+		),
 		emailClient: registerEmailClient(dependencies.config),
 		TokenMutationsRepo: asFunction(buildTokenMutationsRepo, SINGLETON_CONFIG),
+		TokenQueriesRepo: asFunction(buildTokenQueriesRepo, SINGLETON_CONFIG),
 		MailerService: asFunction(buildMailerService, SINGLETON_CONFIG),
 		UserQueriesRepo: asFunction(buildUserQueriesRepo, SINGLETON_CONFIG),
 		UserMutationsRepo: asFunction(buildUserMutationsRepo, SINGLETON_CONFIG),

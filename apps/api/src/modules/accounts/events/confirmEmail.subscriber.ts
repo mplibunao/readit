@@ -9,9 +9,9 @@ import createError from 'http-errors'
 import { ZodError } from 'zod'
 
 import {
-	SendConfirmEmailInput,
-	sendConfirmEmailInput,
-} from '../domain/accounts.events.dto'
+	ConfirmEmailSubscriberInput,
+	confirmEmailSubscriberInput,
+} from '../domain/email.dto'
 import { FindByIdError, UserNotFound } from '../domain/user.errors'
 
 export const CONFIRM_EMAIL_TOPIC = 'CONFIRM_EMAIL'
@@ -20,9 +20,9 @@ export const confirmEmailSubscriberRoute: FastifyPluginAsync = async (
 	fastify,
 ) => {
 	fastify.route({
+		name: 'confirmEmailSubscriber',
 		url: '/confirm-email',
 		method: 'POST',
-		name: 'confirmEmailSubscriber',
 		schema: {
 			body: $ref('pubSubPushSchema'),
 			response: {
@@ -37,10 +37,11 @@ export const confirmEmailSubscriberRoute: FastifyPluginAsync = async (
 				FindByIdError | SendConfirmEmailError,
 				Awaited<Promise<'ok'>>
 			>(async () => {
-				const message = PubSubService.decodePushMessage<SendConfirmEmailInput>(
-					req.body,
-					sendConfirmEmailInput,
-				)
+				const message =
+					PubSubService.decodePushMessage<ConfirmEmailSubscriberInput>(
+						req.body,
+						confirmEmailSubscriberInput,
+					)
 				const user = await UserService.findById(message.userId)
 				const profileUrl = UserService.getProfileUrl(user.username)
 
