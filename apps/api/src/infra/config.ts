@@ -88,7 +88,7 @@ export interface Config {
 	fastify: {
 		trustProxy: boolean
 		maxParamLength?: number
-		logger: PinoLoggerOptions | Partial<Console>
+		logger: PinoLoggerOptions
 	}
 	server: {
 		host?: string
@@ -121,16 +121,13 @@ export const config: Config = {
 		trustProxy: true,
 		// for trpc
 		maxParamLength: 5000,
-		logger:
-			env.NODE_ENV === 'test'
-				? testLogger
-				: getLoggerConfig({
-						APP_NAME: env.APP_NAME,
-						APP_VERSION: env.APP_VERSION,
-						IS_PROD: env.IS_PROD,
-						LOGGING_LEVEL: env.LOGGING_LEVEL,
-						K_SERVICE: env.K_SERVICE,
-				  }),
+		logger: getLoggerConfig({
+			APP_NAME: env.APP_NAME,
+			APP_VERSION: env.APP_VERSION,
+			IS_PROD: env.IS_PROD,
+			LOGGING_LEVEL: env.LOGGING_LEVEL,
+			K_SERVICE: env.K_SERVICE,
+		}),
 	},
 	server: {
 		port: env.PORT,
