@@ -7,6 +7,8 @@ export const testLogger = {
 	error: console.error,
 	fatal: console.error,
 	warn: console.warn,
-	log: () => {},
-	info: () => {},
+	debug: console.debug,
+	trace: console.trace,
+	log: (_: any) => {},
+	info: (_: any) => {},
 }

@@ -14,6 +14,7 @@ import {
 	getSessionRedisStoreOpts,
 	sessionEnvSchema,
 } from '@api/infra/session'
+import { testLogger } from '@api/test/mocks/logger'
 import { RateLimitOptions } from '@fastify/rate-limit'
 import { FastifySessionOptions } from '@fastify/session'
 import { FlagsServiceOptions } from '@readit/flags'
@@ -121,13 +122,16 @@ export const config: Config = {
 		trustProxy: true,
 		// for trpc
 		maxParamLength: 5000,
-		logger: getLoggerConfig({
-			APP_NAME: env.APP_NAME,
-			APP_VERSION: env.APP_VERSION,
-			IS_PROD: env.IS_PROD,
-			LOGGING_LEVEL: env.LOGGING_LEVEL,
-			K_SERVICE: env.K_SERVICE,
-		}),
+		logger:
+			env.NODE_ENV === 'test'
+				? testLogger
+				: getLoggerConfig({
+						APP_NAME: env.APP_NAME,
+						APP_VERSION: env.APP_VERSION,
+						IS_PROD: env.IS_PROD,
+						LOGGING_LEVEL: env.LOGGING_LEVEL,
+						K_SERVICE: env.K_SERVICE,
+				  }),
 	},
 	server: {
 		port: env.PORT,
