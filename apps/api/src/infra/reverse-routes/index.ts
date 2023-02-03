@@ -2,8 +2,16 @@ import { FastifyPluginAsync } from 'fastify'
 import fp from 'fastify-plugin'
 import pathToRegexp, { PathFunction } from 'path-to-regexp'
 
+import { config } from '../config'
+
 type Routes = Map<string, PathFunction<object>>
-type Reverse = <Args>(name: string, args?: Args) => string
+type Reverse = <Args>(
+	name: string,
+	opts: {
+		fullUrl?: boolean
+		args?: Args
+	},
+) => string
 
 declare module 'fastify' {
 	interface FastifyInstance {
@@ -18,14 +26,18 @@ declare module 'fastify' {
 
 export const routes: Routes = new Map()
 
-export const reverse: Reverse = (name, args) => {
+export const reverse: Reverse = (name, opts = {}) => {
 	const toPath = routes.get(name)
 
 	if (!toPath) {
 		throw new Error(`Route with name ${name} is not registered`)
 	}
 
-	return toPath(args as object)
+	if (opts.fullUrl) {
+		return `${config.env.API_URL}${toPath(opts.args as object)}`
+	}
+
+	return toPath(opts.args as object)
 }
 
 const plugin: FastifyPluginAsync = async (fastify) => {

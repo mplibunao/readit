@@ -59,11 +59,15 @@ export const buildMailerService = ({
 				type: 'accountActivation',
 				userId: userWithProfile.id,
 			})
+
+			const action_url = reverse('confirmEmail', {
+				fullUrl: true,
+				args: { token: token.id },
+			})
 			return handleSendConfirmEmail({
 				to: userWithProfile.email,
 				data: {
-					//action_url: `${env.API_URL}/api/confirm-email/${token.id}`,
-					action_url: reverse('confirmEmail', { token: token.id }),
+					action_url,
 					company_address,
 					company_name,
 					name: getFullName(userWithProfile),
