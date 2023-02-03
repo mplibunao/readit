@@ -1,5 +1,6 @@
 import { AppError } from '@readit/utils'
-import { initTRPC } from '@trpc/server'
+import { initTRPC, TRPCError } from '@trpc/server'
+import { performance } from 'perf_hooks'
 import superjson from 'superjson'
 import { ZodError } from 'zod'
 
@@ -24,31 +25,81 @@ export const t = initTRPC.context<Context>().create({
 
 export const router = t.router
 
+const logger = t.middleware(
+	async ({ input, path, type, next, ctx: { logger, config } }) => {
+		const { trpc } = config
+		const start = performance.now()
+		const result = await next()
+		const durationMs = performance.now() - start
+
+		if (durationMs >= trpc.slowestQueryThreshold) {
+			logger.warn(
+				`[tRPC Server] request took more than ${trpc.slowestQueryThreshold}:`,
+				{
+					path,
+					type,
+					durationMs,
+					input,
+					ok: result.ok,
+				},
+			)
+			return result
+		}
+
+		if (durationMs >= trpc.moderatelySlowQueryThreshold) {
+			logger.debug(
+				`[tRPC Server] request took more than ${trpc.moderatelySlowQueryThreshold}:`,
+				{
+					path,
+					type,
+					durationMs,
+					input,
+					ok: result.ok,
+				},
+			)
+
+			return result
+		}
+
+		if (durationMs >= trpc.slowQueryThreshold) {
+			logger.trace(
+				`[tRPC Server] request took more than ${trpc.slowQueryThreshold}:`,
+				{
+					path,
+					type,
+					durationMs,
+					input,
+					ok: result.ok,
+				},
+			)
+
+			return result
+		}
+
+		return result
+	},
+)
+
+const loggedProcedure = t.procedure.use(logger)
+
 /**
  * Unprotected procedure
  **/
-export const publicProcedure = t.procedure
+export const publicProcedure = loggedProcedure
 
 /**
  * Reusable middleware to ensure
  * users are logged in
  */
+const isAuthed = t.middleware(({ ctx, next }) => {
+	if (!ctx.session || !ctx.SessionService.getUser()) {
+		throw new TRPCError({ code: 'UNAUTHORIZED' })
+	}
 
-/*
- *const isAuthed = t.middleware(({ ctx, next }) => {
- *  if (!ctx.session || !ctx.session.user) {
- *    throw new TRPCError({ code: 'UNAUTHORIZED' })
- *  }
- *  return next({
- *    ctx: {
- *      // infers the `session` as non-nullable
- *      session: { ...ctx.session, user: ctx.session.user },
- *    },
- *  })
- *})
- */
+	return next()
+})
 
 /**
  * Protected procedure
  **/
-//export const protectedProcedure = t.procedure.use(isAuthed)
+export const protectedProcedure = loggedProcedure.use(isAuthed)

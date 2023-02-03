@@ -15,6 +15,7 @@ import {
 	sessionEnvSchema,
 } from '@api/infra/session'
 import { testLogger } from '@api/test/mocks/logger'
+import { getTrpcOpts, TrpcEnvSchema, trpcEnvSchema } from '@api/trpc/envSchema'
 import { RateLimitOptions } from '@fastify/rate-limit'
 import { FastifySessionOptions } from '@fastify/session'
 import { FlagsServiceOptions } from '@readit/flags'
@@ -43,13 +44,13 @@ const zodEnvSchema = z.object({
 	...rateLimitEnvSchema,
 	...sessionEnvSchema,
 	...postmarkEnvSchema,
+	...trpcEnvSchema,
 	NODE_ENV: z
 		.enum(['development', 'production', 'test'])
 		.default('development'),
 	PORT: PortSchema.default(4000),
 	API_HOST: z.string().optional().default('127.0.0.1'),
 	FRONTEND_URL: z.string(),
-	TRPC_ENDPOINT: z.string(),
 	API_URL: z.string(),
 	GCP_PROJECT_ID: z.string(),
 })
@@ -87,15 +88,13 @@ export interface Config {
 	fastify: {
 		trustProxy: boolean
 		maxParamLength?: number
-		logger: PinoLoggerOptions
+		logger: PinoLoggerOptions | Partial<Console>
 	}
 	server: {
 		host?: string
 		port: number
 	}
-	trpc: {
-		endpoint: string
-	}
+	trpc: TrpcEnvSchema
 	pg: KyselyPGSchema
 	redis: RedisOpts
 	underPressure: UnderPressure
@@ -138,9 +137,7 @@ export const config: Config = {
 		// listen to all ipv4 addresses in cloud run
 		host: env.K_SERVICE ? '0.0.0.0' : env.API_HOST,
 	},
-	trpc: {
-		endpoint: env.TRPC_ENDPOINT,
-	},
+	trpc: getTrpcOpts(env),
 	pg: env,
 	redis: getRedisClientOpts(env),
 	underPressure: getUnderPressureOpts(env),
