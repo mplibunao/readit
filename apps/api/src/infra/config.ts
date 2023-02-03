@@ -14,7 +14,6 @@ import {
 	getSessionRedisStoreOpts,
 	sessionEnvSchema,
 } from '@api/infra/session'
-import { testLogger } from '@api/test/mocks/logger'
 import { getTrpcOpts, TrpcEnvSchema, trpcEnvSchema } from '@api/trpc/envSchema'
 import { RateLimitOptions } from '@fastify/rate-limit'
 import { FastifySessionOptions } from '@fastify/session'

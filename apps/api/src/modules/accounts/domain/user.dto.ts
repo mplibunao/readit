@@ -19,6 +19,7 @@ export const registerOutput = z.object({
 	lastName,
 	username,
 })
+export type RegisterOutput = z.infer<typeof registerOutput>
 export const userByIdInput = z.object({ id })
 export const userByIdOutput = z.object({
 	id,

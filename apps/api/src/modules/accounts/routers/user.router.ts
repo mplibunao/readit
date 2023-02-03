@@ -1,17 +1,10 @@
 import { UserDto } from '@api/modules/accounts/domain/user.dto'
 import { publicProcedure, router } from '@api/trpc/builder'
+import { handleTRPCServiceErrors } from '@api/utils/errors/handleTRPCServiceErrors'
 import { until } from '@open-draft/until'
-import { AppError, DBError } from '@readit/utils'
-import { TRPCError } from '@trpc/server'
-import { ZodError } from 'zod'
+import { z } from 'zod'
 
-import {
-	FindByIdError,
-	PasswordHashingError,
-	RegistrationError,
-	UserAlreadyExists,
-	UserNotFound,
-} from '../domain/user.errors'
+import { FindByIdError } from '../domain/user.errors'
 import { User } from '../domain/user.types'
 
 export const userRouter = router({
@@ -19,77 +12,36 @@ export const userRouter = router({
 		.input(UserDto.registerInput)
 		.output(UserDto.registerOutput)
 		.mutation(async ({ input, ctx: { UserService, logger } }) => {
-			const { data, error } = await until<
-				RegistrationError,
-				Awaited<Promise<User.CreateUserOutput>>
-			>(() => UserService.register(input))
-
-			if (error) {
-				if (error instanceof ZodError) {
-					logger.debug('Zod error', error)
-					throw new TRPCError({
-						code: 'BAD_REQUEST',
-						cause: error,
-						message: error.message,
-					})
-				}
-
-				if (error instanceof AppError) {
-					switch (error.constructor) {
-						case UserAlreadyExists:
-							throw new TRPCError({ ...error, code: 'CONFLICT' })
-						case DBError:
-						case PasswordHashingError:
-						default:
-							logger.error('Error creating user', error)
-							throw new TRPCError({ ...error, code: 'INTERNAL_SERVER_ERROR' })
-					}
-				}
-
-				throw new TRPCError({
-					cause: error,
-					message: 'Unhandled exception',
-					code: 'INTERNAL_SERVER_ERROR',
-				})
+			try {
+				return UserService.register(input)
+			} catch (error) {
+				throw handleTRPCServiceErrors(error, logger)
 			}
-
-			return data
 		}),
 	byId: publicProcedure
 		.input(UserDto.userByIdInput)
 		.output(UserDto.userByIdOutput)
 		.query(async ({ input, ctx: { UserService, logger } }) => {
-			const { error, data } = await until<
-				FindByIdError,
-				Awaited<Promise<User.UserSchema>>
-			>(() => UserService.findById(input.id))
-
-			if (error) {
-				if (error instanceof ZodError) {
-					logger.debug('Zod error', error)
-					throw new TRPCError({
-						code: 'BAD_REQUEST',
-						cause: error,
-						message: error.message,
-					})
-				}
-
-				if (error instanceof AppError) {
-					switch (error.constructor) {
-						case UserNotFound:
-							throw new TRPCError({ ...error, code: 'NOT_FOUND' })
-						case DBError:
-						default:
-							throw new TRPCError({ ...error, code: 'INTERNAL_SERVER_ERROR' })
-					}
-				}
-
-				throw new TRPCError({
-					cause: error,
-					message: 'Unhandled exception',
-					code: 'INTERNAL_SERVER_ERROR',
-				})
+			try {
+				return UserService.findById(input.id)
+			} catch (error) {
+				throw handleTRPCServiceErrors(error, logger)
 			}
+		}),
+
+	me: publicProcedure
+		.output(z.union([UserDto.userByIdOutput, z.null()]))
+		.query(async ({ ctx: { SessionService, UserService, logger } }) => {
+			const { data, error } = await until<
+				FindByIdError,
+				User.UserSchema | null
+			>(async () => {
+				const userSession = SessionService.getUser()
+				if (!userSession) return null
+				return UserService.findById(userSession.id)
+			})
+
+			if (error) throw handleTRPCServiceErrors(error, logger)
 
 			return data
 		}),
