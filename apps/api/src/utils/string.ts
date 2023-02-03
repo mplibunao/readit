@@ -1,9 +1,9 @@
-import { User } from '@api/modules/accounts/domain/user.types'
+import { UserSchemas } from '@api/modules/accounts/domain/user.schema'
 
 export const capitalize = (word: string) =>
 	word.charAt(0).toUpperCase() + word.slice(1)
 
-export const getFullName = (user: Partial<User.UserSchema>) => {
+export const getFullName = (user: Partial<UserSchemas.User>) => {
 	if (!user) return ''
 	const firstName = user.firstName
 	const lastName = user.lastName

@@ -2,8 +2,8 @@ import { handleRESTServiceErrors } from '@api/utils/errors/handleRESTServiceErro
 import { until } from '@open-draft/until'
 import { FastifyReply, FastifyRequest } from 'fastify'
 
-import { ConfirmEmailInput } from '../domain/email.dto'
 import { ConfirmUserError } from '../domain/user.errors'
+import { ConfirmEmailInput } from '../dtos/email.dto'
 
 export const confirmEmailHandler = async function (
 	req: FastifyRequest<{ Params: ConfirmEmailInput }>,

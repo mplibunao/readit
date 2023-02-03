@@ -7,7 +7,7 @@ import {
 } from '@readit/utils/src/schemas'
 import { z } from 'zod'
 
-export * as User from './user.types'
+export * as UserSchemas from './user.schema'
 
 export const email = z
 	.string()
@@ -28,7 +28,7 @@ export const username = z
 export const password = PasswordSchema
 export const profileUrl = z.string().url()
 
-export const userSchema = z.object({
+export const user = z.object({
 	id,
 	email,
 	firstName,
@@ -38,8 +38,7 @@ export const userSchema = z.object({
 	updatedAt,
 	deletedAt,
 })
-export type UserSchema = z.infer<typeof userSchema>
-
+export type User = z.infer<typeof user>
 export const createUserInput = z.object({
 	email,
 	firstName,
@@ -56,6 +55,10 @@ export const createUserOutput = z.object({
 	username,
 })
 export type CreateUserOutput = z.infer<typeof createUserOutput>
-
 export const findByIdInput = id
 export type FindByIdInput = z.infer<typeof findByIdInput>
+export const loginInput = z.union([
+	z.object({ username, password }),
+	z.object({ email, password }),
+])
+export type LoginInput = z.infer<typeof loginInput>

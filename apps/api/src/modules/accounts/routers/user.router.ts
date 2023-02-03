@@ -1,16 +1,16 @@
-import { UserDto } from '@api/modules/accounts/domain/user.dto'
 import { publicProcedure, router } from '@api/trpc/builder'
 import { handleTRPCServiceErrors } from '@api/utils/errors/handleTRPCServiceErrors'
 import { until } from '@open-draft/until'
 import { z } from 'zod'
 
 import { FindByIdError } from '../domain/user.errors'
-import { User } from '../domain/user.types'
+import { UserSchemas } from '../domain/user.schema'
+import { UserDto } from '../dtos/user.dto'
 
 export const userRouter = router({
 	register: publicProcedure
-		.input(UserDto.registerInput)
-		.output(UserDto.registerOutput)
+		.input(UserSchemas.createUserInput)
+		.output(UserSchemas.createUserOutput)
 		.mutation(async ({ input, ctx: { UserService, logger } }) => {
 			try {
 				return UserService.register(input)
@@ -18,9 +18,10 @@ export const userRouter = router({
 				throw handleTRPCServiceErrors(error, logger)
 			}
 		}),
+
 	byId: publicProcedure
-		.input(UserDto.userByIdInput)
-		.output(UserDto.userByIdOutput)
+		.input(UserDto.findByIdInput)
+		.output(UserSchemas.user)
 		.query(async ({ input, ctx: { UserService, logger } }) => {
 			try {
 				return UserService.findById(input.id)
@@ -30,11 +31,11 @@ export const userRouter = router({
 		}),
 
 	me: publicProcedure
-		.output(z.union([UserDto.userByIdOutput, z.null()]))
+		.output(z.union([UserSchemas.user, z.null()]))
 		.query(async ({ ctx: { SessionService, UserService, logger } }) => {
 			const { data, error } = await until<
 				FindByIdError,
-				User.UserSchema | null
+				UserSchemas.User | null
 			>(async () => {
 				const userSession = SessionService.getUser()
 				if (!userSession) return null
@@ -45,4 +46,8 @@ export const userRouter = router({
 
 			return data
 		}),
+
+	//login: publicProcedure.input(UserSchemas.).output(UserSchemas.user).mutation(async () => {
+
+	//})
 })

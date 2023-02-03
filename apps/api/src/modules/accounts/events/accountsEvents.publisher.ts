@@ -1,6 +1,6 @@
 import { Dependencies } from '@api/infra/diConfig'
 
-import { ConfirmEmailSubscriberInput } from '../domain/email.dto'
+import { ConfirmEmailSubscriberInput } from '../dtos/email.dto'
 import { CONFIRM_EMAIL_TOPIC } from './confirmEmail.subscriber'
 
 export interface AccountEventsPublisher {

@@ -8,19 +8,16 @@ import { Separator } from '@/components/Separator/Separator'
 import { errorToast, successToast } from '@/components/Toast/useToast'
 import { useZodForm } from '@/helpers/forms/useZodForm'
 import { client } from '@/utils/trpc/client'
-import { registerInput } from '@api/modules/accounts/domain/user.dto'
 import { UserAlreadyExists } from '@api/modules/accounts/domain/user.errors'
+import { UserSchemas } from '@api/modules/accounts/domain/user.schema'
 import * as Toggle from '@radix-ui/react-toggle'
 import Link from 'next/link'
 import React from 'react'
-import { z } from 'zod'
-
-type RegisterInput = z.infer<typeof registerInput>
 
 const Register = () => {
 	const [showPassword, setShowPassword] = React.useState(false)
 	const form = useZodForm({
-		schema: registerInput,
+		schema: UserSchemas.createUserInput,
 	})
 
 	const registerMutation = client.user.register.useMutation({
@@ -48,7 +45,7 @@ const Register = () => {
 		},
 	})
 
-	const handleRegister = async (params: RegisterInput) => {
+	const handleRegister = async (params: UserSchemas.CreateUserInput) => {
 		registerMutation.mutate(params)
 	}
 

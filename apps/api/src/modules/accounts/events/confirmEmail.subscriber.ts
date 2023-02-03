@@ -6,11 +6,11 @@ import { $ref } from '@api/utils/schema/zodJsonSchema'
 import { until } from '@open-draft/until'
 import { FastifyPluginAsync, FastifyRequest } from 'fastify'
 
+import { FindByIdError } from '../domain/user.errors'
 import {
 	ConfirmEmailSubscriberInput,
 	confirmEmailSubscriberInput,
-} from '../domain/email.dto'
-import { FindByIdError } from '../domain/user.errors'
+} from '../dtos/email.dto'
 
 export const CONFIRM_EMAIL_TOPIC = 'CONFIRM_EMAIL'
 

@@ -1,5 +1,5 @@
 import { pubSubPushSchema } from '@api/infra/pubsub/PubSubService'
-import { confirmEmailInput } from '@api/modules/accounts/domain/email.dto'
+import { confirmEmailInput } from '@api/modules/accounts/dtos/email.dto'
 
 import { buildJsonSchemas } from './buildJsonSchema'
 
