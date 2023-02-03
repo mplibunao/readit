@@ -1,11 +1,15 @@
 import App from '@api/app'
 import { Config, config } from '@api/infra/config'
-import { DependencyOverrides } from '@api/infra/diConfig'
+import { DependencyOverrides, SINGLETON_CONFIG } from '@api/infra/diConfig'
+import { asFunction, asValue } from 'awilix'
 import Fastify from 'fastify'
 import fp from 'fastify-plugin'
 import { afterAll, afterEach, beforeAll, beforeEach } from 'vitest'
 
 import { clearDatabase } from './clearDatabase'
+import { testLogger } from './mocks/logger'
+import { createMockPubSubClient } from './mocks/pubsub'
+import { createMockSession } from './mocks/session'
 
 // Automatically build and tear down our instance
 async function build(opts?: {
@@ -15,13 +19,28 @@ async function build(opts?: {
 	const fastify = Fastify()
 
 	/*
+	 * Sets mock dependencies by default for tests but feel free to override especially if you need to use mockResolveValue or assert if function was called
+	 * See accounts/routers/user.router.test.ts for example
+	 */
+	const defaultDependencyOverrides: DependencyOverrides = {
+		logger: asValue(testLogger),
+		session: asFunction(createMockSession, SINGLETON_CONFIG),
+		pubsub: asFunction(createMockPubSubClient, SINGLETON_CONFIG),
+	}
+
+	const dependencyOverrides = {
+		...defaultDependencyOverrides,
+		...opts?.dependencyOverrides,
+	}
+
+	/*
 	 *fastify-plugin ensures that all decorators
 	 *are exposed for testing purposes, this is
 	 *different from the production setup
 	 */
 	await fastify.register(fp(App), {
 		config: { ...config, ...opts?.config },
-		dependencyOverrides: opts?.dependencyOverrides ?? {},
+		dependencyOverrides,
 	})
 
 	beforeAll(async () => {
