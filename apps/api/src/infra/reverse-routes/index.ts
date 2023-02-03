@@ -45,6 +45,8 @@ const plugin: FastifyPluginAsync = async (fastify) => {
 
 		fastify.decorate(name, reverse).addHook('onRoute', (routeOptions) => {
 			if (routeOptions.name) {
+				// Fastify exposes a duplicate HEAD route for GET routes which cause collisions
+				if (['HEAD', 'OPTIONS'].includes(routeOptions.method as string)) return
 				if (routes.has(routeOptions.name)) {
 					throw new Error(
 						`Route with name ${routeOptions.name} already registered`,
