@@ -1,12 +1,9 @@
-import { SendConfirmEmailError } from '@api/infra/mailer/email.errors'
 import { PubSubPushSchema } from '@api/infra/pubsub/PubSubService'
 import { handleRESTServiceErrors } from '@api/utils/errors/handleRESTServiceErrors'
 import { errorSchema, responseStatusOk } from '@api/utils/schema/schema'
 import { $ref } from '@api/utils/schema/zodJsonSchema'
-import { until } from '@open-draft/until'
 import { FastifyPluginAsync, FastifyRequest } from 'fastify'
 
-import { FindByIdError } from '../domain/user.errors'
 import {
 	ConfirmEmailSubscriberInput,
 	confirmEmailSubscriberInput,
@@ -33,10 +30,7 @@ export const confirmEmailSubscriberRoute: FastifyPluginAsync = async (
 			const { UserService, MailerService, PubSubService, logger } =
 				req.diScope.cradle
 
-			const { data, error } = await until<
-				FindByIdError | SendConfirmEmailError,
-				Awaited<Promise<'ok'>>
-			>(async () => {
+			try {
 				const message =
 					PubSubService.decodePushMessage<ConfirmEmailSubscriberInput>(
 						req.body,
@@ -45,12 +39,14 @@ export const confirmEmailSubscriberRoute: FastifyPluginAsync = async (
 				const user = await UserService.findById(message.userId)
 				const profileUrl = UserService.getProfileUrl(user.username)
 
-				return MailerService.sendConfirmEmail({ profileUrl, ...user })
-			})
-
-			if (error) return handleRESTServiceErrors(error, logger)
-
-			return { status: data }
+				const data = await MailerService.sendConfirmEmail({
+					profileUrl,
+					...user,
+				})
+				return { status: data }
+			} catch (error) {
+				return handleRESTServiceErrors(error, logger)
+			}
 		},
 	})
 }
