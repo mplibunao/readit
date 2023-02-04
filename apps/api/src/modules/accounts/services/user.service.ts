@@ -13,12 +13,12 @@ import {
 	UserAlreadyConfirmed,
 	UserAlreadyExists,
 } from '../domain/user.errors'
-import { CreateUserOutput, User, UserSchema } from '../domain/user.types'
+import { CreateUserOutput, UserSchemas } from '../domain/user.schema'
 import { UserMutationsRepo } from '../repositories/user.mutations.repo'
 
 export interface UserService {
-	register: (user: User.CreateUserInput) => Promise<CreateUserOutput>
-	findById: (id: string) => Promise<UserSchema>
+	register: (user: UserSchemas.CreateUserInput) => Promise<CreateUserOutput>
+	findById: (id: string) => Promise<UserSchemas.User>
 	getProfileUrl: (username: string) => string
 	confirmEmail: (token: TokenData['id']) => Promise<'ok'>
 }
@@ -35,8 +35,8 @@ export const buildUserService = ({
 }: Dependencies): UserService => {
 	const register = z
 		.function()
-		.args(User.createUserInput)
-		.returns(z.promise(User.createUserOutput))
+		.args(UserSchemas.createUserInput)
+		.returns(z.promise(UserSchemas.createUserOutput))
 		.implement(async (input) => {
 			const { password, ...user } = input
 
@@ -81,8 +81,8 @@ export const buildUserService = ({
 
 	const findById = z
 		.function()
-		.args(User.findByIdInput)
-		.returns(z.promise(User.userSchema))
+		.args(UserSchemas.findByIdInput)
+		.returns(z.promise(UserSchemas.user))
 		.implement(async (id) => {
 			const { error, data } = await until<FindByIdError, UserData>(() =>
 				UserQueriesRepo.findById(id),
@@ -142,8 +142,8 @@ export const buildUserService = ({
 
 	const getProfileUrl = z
 		.function()
-		.args(User.username)
-		.returns(User.profileUrl)
+		.args(UserSchemas.username)
+		.returns(UserSchemas.profileUrl)
 		.implement((username) => `${config.env.FRONTEND_URL}/user/${username}`)
 
 	return {

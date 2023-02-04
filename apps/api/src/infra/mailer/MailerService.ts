@@ -1,4 +1,4 @@
-import { User, username } from '@api/modules/accounts/domain/user.types'
+import { UserSchemas, username } from '@api/modules/accounts/domain/user.schema'
 import { capitalize, getFullName } from '@api/utils/string'
 import { z } from 'zod'
 
@@ -9,7 +9,7 @@ const to = z.string().email()
 
 export interface MailerService {
 	sendConfirmEmail: (
-		user: User.UserSchema & { profileUrl: string },
+		user: UserSchemas.User & { profileUrl: string },
 	) => Promise<'ok'>
 }
 
