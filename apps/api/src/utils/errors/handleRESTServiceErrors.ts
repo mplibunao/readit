@@ -13,7 +13,7 @@ import createError from 'http-errors'
 import { ZodError } from 'zod'
 
 export const handleRESTServiceErrors = (
-	error: Error,
+	error: unknown,
 	logger: Logger,
 ): createError.HttpError => {
 	if (error instanceof ZodError) createError(400, error)
@@ -33,5 +33,5 @@ export const handleRESTServiceErrors = (
 		}
 	}
 
-	return createError(500, error)
+	return createError(500, error as Error)
 }
