@@ -1,5 +1,5 @@
 import { Dependencies } from '@api/infra/diConfig'
-import { InsertableUser, UserData } from '@api/infra/pg/types'
+import { InsertableUser, Trx, UserData } from '@api/infra/pg/types'
 import { DBError } from '@readit/utils'
 import { sql } from 'kysely'
 import Pg from 'pg'
@@ -12,7 +12,7 @@ export interface UserMutationsRepo {
 	) => Promise<
 		Pick<UserData, 'id' | 'email' | 'firstName' | 'lastName' | 'username'>
 	>
-	confirmUser: (id: string) => Promise<void>
+	confirmUser: (id: string, trx?: Trx) => Promise<void>
 }
 
 export const buildUserMutationsRepo = ({ pg }: Dependencies) => {
@@ -37,9 +37,11 @@ export const buildUserMutationsRepo = ({ pg }: Dependencies) => {
 			}
 		},
 
-		async confirmUser(id) {
+		async confirmUser(id, trx) {
+			const query = trx ? trx : pg
 			try {
-				pg.updateTable('users')
+				query
+					.updateTable('users')
 					.where('id', '=', id)
 					.set({ confirmedAt: sql`NOW()` })
 					.executeTakeFirstOrThrow()

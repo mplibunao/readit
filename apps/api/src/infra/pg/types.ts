@@ -1,9 +1,11 @@
 import { DB } from '@readit/pg-manager'
-import { Insertable, Selectable, Updateable } from 'kysely'
+import { Insertable, Selectable, Transaction, Updateable } from 'kysely'
 
 export type Row = {
 	[Key in keyof DB]: Selectable<DB[Key]>
 }
+
+export type Trx = Transaction<DB>
 
 export type UserTable = DB['users']
 export type UserData = Selectable<UserTable>

@@ -32,6 +32,7 @@ export const buildUserService = ({
 	AccountEventsPublisher,
 	TokenQueriesRepo,
 	TokenMutationsRepo,
+	pg,
 }: Dependencies): UserService => {
 	const register = z
 		.function()
@@ -124,8 +125,10 @@ export const buildUserService = ({
 				async () => {
 					const user = await findById(token.userId)
 					if (user.confirmedAt) throw new UserAlreadyConfirmed({})
-					await UserMutationsRepo.confirmUser(user.id)
-					await TokenMutationsRepo.markAsUsed(token.id)
+					await pg.transaction().execute(async (trx) => {
+						await UserMutationsRepo.confirmUser(user.id, trx)
+						await TokenMutationsRepo.markAsUsed(token.id, trx)
+					})
 				},
 			)
 
