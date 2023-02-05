@@ -40,7 +40,8 @@ export const userRouter = router({
 			}
 		}),
 
-	//login: publicProcedure.input(UserSchemas.).output(UserSchemas.user).mutation(async () => {
-
-	//})
+	//login: publicProcedure
+	//.input(UserSchemas.loginInput)
+	//.output(z.void())
+	//.mutation(async ({ ctx, input }) => {}),
 })

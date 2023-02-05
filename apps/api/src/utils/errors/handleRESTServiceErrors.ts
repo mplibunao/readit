@@ -12,6 +12,8 @@ import { AppError } from '@readit/utils'
 import createError from 'http-errors'
 import { ZodError } from 'zod'
 
+import { InvalidQueryFilter } from './queryRepoErrors'
+
 export const handleRESTServiceErrors = (
 	error: unknown,
 	logger: Logger,
@@ -23,6 +25,7 @@ export const handleRESTServiceErrors = (
 			case UserNotFound:
 				return createError(404, error)
 			case InvalidToken:
+			case InvalidQueryFilter:
 				return createError(400, error)
 			case TokenAlreadyUsed:
 			case UserAlreadyConfirmed:

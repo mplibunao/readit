@@ -1,8 +1,9 @@
+import { InvalidQueryFilter } from '@api/utils/errors/queryRepoErrors'
 import { AppError, DBError, ErrorOpts } from '@readit/utils'
 
 import { InvalidToken, TokenNotFound } from './token.errors'
 
-export type FindByIdError = UserNotFound | DBError
+export type FindByIdError = UserNotFound | DBError | InvalidQueryFilter
 export type RegistrationError =
 	| UserAlreadyExists
 	| DBError
@@ -14,6 +15,7 @@ export type ConfirmUserError =
 	| FindByIdError
 	| UserAlreadyConfirmed
 	| TokenAlreadyUsed
+export type LoginError = FindByIdError | IncorrectPassword
 
 export class UserNotFound extends AppError {
 	static type = 'USER_NOT_FOUND'
@@ -57,5 +59,14 @@ export class TokenAlreadyUsed extends AppError {
 	constructor({ message = 'Token already used', ...opts }: ErrorOpts) {
 		super({ ...opts, type: TokenAlreadyUsed.type, message })
 		this.name = TokenAlreadyUsed.type
+	}
+}
+
+export class IncorrectPassword extends AppError {
+	static type = 'INCORRECT_PASSWORD'
+
+	constructor({ message = 'Incorrect password', ...opts }: ErrorOpts) {
+		super({ ...opts, type: IncorrectPassword.type, message })
+		this.name = IncorrectPassword.type
 	}
 }

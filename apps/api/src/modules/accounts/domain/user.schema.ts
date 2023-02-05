@@ -27,6 +27,7 @@ export const username = z
 	.min(3, 'Please enter at least 3 characters')
 export const password = PasswordSchema
 export const profileUrl = z.string().url()
+export const confirmedAt = z.coerce.date().nullable()
 
 export const user = z.object({
 	id,
@@ -37,6 +38,7 @@ export const user = z.object({
 	createdAt,
 	updatedAt,
 	deletedAt,
+	confirmedAt,
 })
 export type User = z.infer<typeof user>
 export const createUserInput = z.object({
@@ -57,8 +59,8 @@ export const createUserOutput = z.object({
 export type CreateUserOutput = z.infer<typeof createUserOutput>
 export const findByIdInput = id
 export type FindByIdInput = z.infer<typeof findByIdInput>
-export const loginInput = z.union([
-	z.object({ username, password }),
-	z.object({ email, password }),
-])
+export const loginInput = z.object({
+	password,
+	usernameOrEmail: z.union([username, email]),
+})
 export type LoginInput = z.infer<typeof loginInput>

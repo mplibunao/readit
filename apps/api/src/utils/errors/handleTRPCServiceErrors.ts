@@ -8,6 +8,8 @@ import { AppError, DBError } from '@readit/utils'
 import { TRPCError } from '@trpc/server'
 import { ZodError } from 'zod'
 
+import { InvalidQueryFilter } from './queryRepoErrors'
+
 export const handleTRPCServiceErrors = (
 	error: unknown,
 	logger: Logger,
@@ -22,6 +24,8 @@ export const handleTRPCServiceErrors = (
 
 	if (error instanceof AppError) {
 		switch (error.constructor) {
+			case InvalidQueryFilter:
+				return new TRPCError({ ...error, code: 'BAD_REQUEST' })
 			case UserNotFound:
 				return new TRPCError({ ...error, code: 'NOT_FOUND' })
 			case UserAlreadyExists:

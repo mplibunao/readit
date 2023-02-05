@@ -8,10 +8,12 @@ import { z } from 'zod'
 import { InvalidToken, TokenNotFound } from '../domain/token.errors'
 import {
 	FindByIdError,
+	IncorrectPassword,
 	PasswordHashingError,
 	TokenAlreadyUsed,
 	UserAlreadyConfirmed,
 	UserAlreadyExists,
+	UserNotFound,
 } from '../domain/user.errors'
 import { CreateUserOutput, UserSchemas } from '../domain/user.schema'
 import { UserMutationsRepo } from '../repositories/user.mutations.repo'
@@ -21,6 +23,7 @@ export interface UserService {
 	findById: (id: string) => Promise<UserSchemas.User>
 	getProfileUrl: (username: string) => string
 	confirmEmail: (token: TokenData['id']) => Promise<'ok'>
+	login: (params: UserSchemas.LoginInput) => Promise<void>
 }
 
 export const buildUserService = ({
@@ -149,10 +152,62 @@ export const buildUserService = ({
 		.returns(UserSchemas.profileUrl)
 		.implement((username) => `${config.env.FRONTEND_URL}/user/${username}`)
 
+	const login = z
+		.function()
+		.args(UserSchemas.loginInput)
+		.returns(z.promise(z.void()))
+		.implement(async ({ usernameOrEmail, password }) => {
+			const { data: user, error: getUserError } = await until<
+				UserNotFound | DBError,
+				UserData
+			>(() => {
+				const isEmail = UserSchemas.email.safeParse(usernameOrEmail)
+				const filter = isEmail.success
+					? { email: usernameOrEmail }
+					: { username: usernameOrEmail }
+				return UserQueriesRepo.findByUsernameOrEmail(filter)
+			})
+
+			if (getUserError) {
+				logger.error('Login failed. Failed to get user', {
+					usernameOrEmail,
+					error: getUserError,
+				})
+				throw getUserError
+			}
+
+			const { error: passwordValidationError, data: passwordValid } =
+				await until<Error, boolean>(() =>
+					argon2.verify(user.hashedPassword, password),
+				)
+
+			if (passwordValidationError) {
+				logger.error('Login failed. Failed to verify password', {
+					usernameOrEmail,
+					error: getUserError,
+				})
+				throw passwordValidationError
+			}
+			if (!passwordValid) throw new IncorrectPassword({})
+		})
+
+	/*
+	 * if username query user by username
+	 * if email query user by username
+	 * throw user not found
+	 * verify password using argon2.verfify(user.password, password)
+	 * throw invalid password
+	 * Create token type login
+	 * Publish message to pubsub
+	 */
+
+	//})
+
 	return {
 		register,
 		findById,
 		getProfileUrl,
 		confirmEmail,
+		login,
 	}
 }
