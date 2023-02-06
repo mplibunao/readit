@@ -5,11 +5,9 @@ import { $ref } from '@api/utils/schema/zodJsonSchema'
 import { FastifyPluginAsync, FastifyRequest } from 'fastify'
 
 import {
-	ConfirmEmailSubscriberInput,
-	confirmEmailSubscriberInput,
+	PublishRegisterUserSchema,
+	publishRegisterUserSchema,
 } from '../dtos/email.dto'
-
-export const CONFIRM_EMAIL_TOPIC = 'CONFIRM_EMAIL'
 
 export const confirmEmailSubscriberRoute: FastifyPluginAsync = async (
 	fastify,
@@ -32,9 +30,9 @@ export const confirmEmailSubscriberRoute: FastifyPluginAsync = async (
 
 			try {
 				const message =
-					PubSubService.decodePushMessage<ConfirmEmailSubscriberInput>(
+					PubSubService.decodePushMessage<PublishRegisterUserSchema>(
 						req.body,
-						confirmEmailSubscriberInput,
+						publishRegisterUserSchema,
 					)
 				const user = await UserService.findById(message.userId)
 				const profileUrl = UserService.getProfileUrl(user.username)

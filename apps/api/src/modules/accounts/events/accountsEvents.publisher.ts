@@ -1,18 +1,24 @@
 import { Dependencies } from '@api/infra/diConfig'
 
-import { ConfirmEmailSubscriberInput } from '../dtos/email.dto'
-import { CONFIRM_EMAIL_TOPIC } from './confirmEmail.subscriber'
+import { PublishRegisterUserSchema } from '../dtos/email.dto'
 
 export interface AccountEventsPublisher {
-	confirmEmail: (params: ConfirmEmailSubscriberInput) => Promise<string>
+	registerUser: (params: PublishRegisterUserSchema) => Promise<string>
+}
+
+export const accountEventsTopics = {
+	registerUser: 'REGISTER_USER',
 }
 
 export const buildAccountEventsPublisher = ({
 	PubSubService,
 }: Dependencies) => {
 	const accountEventsPublisher: AccountEventsPublisher = {
-		confirmEmail: (params) => {
-			return PubSubService.publishMessage(CONFIRM_EMAIL_TOPIC, params)
+		registerUser: (params) => {
+			return PubSubService.publishMessage(
+				accountEventsTopics.registerUser,
+				params,
+			)
 		},
 	}
 

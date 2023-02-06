@@ -75,7 +75,7 @@ export const buildUserService = ({
 				throw error
 			}
 
-			await AccountEventsPublisher.confirmEmail({
+			await AccountEventsPublisher.registerUser({
 				userId: createdUser.id,
 			})
 			SessionService.setUser({ id: createdUser.id })
