@@ -32,7 +32,7 @@ import {
 	getPostmarkOpts,
 	PostmarkConfig,
 	postmarkEnvSchema,
-} from './mailer/postmarkClient'
+} from './mailer/client/postmarkClient'
 
 const zodEnvSchema = z.object({
 	...kyselyPGEnvSchema,

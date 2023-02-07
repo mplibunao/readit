@@ -23,11 +23,20 @@ export const getPostmarkOpts = ({
 })
 
 export interface EmailClient {
-	sendEmail: (props: {
+	sendEmailWithTemplate: (props: {
 		from: string
 		to: string
 		data: object
 		templateAlias: string
+		cc?: string
+		bcc?: string
+	}) => Promise<'ok'>
+	sendEmail: (props: {
+		from: string
+		to: string
+		subject: string
+		html: string
+		text: string
 		cc?: string
 		bcc?: string
 	}) => Promise<'ok'>
@@ -37,7 +46,7 @@ export const buildPostmarkClient = ({ config, logger }: Dependencies) => {
 	const client = new postmark.ServerClient(config.postmark.POSTMARK_API_TOKEN)
 
 	const postmarkClient: EmailClient = {
-		sendEmail: async (props) => {
+		sendEmailWithTemplate: async (props) => {
 			try {
 				await client.sendEmailWithTemplate({
 					From: props.from,
@@ -49,6 +58,27 @@ export const buildPostmarkClient = ({ config, logger }: Dependencies) => {
 					Bcc: props.bcc,
 				})
 
+				return 'ok'
+			} catch (error) {
+				logger.error('Sending email through postmark failed', { error })
+				throw new PostmarkError({
+					cause: error,
+				})
+			}
+		},
+
+		sendEmail: async (props) => {
+			try {
+				await client.sendEmail({
+					From: props.from,
+					To: props.to,
+					Subject: props.subject,
+					TrackOpens: true,
+					Cc: props.cc,
+					Bcc: props.bcc,
+					HtmlBody: props.html,
+					TextBody: props.text,
+				})
 				return 'ok'
 			} catch (error) {
 				logger.error('Sending email through postmark failed', { error })

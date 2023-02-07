@@ -2,9 +2,9 @@ import { asFunction, asValue } from 'awilix'
 
 import { Config } from '../config'
 import { SINGLETON_CONFIG } from '../diConfig'
-import { createMockEmailClient } from './mockEmailClient'
-import { buildPostmarkClient } from './postmarkClient'
-import { buildPreviewEmailClient } from './previewEmailClient'
+import { createMockEmailClient } from './client/mockEmailClient'
+import { buildPostmarkClient } from './client/postmarkClient'
+import { buildPreviewEmailClient } from './client/previewEmailClient'
 
 export const registerEmailClient = ({ env }: Config) => {
 	if (env.IS_PROD) {
