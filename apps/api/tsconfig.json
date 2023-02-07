@@ -4,6 +4,8 @@
 		"outDir": "./dist",
 		"rootDir": "./src",
 		"importHelpers": true,
+		// for react-email
+		"jsx": "react-jsx",
 		"noEmit": false,
 		"baseUrl": ".",
 		"paths": {
