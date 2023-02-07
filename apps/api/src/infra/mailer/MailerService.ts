@@ -1,10 +1,10 @@
 import { UserSchemas } from '@api/modules/accounts/domain/user.schema'
 import { capitalize, getFullName } from '@api/utils/string'
 import { render } from '@react-email/render'
-import { ConfirmEmail } from '@readit/emails'
 
 import { Dependencies } from '../diConfig'
 import { reverse } from '../reverse-routes'
+import { ConfirmEmail } from './components/confirm-email'
 
 export interface MailerService {
 	sendConfirmEmail: (user: UserSchemas.User) => Promise<'ok'>
