@@ -23,7 +23,7 @@ export const buildFlagsService = ({
 		flagsRepo: FlagsRepo,
 		env: config.edgeConfig.env,
 		onError: (err) => {
-			logger.error(err, 'EdgeConfig operation error')
+			logger.error({ err }, 'EdgeConfig operation error')
 		},
 	})
 }

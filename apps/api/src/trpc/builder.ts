@@ -34,28 +34,26 @@ const logger = t.middleware(
 
 		if (durationMs >= trpc.slowestQueryThreshold) {
 			logger.warn(
-				`[tRPC Server] request took more than ${trpc.slowestQueryThreshold}:`,
 				{
 					path,
 					type,
 					durationMs,
 					input,
-					ok: result.ok,
 				},
+				`[tRPC Server] request took more than ${trpc.slowestQueryThreshold}:`,
 			)
 			return result
 		}
 
 		if (durationMs >= trpc.moderatelySlowQueryThreshold) {
 			logger.debug(
-				`[tRPC Server] request took more than ${trpc.moderatelySlowQueryThreshold}:`,
 				{
 					path,
 					type,
 					durationMs,
 					input,
-					ok: result.ok,
 				},
+				`[tRPC Server] request took more than ${trpc.moderatelySlowQueryThreshold}:`,
 			)
 
 			return result
@@ -63,14 +61,13 @@ const logger = t.middleware(
 
 		if (durationMs >= trpc.slowQueryThreshold) {
 			logger.trace(
-				`[tRPC Server] request took more than ${trpc.slowQueryThreshold}:`,
 				{
 					path,
 					type,
 					durationMs,
 					input,
-					ok: result.ok,
 				},
+				`[tRPC Server] request took more than ${trpc.slowQueryThreshold}:`,
 			)
 
 			return result

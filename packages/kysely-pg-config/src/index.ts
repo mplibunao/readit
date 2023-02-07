@@ -24,8 +24,8 @@ export const getKyselyPgConfig = (opts: KyselyPGConfigOpts): KyselyConfig => {
 		kyselyPGSchema.parse(opts)
 	} catch (error) {
 		opts.logger.error(
-			'Failed getting kysely config due to argument validation error',
 			error,
+			'Failed getting kysely config due to argument validation error',
 		)
 		throw new Error(
 			'Failed getting kysely config due to argument validation error',

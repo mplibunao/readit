@@ -22,7 +22,7 @@ export const buildPreviewEmailClient = ({ logger }: Dependencies) => {
 				)
 				return 'ok'
 			} catch (error) {
-				logger.error('Failed to send email', { error })
+				logger.error({ error }, 'Failed to send email')
 				throw error
 			}
 		},
@@ -33,7 +33,7 @@ export const buildPreviewEmailClient = ({ logger }: Dependencies) => {
 				await previewEmail(props, { openSimulator: false } as CustomOptions)
 				return 'ok'
 			} catch (error) {
-				logger.error('Failed to send email', { error })
+				logger.error({ error }, 'Failed to send email')
 				throw error
 			}
 		},

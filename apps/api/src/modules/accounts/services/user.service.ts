@@ -30,7 +30,6 @@ export const buildUserService = ({
 	UserMutationsRepo,
 	UserQueriesRepo,
 	SessionService,
-	config,
 	AccountEventsPublisher,
 	TokenQueriesRepo,
 	TokenMutationsRepo,
@@ -49,10 +48,7 @@ export const buildUserService = ({
 			>(() => argon2.hash(password))
 
 			if (hashingErr) {
-				logger.error('Hashing password failed', {
-					password,
-					error: hashingErr,
-				})
+				logger.error({ password, error: hashingErr }, 'Hashing password failed')
 				throw new PasswordHashingError({
 					cause: hashingErr,
 					message: 'Registration failed',
@@ -69,8 +65,8 @@ export const buildUserService = ({
 				})
 			})
 
-			if (error) {
-				logger.error('Failed to create user', { user, error })
+			if (error || !createdUser) {
+				logger.error({ user, error }, 'Failed to create user')
 				throw error
 			}
 
@@ -91,7 +87,7 @@ export const buildUserService = ({
 				UserQueriesRepo.findById(id),
 			)
 			if (!data || error) {
-				logger.error('User was not found', { id, error })
+				logger.error({ id, error }, 'User was not found')
 				throw error
 			}
 
@@ -116,10 +112,10 @@ export const buildUserService = ({
 			})
 
 			if (tokenError) {
-				logger.error('Email confirm failed. Invalid Token', {
-					id,
-					error: tokenError,
-				})
+				logger.error(
+					{ id, error: tokenError },
+					'Email confirm failed. Invalid Token',
+				)
 				throw tokenError
 			}
 
@@ -135,10 +131,10 @@ export const buildUserService = ({
 			)
 
 			if (error) {
-				logger.error('Email confirm failed. Marking token as used failed', {
-					token,
-					error,
-				})
+				logger.error(
+					{ token, error },
+					'Email confirm failed. Marking token as used failed',
+				)
 				throw error
 			}
 
@@ -162,10 +158,10 @@ export const buildUserService = ({
 			})
 
 			if (getUserError) {
-				logger.error('Login failed. Failed to get user', {
-					usernameOrEmail,
-					error: getUserError,
-				})
+				logger.error(
+					{ usernameOrEmail, error: getUserError },
+					'Login failed. Failed to get user',
+				)
 				throw getUserError
 			}
 
@@ -175,10 +171,10 @@ export const buildUserService = ({
 				)
 
 			if (passwordValidationError) {
-				logger.error('Login failed. Failed to verify password', {
-					usernameOrEmail,
-					error: getUserError,
-				})
+				logger.error(
+					{ usernameOrEmail, error: getUserError },
+					'Login failed. Failed to verify password',
+				)
 				throw passwordValidationError
 			}
 			if (!passwordValid) throw new IncorrectPassword({})

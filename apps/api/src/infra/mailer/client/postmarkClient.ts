@@ -60,7 +60,7 @@ export const buildPostmarkClient = ({ config, logger }: Dependencies) => {
 
 				return 'ok'
 			} catch (error) {
-				logger.error('Sending email through postmark failed', { error })
+				logger.error({ error }, 'Sending email through postmark failed')
 				throw new PostmarkError({
 					cause: error,
 				})
@@ -81,7 +81,7 @@ export const buildPostmarkClient = ({ config, logger }: Dependencies) => {
 				})
 				return 'ok'
 			} catch (error) {
-				logger.error('Sending email through postmark failed', { error })
+				logger.error({ error }, 'Sending email through postmark failed')
 				throw new PostmarkError({
 					cause: error,
 				})
