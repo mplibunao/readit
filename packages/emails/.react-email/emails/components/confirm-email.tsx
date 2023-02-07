@@ -9,13 +9,13 @@ import { EmailLink } from './EmailLink'
 import { Layout, LayoutProps } from './Layout'
 import { Paragraph } from './Paragraph'
 
-interface ConfirmEmailProps extends Omit<LayoutProps, 'children'> {
+export interface ConfirmEmailProps extends Omit<LayoutProps, 'children'> {
 	productName: string
 	name: string
 	confirmUrl: string
 }
 
-export default function ConfirmEmail({
+export function ConfirmEmail({
 	name,
 	productName,
 	logoImage,

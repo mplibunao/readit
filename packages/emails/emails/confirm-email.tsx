@@ -1,4 +1,4 @@
-import ConfirmEmail from './components/confirm-email'
+import { ConfirmEmail } from './components/confirm-email'
 
 export default function Email() {
 	return (

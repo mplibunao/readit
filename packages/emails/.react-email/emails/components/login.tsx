@@ -9,11 +9,11 @@ import { EmailLink } from './EmailLink'
 import { Layout, LayoutProps } from './Layout'
 import { Paragraph } from './Paragraph'
 
-interface LoginEmailProps extends Omit<LayoutProps, 'children'> {
+export interface LoginEmailProps extends Omit<LayoutProps, 'children'> {
 	loginUrl: string
 }
 
-export default function LoginEmail({
+export function LoginEmail({
 	logoImage,
 	companyAddress,
 	productName,
