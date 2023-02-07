@@ -1,6 +1,7 @@
 import { Head } from '@react-email/head'
 import { Html } from '@react-email/html'
 import { Preview } from '@react-email/preview'
+import * as React from 'react'
 
 import { EmailButton } from './EmailButton'
 import { EmailHeading } from './EmailHeading'

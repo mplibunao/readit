@@ -1,5 +1,5 @@
 import { Text } from '@react-email/text'
-import React from 'react'
+import * as React from 'react'
 
 import { fontFamily } from './utils'
 

@@ -1,5 +1,5 @@
 import { Heading } from '@react-email/heading'
-import React from 'react'
+import * as React from 'react'
 
 export interface HeadingProps {
 	children: React.ReactNode

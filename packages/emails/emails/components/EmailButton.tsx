@@ -1,6 +1,6 @@
 import { Button } from '@react-email/button'
 import { Section } from '@react-email/section'
-import React from 'react'
+import * as React from 'react'
 
 import { fontFamily } from './utils'
 
