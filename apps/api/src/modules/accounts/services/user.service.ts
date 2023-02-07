@@ -21,7 +21,6 @@ import { UserMutationsRepo } from '../repositories/user.mutations.repo'
 export interface UserService {
 	register: (user: UserSchemas.CreateUserInput) => Promise<CreateUserOutput>
 	findById: (id: string) => Promise<UserSchemas.User>
-	getProfileUrl: (username: string) => string
 	confirmEmail: (token: TokenData['id']) => Promise<'ok'>
 	login: (params: UserSchemas.LoginInput) => Promise<void>
 }
@@ -146,12 +145,6 @@ export const buildUserService = ({
 			return 'ok' as const
 		})
 
-	const getProfileUrl = z
-		.function()
-		.args(UserSchemas.username)
-		.returns(UserSchemas.profileUrl)
-		.implement((username) => `${config.env.FRONTEND_URL}/user/${username}`)
-
 	const login = z
 		.function()
 		.args(UserSchemas.loginInput)
@@ -206,7 +199,6 @@ export const buildUserService = ({
 	return {
 		register,
 		findById,
-		getProfileUrl,
 		confirmEmail,
 		login,
 	}

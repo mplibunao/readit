@@ -35,12 +35,8 @@ export const confirmEmailSubscriberRoute: FastifyPluginAsync = async (
 						publishRegisterUserSchema,
 					)
 				const user = await UserService.findById(message.userId)
-				const profileUrl = UserService.getProfileUrl(user.username)
 
-				const data = await MailerService.sendConfirmEmail({
-					profileUrl,
-					...user,
-				})
+				const data = await MailerService.sendConfirmEmail(user)
 				return { status: data }
 			} catch (error) {
 				return handleRESTServiceErrors(error, logger)

@@ -1,9 +1,9 @@
+import { Env } from '@api/infra/config'
+import { Dependencies } from '@api/infra/diConfig'
 import postmark from 'postmark'
 import { z } from 'zod'
 
-import { Env } from '../config'
-import { Dependencies } from '../diConfig'
-import { PostmarkError } from './email.errors'
+import { PostmarkError } from '../email.errors'
 
 export const postmarkEnvSchema = {
 	POSTMARK_API_TOKEN: z.string(),
