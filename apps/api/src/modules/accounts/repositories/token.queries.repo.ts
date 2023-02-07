@@ -11,9 +11,9 @@ export interface TokenQueriesRepo {
 
 export const buildTokenQueriesRepo = ({ pg }: Dependencies) => {
 	const tokenQueriesRepo: TokenQueriesRepo = {
-		findById(id) {
+		async findById(id) {
 			try {
-				return pg
+				return await pg
 					.selectFrom('tokens')
 					.selectAll('tokens')
 					.where('id', '=', id)

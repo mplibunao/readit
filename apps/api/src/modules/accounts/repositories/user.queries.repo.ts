@@ -44,7 +44,7 @@ export const buildUserQueriesRepo = ({ pg }: Dependencies) => {
 		trx?: Trx,
 	): Promise<UserData> => {
 		try {
-			return find(options, trx).selectAll().executeTakeFirstOrThrow()
+			return await find(options, trx).selectAll().executeTakeFirstOrThrow()
 		} catch (error) {
 			if (error instanceof NoResultError) {
 				throw new UserNotFound({ cause: error })

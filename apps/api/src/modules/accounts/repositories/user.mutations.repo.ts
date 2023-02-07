@@ -1,7 +1,7 @@
 import { Dependencies } from '@api/infra/diConfig'
 import { InsertableUser, Trx, UserData } from '@api/infra/pg/types'
 import { DBError } from '@readit/utils'
-import { sql } from 'kysely'
+import { sql, UpdateResult } from 'kysely'
 import Pg from 'pg'
 
 import { UserAlreadyExists } from '../domain/user.errors'
@@ -12,14 +12,14 @@ export interface UserMutationsRepo {
 	) => Promise<
 		Pick<UserData, 'id' | 'email' | 'firstName' | 'lastName' | 'username'>
 	>
-	confirmUser: (id: string, trx?: Trx) => Promise<void>
+	confirmUser: (id: string, trx?: Trx) => Promise<UpdateResult>
 }
 
 export const buildUserMutationsRepo = ({ pg }: Dependencies) => {
 	const userMutationsRepo: UserMutationsRepo = {
 		async create(user) {
 			try {
-				return pg
+				return await pg
 					.insertInto('users')
 					.values(user)
 					.returning(['id', 'email', 'firstName', 'lastName', 'username'])
@@ -40,7 +40,7 @@ export const buildUserMutationsRepo = ({ pg }: Dependencies) => {
 		async confirmUser(id, trx) {
 			const query = trx ? trx : pg
 			try {
-				query
+				return await query
 					.updateTable('users')
 					.where('id', '=', id)
 					.set({ confirmedAt: sql`NOW()` })

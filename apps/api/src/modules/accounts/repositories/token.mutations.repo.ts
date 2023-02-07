@@ -1,18 +1,18 @@
 import { Dependencies } from '@api/infra/diConfig'
 import { InsertableToken, TokenData, Trx } from '@api/infra/pg/types'
 import { DBError } from '@readit/utils'
-import { sql } from 'kysely'
+import { sql, UpdateResult } from 'kysely'
 
 export interface TokenMutationsRepo {
 	create: (token: InsertableToken) => Promise<TokenData>
-	markAsUsed: (id: string, trx?: Trx) => Promise<void>
+	markAsUsed: (id: string, trx?: Trx) => Promise<UpdateResult>
 }
 
 export const buildTokenMutationsRepo = ({ pg, logger }: Dependencies) => {
 	const tokenMutationsRepo: TokenMutationsRepo = {
 		async create(token) {
 			try {
-				return pg
+				return await pg
 					.insertInto('tokens')
 					.values(token)
 					.returningAll()
@@ -30,7 +30,7 @@ export const buildTokenMutationsRepo = ({ pg, logger }: Dependencies) => {
 		async markAsUsed(id, trx) {
 			const query = trx ? trx : pg
 			try {
-				query
+				return await query
 					.updateTable('tokens')
 					.where('id', '=', id)
 					.set({ usedAt: sql`NOW()` })

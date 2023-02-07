@@ -11,7 +11,7 @@ export const userRouter = router({
 		.output(UserSchemas.createUserOutput)
 		.mutation(async ({ input, ctx: { UserService, logger } }) => {
 			try {
-				return UserService.register(input)
+				return await UserService.register(input)
 			} catch (error) {
 				throw handleTRPCServiceErrors(error, logger)
 			}
@@ -22,7 +22,7 @@ export const userRouter = router({
 		.output(UserSchemas.user)
 		.query(async ({ input, ctx: { UserService, logger } }) => {
 			try {
-				return UserService.findById(input.id)
+				return await UserService.findById(input.id)
 			} catch (error) {
 				throw handleTRPCServiceErrors(error, logger)
 			}
@@ -34,7 +34,7 @@ export const userRouter = router({
 			try {
 				const userSession = SessionService.getUser()
 				if (!userSession) return null
-				return UserService.findById(userSession.id)
+				return await UserService.findById(userSession.id)
 			} catch (error) {
 				throw handleTRPCServiceErrors(error, logger)
 			}
