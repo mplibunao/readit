@@ -1,0 +1,8 @@
+{
+  "extends": "@readit/tsconfig/nextjs.json",
+	"compilerOptions": {
+		"types": ["node"]
+	},
+  "include": ["emails/**/*.tsx", "emails/**/*.ts", "templates/**/*.tsx", "templates/**/*.ts", "index.tsx"],
+  "exclude": ["node_modules"]
+}
