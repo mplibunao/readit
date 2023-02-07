@@ -12,8 +12,10 @@ const main = async () => {
 	server.register(app, { config })
 
 	// delay is the number of milliseconds for the graceful close to finish
+	// Fast reload for dev
+	const delay = config.env.IS_PROD ? 5000 : 200
 	const closeListeners = closeWithGrace(
-		{ delay: 5000 },
+		{ delay },
 		async ({
 			err,
 			signal,
