@@ -23,16 +23,16 @@ export const handleRESTServiceErrors = (
 		switch (error.constructor) {
 			case TokenNotFound:
 			case UserNotFound:
-				return createError(404, error)
+				return createError(404, error, { type: error.type })
 			case InvalidToken:
 			case InvalidQueryFilter:
-				return createError(400, error)
+				return createError(400, error, { type: error.type })
 			case TokenAlreadyUsed:
 			case UserAlreadyConfirmed:
-				return createError(409, error)
+				return createError(409, error, { type: error.type })
 			default:
-				logger.error('Internal Server Error', error)
-				return createError(500, error)
+				logger.error(error, 'Internal Server Error')
+				return createError(500, error, { type: error.type })
 		}
 	}
 

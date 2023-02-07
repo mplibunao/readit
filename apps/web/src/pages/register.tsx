@@ -27,11 +27,12 @@ const Register = () => {
 					title: 'Registration failed',
 					message: 'User already exists',
 				})
+			} else {
+				errorToast({
+					title: 'Registration Failed',
+					message: 'Something went wrong',
+				})
 			}
-			errorToast({
-				title: 'Registration Failed',
-				message: 'Something went wrong',
-			})
 		},
 		onSuccess() {
 			successToast(
