@@ -8,5 +8,5 @@ export async function up(db: IDB): Promise<void> {
 }
 
 export async function down(db: IDB): Promise<void> {
-	await db.schema.alterTable('users').dropColumn('activatedAt').execute()
+	await db.schema.alterTable('users').dropColumn('confirmedAt').execute()
 }

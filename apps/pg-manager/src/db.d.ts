@@ -12,6 +12,7 @@ export type Timestamp = ColumnType<
 
 export interface Tokens {
 	createdAt: Generated<Timestamp>
+	expiresAt: Timestamp | null
 	id: Generated<string>
 	type: string
 	updatedAt: Generated<Timestamp>

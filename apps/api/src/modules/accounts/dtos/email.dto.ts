@@ -9,3 +9,11 @@ export type PublishRegisterUserSchema = z.infer<
 >
 export const confirmEmailInput = z.object({ token: z.string() })
 export type ConfirmEmailInput = z.infer<typeof confirmEmailInput>
+export const publishLoginBasicAuthSchema = z.object({
+	userId: id,
+})
+export type PublishLoginBasicAuthSchema = z.infer<
+	typeof publishLoginBasicAuthSchema
+>
+export const loginBasicAuthInput = z.object({ token: z.string() })
+export type LoginBasicAuthInput = z.infer<typeof loginBasicAuthInput>

@@ -12,7 +12,7 @@ export type UserData = Selectable<UserTable>
 export type InsertableUser = Insertable<UserTable>
 export type UpdatableUser = Updateable<UserTable>
 
-export type TokenType = 'accountActivation'
+export type TokenType = 'accountActivation' | 'passwordReset' | 'login'
 export type TokenTable = DB['tokens']
 export type TokenData = Selectable<TokenTable>
 export type InsertableToken = Insertable<TokenTable> & { type: TokenType }

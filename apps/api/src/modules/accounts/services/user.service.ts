@@ -157,7 +157,7 @@ export const buildUserService = ({
 				return UserQueriesRepo.findByUsernameOrEmail(filter)
 			})
 
-			if (getUserError) {
+			if (getUserError || !user) {
 				logger.error(
 					{ usernameOrEmail, error: getUserError },
 					'Login failed. Failed to get user',
@@ -178,15 +178,17 @@ export const buildUserService = ({
 				throw passwordValidationError
 			}
 			if (!passwordValid) throw new IncorrectPassword({})
+
+			await AccountEventsPublisher.loginBasicAuth({ userId: user.id })
 		})
 
 	/*
-	 * if username query user by username
-	 * if email query user by username
-	 * throw user not found
-	 * verify password using argon2.verfify(user.password, password)
-	 * throw invalid password
-	 * Create token type login
+	 * - if username query user by username
+	 * - if email query user by username
+	 * - throw user not found
+	 * - verify password using argon2.verfify(user.password, password)
+	 * - throw invalid password
+	 * - Create token type login
 	 * Publish message to pubsub
 	 */
 

@@ -17,9 +17,14 @@ export async function up(db: IDB): Promise<void> {
 			sql`type IN ('accountActivation', 'passwordReset', 'login')`,
 		)
 		.execute()
+	await db.schema
+		.alterTable('tokens')
+		.addColumn('expiresAt', 'timestamptz')
+		.execute()
 }
 
 export async function down(db: IDB): Promise<void> {
+	await db.schema.alterTable('tokens').dropColumn('expiresAt').execute()
 	await db
 		.deleteFrom('tokens')
 		.where('type', '!=', 'accountActivation')
