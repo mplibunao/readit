@@ -1,16 +1,21 @@
 import { Dependencies } from '@api/infra/diConfig'
-import { InsertableToken, TokenData, Trx } from '@api/infra/pg/types'
+import { TokenData, Trx } from '@api/infra/pg/types'
 import { DBError } from '@readit/utils'
 import { sql, UpdateResult } from 'kysely'
+import { z } from 'zod'
+
+import { createTokenSchema, CreateTokenSchema } from '../domain/token.schema'
 
 export interface TokenMutationsRepo {
-	create: (token: InsertableToken) => Promise<TokenData>
+	create: (params: CreateTokenSchema) => Promise<TokenData>
 	markAsUsed: (id: string, trx?: Trx) => Promise<UpdateResult>
 }
 
 export const buildTokenMutationsRepo = ({ pg, logger }: Dependencies) => {
-	const tokenMutationsRepo: TokenMutationsRepo = {
-		async create(token) {
+	const create = z
+		.function()
+		.args(createTokenSchema)
+		.implement(async (token) => {
 			try {
 				return await pg
 					.insertInto('tokens')
@@ -25,8 +30,10 @@ export const buildTokenMutationsRepo = ({ pg, logger }: Dependencies) => {
 				logger.error({ ...err, token })
 				throw new DBError(err)
 			}
-		},
+		})
 
+	const tokenMutationsRepo: TokenMutationsRepo = {
+		create,
 		async markAsUsed(id, trx) {
 			const query = trx ? trx : pg
 			try {
