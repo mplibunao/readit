@@ -12,10 +12,20 @@ export type ConfirmUserError =
 	| TokenNotFound
 	| DBError
 	| InvalidToken
-	| FindByIdError
 	| UserAlreadyConfirmed
 	| TokenAlreadyUsed
-export type LoginError = FindByIdError | IncorrectPassword
+	| UserNotFound
+	| InvalidQueryFilter
+export type LoginError =
+	| IncorrectPassword
+	| UserNotFound
+	| DBError
+	| InvalidQueryFilter
+export type VerifyTokenError =
+	| TokenNotFound
+	| DBError
+	| InvalidToken
+	| TokenAlreadyExpired
 
 export class UserNotFound extends AppError {
 	static type = 'USER_NOT_FOUND'
@@ -68,5 +78,14 @@ export class IncorrectPassword extends AppError {
 	constructor({ message = 'Incorrect password', ...opts }: ErrorOpts) {
 		super({ ...opts, type: IncorrectPassword.type, message })
 		this.name = IncorrectPassword.type
+	}
+}
+
+export class TokenAlreadyExpired extends AppError {
+	static type = 'TOKEN_ALREADY_EXPIRED'
+
+	constructor({ message = 'Token already expired', ...opts }: ErrorOpts) {
+		super({ ...opts, type: TokenAlreadyExpired.type, message })
+		this.name = TokenAlreadyExpired.type
 	}
 }

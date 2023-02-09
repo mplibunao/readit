@@ -10,6 +10,7 @@ import {
 	FindByIdError,
 	IncorrectPassword,
 	PasswordHashingError,
+	TokenAlreadyExpired,
 	TokenAlreadyUsed,
 	UserAlreadyConfirmed,
 	UserAlreadyExists,
@@ -23,6 +24,7 @@ export interface UserService {
 	findById: (id: string) => Promise<UserSchemas.User>
 	confirmEmail: (token: TokenData['id']) => Promise<'ok'>
 	login: (params: UserSchemas.LoginInput) => Promise<void>
+	verifyLoginToken: (token: TokenData['id']) => Promise<'ok'>
 }
 
 export const buildUserService = ({
@@ -182,10 +184,35 @@ export const buildUserService = ({
 			await AccountEventsPublisher.loginBasicAuth({ userId: user.id })
 		})
 
+	const verifyLoginToken = z
+		.function()
+		.args(id)
+		.returns(z.promise(z.literal('ok')))
+		.implement(async (id) => {
+			try {
+				const token = await TokenQueriesRepo.findById(id)
+				if (token.type !== 'login') {
+					throw new InvalidToken({ message: 'Invalid token type' })
+				}
+				if (token.usedAt) {
+					throw new TokenAlreadyUsed({ message: 'Token already used' })
+				}
+				if (token.expiresAt && new Date() >= token.expiresAt) {
+					throw new TokenAlreadyExpired({ message: 'Token already expired' })
+				}
+				await TokenMutationsRepo.markAsUsed(token.id)
+				return 'ok'
+			} catch (error) {
+				logger.error({ id, error: error }, 'Login token validation failed')
+				throw error
+			}
+		})
+
 	return {
 		register,
 		findById,
 		confirmEmail,
 		login,
+		verifyLoginToken,
 	}
 }

@@ -66,7 +66,7 @@ export const buildMailerService = ({
 				companyAddress,
 				logoImage,
 				productName,
-				loginUrl: reverse('login', {
+				loginUrl: reverse('verifyLoginToken', {
 					fullUrl: true,
 					args: { token: token.id },
 				}),

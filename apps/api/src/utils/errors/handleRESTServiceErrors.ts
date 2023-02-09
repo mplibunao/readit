@@ -4,6 +4,7 @@ import {
 } from '@api/modules/accounts/domain/token.errors'
 import {
 	IncorrectPassword,
+	TokenAlreadyExpired,
 	TokenAlreadyUsed,
 	UserAlreadyConfirmed,
 	UserAlreadyExists,
@@ -33,6 +34,7 @@ export const handleRESTServiceErrors = (
 			case TokenAlreadyUsed:
 			case UserAlreadyConfirmed:
 			case UserAlreadyExists:
+			case TokenAlreadyExpired:
 				return createError(409, error, { type: error.type })
 			default:
 				logger.error(error, 'Internal Server Error')

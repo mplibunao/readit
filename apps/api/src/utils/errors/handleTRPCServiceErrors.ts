@@ -4,6 +4,7 @@ import {
 } from '@api/modules/accounts/domain/token.errors'
 import {
 	IncorrectPassword,
+	TokenAlreadyExpired,
 	TokenAlreadyUsed,
 	UserAlreadyConfirmed,
 	UserAlreadyExists,
@@ -63,6 +64,7 @@ export const handleTRPCServiceErrors = (
 			case UserAlreadyExists:
 			case UserAlreadyConfirmed:
 			case TokenAlreadyUsed:
+			case TokenAlreadyExpired:
 				return new TrpcError({ ...error, code: 'CONFLICT' }) // 409
 			case DBError:
 			default:
