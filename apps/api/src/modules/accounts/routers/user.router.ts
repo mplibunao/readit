@@ -40,8 +40,14 @@ export const userRouter = router({
 			}
 		}),
 
-	//login: publicProcedure
-	//.input(UserSchemas.loginInput)
-	//.output(z.void())
-	//.mutation(async ({ ctx, input }) => {}),
+	login: publicProcedure
+		.input(UserSchemas.loginInput)
+		.output(z.void())
+		.mutation(async ({ ctx: { UserService, logger }, input }) => {
+			try {
+				await UserService.login(input)
+			} catch (error) {
+				throw handleTRPCServiceErrors(error, logger)
+			}
+		}),
 })
