@@ -25,7 +25,6 @@ importers:
       '@fastify/session': ^10.1.1
       '@fastify/under-pressure': ^8.1.0
       '@google-cloud/pubsub': ^3.3.0
-      '@open-draft/until': ^2.0.0
       '@react-email/button': ^0.0.6
       '@react-email/container': ^0.0.6
       '@react-email/head': ^0.0.4
@@ -102,7 +101,6 @@ importers:
       '@fastify/session': 10.1.1
       '@fastify/under-pressure': 8.1.0
       '@google-cloud/pubsub': 3.3.0
-      '@open-draft/until': 2.0.0
       '@react-email/button': 0.0.6
       '@react-email/container': 0.0.6
       '@react-email/head': 0.0.4
@@ -2981,10 +2979,6 @@ packages:
     dependencies:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.13.0
-
-  /@open-draft/until/2.0.0:
-    resolution: {integrity: sha512-0zJhDjNR0aH1d68TiD6GnYr18dcuOiyTx8xV/I7fp9+z/VQ20e305aObW1/DO5/fiCOztscmvJsCjJDYDhFW6w==}
-    dev: false
 
   /@opentelemetry/api/1.4.0:
     resolution: {integrity: sha512-IgMK9i3sFGNUqPMbjABm0G26g0QCKCUBfglhQ7rQq6WcxbKfEHRcmwsoER4hZcuYqJgkYn2OeuoJIv7Jsftp7g==}

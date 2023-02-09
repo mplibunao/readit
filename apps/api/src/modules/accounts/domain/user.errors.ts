@@ -4,10 +4,7 @@ import { AppError, DBError, ErrorOpts } from '@readit/utils'
 import { InvalidToken, TokenNotFound } from './token.errors'
 
 export type FindByIdError = UserNotFound | DBError | InvalidQueryFilter
-export type RegistrationError =
-	| UserAlreadyExists
-	| DBError
-	| PasswordHashingError
+export type RegistrationError = UserAlreadyExists | DBError
 export type ConfirmUserError =
 	| TokenNotFound
 	| DBError
@@ -33,15 +30,6 @@ export class UserNotFound extends AppError {
 	constructor({ message = 'User was not found', ...opts }: ErrorOpts) {
 		super({ ...opts, type: UserNotFound.type, message })
 		this.name = UserNotFound.type
-	}
-}
-
-export class PasswordHashingError extends AppError {
-	static type = 'PASSWORD_HASHING_ERROR'
-
-	constructor({ message = 'Something went wrong', ...opts }: ErrorOpts) {
-		super({ ...opts, type: PasswordHashingError.type, message })
-		this.name = PasswordHashingError.type
 	}
 }
 
