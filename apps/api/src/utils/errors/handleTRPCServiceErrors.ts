@@ -1,5 +1,11 @@
 import {
-	PasswordHashingError,
+	InvalidToken,
+	TokenNotFound,
+} from '@api/modules/accounts/domain/token.errors'
+import {
+	IncorrectPassword,
+	TokenAlreadyUsed,
+	UserAlreadyConfirmed,
 	UserAlreadyExists,
 	UserNotFound,
 } from '@api/modules/accounts/domain/user.errors'
@@ -48,13 +54,17 @@ export const handleTRPCServiceErrors = (
 	if (error instanceof AppError) {
 		switch (error.constructor) {
 			case InvalidQueryFilter:
-				return new TrpcError({ ...error, code: 'BAD_REQUEST' })
+			case IncorrectPassword:
+			case InvalidToken:
+				return new TrpcError({ ...error, code: 'BAD_REQUEST' }) // 400
+			case TokenNotFound:
 			case UserNotFound:
-				return new TrpcError({ ...error, code: 'NOT_FOUND' })
+				return new TrpcError({ ...error, code: 'NOT_FOUND' }) // 404
 			case UserAlreadyExists:
-				return new TrpcError({ ...error, code: 'CONFLICT' })
+			case UserAlreadyConfirmed:
+			case TokenAlreadyUsed:
+				return new TrpcError({ ...error, code: 'CONFLICT' }) // 409
 			case DBError:
-			case PasswordHashingError:
 			default:
 				return new TrpcError({ ...error, code: 'INTERNAL_SERVER_ERROR' })
 		}

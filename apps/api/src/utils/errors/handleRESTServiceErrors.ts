@@ -3,8 +3,10 @@ import {
 	TokenNotFound,
 } from '@api/modules/accounts/domain/token.errors'
 import {
+	IncorrectPassword,
 	TokenAlreadyUsed,
 	UserAlreadyConfirmed,
+	UserAlreadyExists,
 	UserNotFound,
 } from '@api/modules/accounts/domain/user.errors'
 import { Logger } from '@readit/logger'
@@ -21,14 +23,16 @@ export const handleRESTServiceErrors = (
 	if (error instanceof ZodError) createError(400, error)
 	if (error instanceof AppError) {
 		switch (error.constructor) {
+			case InvalidToken:
+			case InvalidQueryFilter:
+			case IncorrectPassword:
+				return createError(400, error, { type: error.type })
 			case TokenNotFound:
 			case UserNotFound:
 				return createError(404, error, { type: error.type })
-			case InvalidToken:
-			case InvalidQueryFilter:
-				return createError(400, error, { type: error.type })
 			case TokenAlreadyUsed:
 			case UserAlreadyConfirmed:
+			case UserAlreadyExists:
 				return createError(409, error, { type: error.type })
 			default:
 				logger.error(error, 'Internal Server Error')
