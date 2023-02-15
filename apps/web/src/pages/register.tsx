@@ -58,7 +58,10 @@ const Register = () => {
 		registerMutation.mutate(params)
 	}
 
-	const handleResendEmail = () => {}
+	const handleResendEmail = () => {
+		const formValues = form.getValues()
+		registerMutation.mutate(formValues)
+	}
 
 	return (
 		<>

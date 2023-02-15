@@ -55,7 +55,10 @@ export const Login = (): JSX.Element => {
 		loginMutation.mutate(params)
 	}
 
-	const handleResendEmail = () => {}
+	const handleResendEmail = () => {
+		const formValues = form.getValues()
+		loginMutation.mutate(formValues)
+	}
 
 	return (
 		<>

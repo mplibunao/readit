@@ -30,7 +30,7 @@ export const ErrorLayout = ({
 					<Link
 						href={getMailLink({
 							subject: supportSubject,
-							body: 'Hi',
+							body: supportBody ?? 'Hi',
 						})}
 						target='_blank'
 						rel='noreferrer'

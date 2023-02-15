@@ -36,8 +36,6 @@ describe('TRPC user router', () => {
 			lastName: input.lastName,
 		})
 
-		expect(mockedSession.set).toHaveBeenCalledTimes(1)
-		expect(mockedSession.set).toHaveBeenCalledWith('user', { id: user.id })
 		expect(mockedPubSubClient.publishMessage).toHaveBeenCalledTimes(1)
 
 		const userById = await caller.user.byId({ id: user.id })

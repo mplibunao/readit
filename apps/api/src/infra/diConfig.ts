@@ -19,10 +19,6 @@ import {
 	UserQueriesRepo,
 } from '@api/modules/accounts/repositories/user.queries.repo'
 import {
-	buildSessionService,
-	SessionService,
-} from '@api/modules/accounts/services/session.service'
-import {
 	buildUserService,
 	UserService,
 } from '@api/modules/accounts/services/user.service'
@@ -76,7 +72,6 @@ export interface Dependencies {
 	UserQueriesRepo: UserQueriesRepo
 	UserMutationsRepo: UserMutationsRepo
 	UserService: UserService
-	SessionService: SessionService
 }
 
 /*
@@ -125,10 +120,7 @@ export function registerDependencies(
 		MailerService: asFunction(buildMailerService, SINGLETON_CONFIG),
 		UserQueriesRepo: asFunction(buildUserQueriesRepo, SINGLETON_CONFIG),
 		UserMutationsRepo: asFunction(buildUserMutationsRepo, SINGLETON_CONFIG),
-		SessionService: asFunction(buildSessionService, {
-			lifetime: Lifetime.SCOPED,
-		}),
-		UserService: asFunction(buildUserService, { lifetime: Lifetime.SCOPED }),
+		UserService: asFunction(buildUserService, SINGLETON_CONFIG),
 	}
 
 	diContainer.register(diConfig)
