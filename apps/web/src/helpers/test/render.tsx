@@ -5,7 +5,7 @@ import * as React from 'react'
 import { FormProvider } from 'react-hook-form'
 import { ZodSchema } from 'zod'
 
-import { useZodForm, UseZodFormProps } from '../forms/useZodForm'
+import { useZodForm, UseZodFormProps } from '../../components/Forms/useZodForm'
 
 export async function renderWithReactHookForm<Z extends ZodSchema>(
 	ui: React.ReactElement,

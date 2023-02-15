@@ -1,5 +1,6 @@
 import { Dependencies } from '@api/infra/diConfig'
 import { TokenData } from '@api/infra/pg/types'
+import { Session } from '@api/infra/session'
 import { id } from '@readit/utils'
 import argon2 from 'argon2'
 import { z } from 'zod'
@@ -14,48 +15,50 @@ import {
 import { CreateUserOutput, UserSchemas } from '../domain/user.schema'
 
 export interface UserService {
-	register: (user: UserSchemas.CreateUserInput) => Promise<CreateUserOutput>
+	register: (params: {
+		input: UserSchemas.CreateUserInput
+		session: Session
+	}) => Promise<CreateUserOutput>
 	findById: (id: string) => Promise<UserSchemas.User>
 	confirmEmail: (token: TokenData['id']) => Promise<void>
 	login: (params: UserSchemas.LoginInput) => Promise<void>
-	verifyLoginToken: (token: TokenData['id']) => Promise<'ok'>
+	verifyLoginToken: (params: {
+		id: TokenData['id']
+		session: Session
+	}) => Promise<'ok'>
 }
 
 export const buildUserService = ({
 	logger,
 	UserMutationsRepo,
 	UserQueriesRepo,
-	SessionService,
 	AccountEventsPublisher,
 	TokenQueriesRepo,
 	TokenMutationsRepo,
 	pg,
 }: Dependencies): UserService => {
-	const register = z
-		.function()
-		.args(UserSchemas.createUserInput)
-		.returns(z.promise(UserSchemas.createUserOutput))
-		.implement(async (input) => {
-			const { password, ...user } = input
-			try {
-				const hashedPassword = await argon2.hash(password)
+	const register: UserService['register'] = async ({ input, session }) => {
+		UserSchemas.createUserInput.parse(input)
+		const { password, ...user } = input
+		try {
+			const hashedPassword = await argon2.hash(password)
 
-				const createdUser = await UserMutationsRepo.create({
-					...user,
-					hashedPassword,
-				})
+			const createdUser = await UserMutationsRepo.create({
+				...user,
+				hashedPassword,
+			})
 
-				await AccountEventsPublisher.registerUser({
-					userId: createdUser.id,
-				})
-				SessionService.setUser({ id: createdUser.id })
+			await AccountEventsPublisher.registerUser({
+				userId: createdUser.id,
+			})
+			session.user = { id: createdUser.id }
 
-				return createdUser
-			} catch (error) {
-				logger.error({ user, error }, 'Failed to create user')
-				throw error
-			}
-		})
+			return UserSchemas.createUserOutput.parse(createdUser)
+		} catch (error) {
+			logger.error({ user, error }, 'Failed to create user')
+			throw error
+		}
+	}
 
 	const findById = z
 		.function()
@@ -118,11 +121,12 @@ export const buildUserService = ({
 			}
 		})
 
-	const verifyLoginToken = z
-		.function()
-		.args(id)
-		.returns(z.promise(z.literal('ok')))
-		.implement(async (id) => {
+	return {
+		register,
+		findById,
+		confirmEmail,
+		login,
+		verifyLoginToken: async ({ id, session }) => {
 			try {
 				const token = await TokenQueriesRepo.findById(id)
 				if (token.type !== 'login') {
@@ -135,18 +139,12 @@ export const buildUserService = ({
 					throw new TokenAlreadyExpired({ message: 'Token already expired' })
 				}
 				await TokenMutationsRepo.markAsUsed(token.id)
+				session.user = { id: token.userId }
 				return 'ok'
 			} catch (error) {
 				logger.error({ id, error: error }, 'Login token validation failed')
 				throw error
 			}
-		})
-
-	return {
-		register,
-		findById,
-		confirmEmail,
-		login,
-		verifyLoginToken,
+		},
 	}
 }

@@ -28,6 +28,7 @@ export interface Users {
 	firstName: string
 	hashedPassword: string
 	id: Generated<string>
+	imageUrl: string | null
 	lastName: string
 	updatedAt: Generated<Timestamp>
 	username: string

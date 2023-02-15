@@ -1,1 +1,1 @@
-export type IconId = 'exclamation-cicle' | 'eye-slash' | 'eye' | 'facebook' | 'google' | 'mini-x-mark' | 'outline-check-circle' | 'reddit' | 'twitter'
+export type IconId = 'arrow-trending-up' | 'bars-3' | 'bell' | 'chat-bubble-left-ellipsis' | 'ellipsis-horizontal-circle' | 'email-fast-outline' | 'exclamation-cicle' | 'eye-slash' | 'eye' | 'facebook' | 'fire' | 'flag' | 'google' | 'hand-thumb-down' | 'hand-thumb-up' | 'home' | 'magnifying-glass' | 'mini-x-mark' | 'outline-check-circle' | 'reddit' | 'share' | 'star' | 'twitter' | 'user-group'

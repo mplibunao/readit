@@ -2,11 +2,16 @@ import { Card } from '@/components/Card/Card'
 import { Form } from '@/components/Forms/Form'
 import { FormButton } from '@/components/Forms/FormButton'
 import { FormInput } from '@/components/Forms/FormInput'
+import { useZodForm } from '@/components/Forms/useZodForm'
 import { Icon } from '@/components/Icon'
 import { styledLink } from '@/components/Link/Link'
 import { Separator } from '@/components/Separator/Separator'
 import { errorToast, successToast } from '@/components/Toast/useToast'
-import { useZodForm } from '@/helpers/forms/useZodForm'
+import {
+	VerificationEmailModal,
+	useVerificationEmail,
+} from '@/features/accounts/auth/VerificationEmailModal'
+import { useLoggedIn } from '@/features/accounts/auth/useLoggedIn'
 import { client } from '@/utils/trpc/client'
 import { UserAlreadyExists } from '@api/modules/accounts/domain/user.errors'
 import { UserSchemas } from '@api/modules/accounts/domain/user.schema'
@@ -15,7 +20,12 @@ import Link from 'next/link'
 import React from 'react'
 
 const Register = () => {
+	useLoggedIn()
 	const [showPassword, setShowPassword] = React.useState(false)
+	const confirmationEmailModal = useVerificationEmail({
+		resendCooldownMinutes: 1,
+	})
+
 	const form = useZodForm({
 		schema: UserSchemas.createUserInput,
 	})
@@ -35,14 +45,12 @@ const Register = () => {
 			}
 		},
 		onSuccess() {
-			successToast(
-				{
-					title: 'Registration successful',
-					message:
-						'We sent you a link to verify your email. Check your inbox and click the link to continue',
-				},
-				{ duration: Infinity },
-			)
+			successToast({
+				title: 'Registration successful',
+				message: 'Account successfully created!',
+			})
+			confirmationEmailModal.onOpen()
+			confirmationEmailModal.resetResendEmailCooldown()
 		},
 	})
 
@@ -50,8 +58,17 @@ const Register = () => {
 		registerMutation.mutate(params)
 	}
 
+	const handleResendEmail = () => {}
+
 	return (
 		<>
+			<VerificationEmailModal
+				isOpen={confirmationEmailModal.isOpen}
+				onClose={confirmationEmailModal.onClose}
+				handleResendEmail={handleResendEmail}
+				remainingTime={confirmationEmailModal.remainingTime}
+				allowResendEmail={confirmationEmailModal.allowResendEmail}
+			/>
 			<div className='flex min-h-full flex-col justify-center py-12 sm:px-6 lg:px-8'>
 				<div className='sm:mx-auto sm:w-full sm:max-w-md'>
 					<Icon
@@ -60,11 +77,11 @@ const Register = () => {
 						label='logo'
 					/>
 					<h2 className='mt-6 text-center text-3xl font-bold tracking-tight text-neutral-900'>
-						Sign up
+						Register
 					</h2>
 					<p className='mt-2 text-center text-sm text-neutral-600'>
 						{' Already have an account? '}
-						<Link href='/signin' className={styledLink()}>
+						<Link href='/login' className={styledLink()}>
 							Login
 						</Link>
 					</p>
@@ -152,7 +169,7 @@ const Register = () => {
 									className='flex w-full justify-center'
 									loadingText='Signing up'
 								>
-									Sign up
+									Create an account
 								</FormButton>
 							</div>
 						</Form>

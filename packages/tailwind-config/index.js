@@ -35,6 +35,7 @@ module.exports = {
 		'./src/pages/**/*.{tsx,ts}',
 		'./src/app/**/*.{tsx,ts}',
 	],
+	darkMode: 'class',
 	theme: {
 		extend: {
 			fontFamily: {

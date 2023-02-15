@@ -69,7 +69,7 @@ Success.args = {
 }
 Success.argTypes = ArgTypes
 
-export const Failed: Story<ToastStoryProps> = ({
+export const Error: Story<ToastStoryProps> = ({
 	position,
 	duration,
 	...props
@@ -80,7 +80,7 @@ export const Failed: Story<ToastStoryProps> = ({
 	return (
 		<>
 			<Button onClick={action} loadingText='Toasting'>
-				Success toast
+				Error toast
 			</Button>
 			<Toaster
 				position={position}
@@ -92,7 +92,7 @@ export const Failed: Story<ToastStoryProps> = ({
 	)
 }
 
-Failed.args = {
+Error.args = {
 	...defaultProps,
 }
-Failed.argTypes = ArgTypes
+Error.argTypes = ArgTypes

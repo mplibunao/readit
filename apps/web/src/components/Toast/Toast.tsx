@@ -2,7 +2,7 @@ import { cva, VariantProps } from 'cva'
 import toast, { Toast } from 'react-hot-toast'
 import { twMerge } from 'tailwind-merge'
 
-import { IconButton } from '../Button/IconButton'
+import { CloseButton } from '../Button/IconButton'
 import { Icon } from '../Icon'
 
 const toastWrapper = cva(
@@ -62,13 +62,10 @@ export const SuccessToast = (props: ToastProps) => {
 						<p className='mt-1 text-sm text-neutral-500'>{props.message}</p>
 					</div>
 					<div className='ml-4 flex flex-shrink-0'>
-						<IconButton
-							size='xs'
-							className='inline-flex rounded-md bg-white text-neutral-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2'
+						<CloseButton
+							className='inline-flex'
 							onClick={() => toast.dismiss(props.toast.id)}
-						>
-							<Icon id='mini-x-mark' className='h-5 w-5' label='close toast' />
-						</IconButton>
+						/>
 					</div>
 				</div>
 			</div>
@@ -103,13 +100,10 @@ export const ErrorToast = (props: ToastProps) => {
 						<p className='mt-1 text-sm text-neutral-500'>{props.message}</p>
 					</div>
 					<div className='ml-4 flex flex-shrink-0'>
-						<IconButton
-							size='xs'
-							className='inline-flex rounded-md bg-white text-neutral-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2'
+						<CloseButton
+							className='inline-flex'
 							onClick={() => toast.dismiss(props.toast.id)}
-						>
-							<Icon id='mini-x-mark' className='h-5 w-5' label='close toast' />
-						</IconButton>
+						/>
 					</div>
 				</div>
 			</div>

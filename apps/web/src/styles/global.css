@@ -16,6 +16,10 @@ a {
 	-webkit-tap-highlight-color: transparent;
 }
 
+#__next {
+	height: 100vh;
+}
+
 @layer base {
 	/* default tailwindui theme
 		primary: indigo

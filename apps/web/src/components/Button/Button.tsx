@@ -1,5 +1,6 @@
 import { Button as AriaButton } from 'ariakit/button'
 import { cva, VariantProps } from 'cva'
+import React from 'react'
 import { twMerge } from 'tailwind-merge'
 
 import { Spinner } from '../Spinner/Spinner'
@@ -8,7 +9,7 @@ export const button = cva(
 	[
 		'inline-flex items-center justify-center rounded',
 		'border font-medium shadow-sm focus:outline-none',
-		'focus:ring-2 focus:ring-primary-500 focus:ring-offset-2',
+		'focus:ring-2 focus:ring-offset-2',
 	],
 	{
 		variants: {
@@ -20,9 +21,9 @@ export const button = cva(
 				xl: 'px-6 py-3 text-base',
 			},
 			color: {
-				primary: '',
-				neutral: '',
-				error: '',
+				primary: 'focus:ring-primary-500',
+				neutral: 'focus:ring-neutral-500',
+				error: 'focus:ring-error-500',
 			},
 			intent: {
 				primary: 'border-transparent text-white',
@@ -108,49 +109,103 @@ export interface ButtonProps
 	rightIcon?: React.ReactNode
 }
 
-export const Button = ({
-	children,
-	size,
-	color,
-	intent,
-	loading,
-	loadingText,
-	disabled = false,
-	className,
-	leftIcon,
-	rightIcon,
-	...props
-}: ButtonProps): JSX.Element => {
-	const isDisabled = Boolean(disabled || loading)
-	return (
-		<AriaButton
-			className={twMerge(
-				button({
-					size,
-					color,
-					intent,
-					disabled: isDisabled,
-					loading,
-					className,
-				}),
-			)}
-			disabled={isDisabled}
-			{...props}
-		>
-			{leftIcon && !loading ? leftIcon : null}
+export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+	(
+		{
+			children,
+			size,
+			color,
+			intent,
+			loading,
+			loadingText,
+			disabled = false,
+			className,
+			leftIcon,
+			rightIcon,
+			...props
+		},
+		forwardRef,
+	): JSX.Element => {
+		const isDisabled = Boolean(disabled || loading)
+		return (
+			<AriaButton
+				className={twMerge(
+					button({
+						size,
+						color,
+						intent,
+						disabled: isDisabled,
+						loading,
+						className,
+					}),
+				)}
+				disabled={isDisabled}
+				ref={forwardRef}
+				{...props}
+			>
+				{leftIcon && !loading ? leftIcon : null}
 
-			{loading && (
-				<Spinner
-					size='em'
-					className={loadingText ? 'relative mr-2' : 'absolute mr-0'}
-				/>
-			)}
+				{loading && (
+					<Spinner
+						size='em'
+						className={loadingText ? 'relative mr-2' : 'absolute mr-0'}
+					/>
+				)}
 
-			{loading
-				? loadingText || <span className='opacity-0'>{children}</span>
-				: children}
+				{loading
+					? loadingText || <span className='opacity-0'>{children}</span>
+					: children}
 
-			{rightIcon && !loading ? rightIcon : null}
-		</AriaButton>
-	)
-}
+				{rightIcon && !loading ? rightIcon : null}
+			</AriaButton>
+		)
+	},
+)
+Button.displayName = 'Button'
+
+//export const Button = ({
+//children,
+//size,
+//color,
+//intent,
+//loading,
+//loadingText,
+//disabled = false,
+//className,
+//leftIcon,
+//rightIcon,
+//...props
+//}: ButtonProps): JSX.Element => {
+//const isDisabled = Boolean(disabled || loading)
+//return (
+//<AriaButton
+//className={twMerge(
+//button({
+//size,
+//color,
+//intent,
+//disabled: isDisabled,
+//loading,
+//className,
+//}),
+//)}
+//disabled={isDisabled}
+//{...props}
+//>
+//{leftIcon && !loading ? leftIcon : null}
+
+//{loading && (
+//<Spinner
+//size='em'
+//className={loadingText ? 'relative mr-2' : 'absolute mr-0'}
+///>
+//)}
+
+//{loading
+//? loadingText || <span className='opacity-0'>{children}</span>
+//: children}
+
+//{rightIcon && !loading ? rightIcon : null}
+//</AriaButton>
+//)
+//}

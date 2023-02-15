@@ -28,6 +28,7 @@ export const username = z
 export const password = PasswordSchema
 export const profileUrl = z.string().url()
 export const confirmedAt = z.coerce.date().nullable()
+export const imageUrl = z.string().url().nullable()
 
 export const user = z.object({
 	id,
@@ -39,6 +40,7 @@ export const user = z.object({
 	updatedAt,
 	deletedAt,
 	confirmedAt,
+	imageUrl,
 })
 export type User = z.infer<typeof user>
 export const createUserInput = z.object({

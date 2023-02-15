@@ -4,7 +4,7 @@ import { Head, Html, Main, NextScript } from 'next/document'
 
 export default function Document() {
 	return (
-		<Html lang='en'>
+		<Html lang='en' className='h-full bg-neutral-100'>
 			<Head>
 				<SEO />
 				<Favicon />
@@ -13,7 +13,7 @@ export default function Document() {
 					content='black-translucent'
 				/>
 			</Head>
-			<body>
+			<body className='h-full'>
 				<Main />
 				<NextScript />
 			</body>

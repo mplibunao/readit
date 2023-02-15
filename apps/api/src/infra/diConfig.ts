@@ -49,7 +49,6 @@ import { closePgClient, createPgClient, PG } from './pg/createClient'
 import { buildPubSubService, PubSubService } from './pubsub/PubSubService'
 import { buildPubSubClient } from './pubsub/client'
 import { closeRedisClient, createRedisClient } from './redis/client'
-import { Session } from './session'
 
 export type ExternalDependencies = {
 	config: Config
@@ -64,7 +63,6 @@ export interface Dependencies {
 	logger: Logger
 	redis: Redis
 	pg: PG
-	session: Session
 	edgeConfig: EdgeConfigClient
 	FlagsRepo: FlagsRepo
 	FlagsService: FlagsService
@@ -85,7 +83,7 @@ export interface Dependencies {
  * Session is set on every request so it's not configured in diConfig
  * But allow passing it as override so we can mock it
  */
-type DiConfig = Record<keyof Omit<Dependencies, 'session'>, Resolver<unknown>>
+type DiConfig = Record<keyof Dependencies, Resolver<unknown>>
 export type DependencyOverrides = Partial<
 	Record<keyof Dependencies, Resolver<unknown>>
 >

@@ -1,21 +1,37 @@
 import '../styles/global.css'
 import '@fontsource/inter/variable.css'
 
+import { ErrorFallback } from '@/components/Layout/Error'
 import { TrpcClientProvider } from '@/utils/trpc/ClientProvider'
 import { Provider as JotaiProvider } from 'jotai'
+import { log } from 'next-axiom'
 import type { AppProps } from 'next/app'
+import { ErrorBoundary } from 'react-error-boundary'
 import { Toaster } from 'react-hot-toast'
+
+// Log errors to relevant services here
+const HandleBoundaryError = (
+	error: Error,
+	info: { componentStack: string },
+) => {
+	log.error('ErrorBoundary caught error: ', { error, info })
+}
 
 const Providers = composeProviders([JotaiProvider], [TrpcClientProvider])
 
 function MyApp({ Component, pageProps }: AppProps) {
 	return (
-		<Providers>
-			<main>
-				<Component {...pageProps} />
-				<Toaster position='top-right' />
-			</main>
-		</Providers>
+		<ErrorBoundary
+			FallbackComponent={ErrorFallback}
+			onError={HandleBoundaryError}
+		>
+			<Providers>
+				<main className='h-full'>
+					<Component {...pageProps} />
+					<Toaster position='top-right' />
+				</main>
+			</Providers>
+		</ErrorBoundary>
 	)
 }
 

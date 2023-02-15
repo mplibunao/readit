@@ -2,20 +2,26 @@ import { Button as AriaButton } from 'ariakit/button'
 import { VariantProps } from 'cva'
 import { twMerge } from 'tailwind-merge'
 
+import { Icon } from '../Icon'
+import { IconProps } from '../Icon'
 import { button } from './Button'
 
 export interface IconButtonProps
 	extends Omit<
 			React.ButtonHTMLAttributes<HTMLButtonElement>,
-			'color' | 'disabled'
+			'color' | 'disabled' | 'id'
 		>,
-		VariantProps<typeof button> {
-	children?: React.ReactNode
+		VariantProps<typeof button>,
+		IconProps {
+	iconClass?: string
 }
 
 export const IconButton = ({
 	color,
 	intent = 'ghost',
+	label,
+	id,
+	iconClass,
 	...props
 }: IconButtonProps) => {
 	const disabled = props.disabled ?? false
@@ -39,8 +45,30 @@ export const IconButton = ({
 			{props.loading ? (
 				<span className='opacity-0'>{props.children}</span>
 			) : (
-				props.children
+				<Icon id={id} label={label} className={iconClass} />
 			)}
 		</AriaButton>
+	)
+}
+
+export type SpecificIconButtonProps = Omit<IconButtonProps, 'id' | 'label'>
+
+export const CloseButton = ({
+	size = 'xs',
+	iconClass,
+	...props
+}: SpecificIconButtonProps) => {
+	return (
+		<IconButton
+			className={twMerge(
+				'rounded-md bg-white text-neutral-400 hover:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2',
+				props.className,
+			)}
+			size={size}
+			id='mini-x-mark'
+			label='Close button'
+			iconClass={twMerge('h-5 w-5', iconClass)}
+			{...props}
+		/>
 	)
 }

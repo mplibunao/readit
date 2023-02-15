@@ -263,6 +263,7 @@ importers:
       prettier: 2.8.0
       react: 18.2.0
       react-dom: 18.2.0
+      react-error-boundary: ^3.1.4
       react-hook-form: ^7.40.0
       react-hot-toast: ^2.4.0
       superjson: ^1.12.0
@@ -292,6 +293,7 @@ importers:
       next-superjson-plugin: 0.5.4_acuudid5spmzwkc6hwjlp65vrm
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
+      react-error-boundary: 3.1.4_react@18.2.0
       react-hook-form: 7.41.5
       react-hot-toast: 2.4.0_biqbaboplfbrettd7655fr4n2y
       superjson: 1.12.0
@@ -10342,6 +10344,16 @@ packages:
       tree-node-cli: 1.6.0
     transitivePeerDependencies:
       - supports-color
+    dev: false
+
+  /react-error-boundary/3.1.4_react@18.2.0:
+    resolution: {integrity: sha512-uM9uPzZJTF6wRQORmSrvOIgt4lJ9MC1sNgEOj2XGsDTRE4kmpWxg7ENK9EWNKJRMAOY9z0MuF4yIfl6gp4sotA==}
+    engines: {node: '>=10', npm: '>=6'}
+    peerDependencies:
+      react: '>=16.13.1'
+    dependencies:
+      '@babel/runtime': 7.20.1
+      react: 18.2.0
     dev: false
 
   /react-frame-component/5.2.5_v2m5e27vhdewzwhryxwfaorcca:

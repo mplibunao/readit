@@ -12,12 +12,14 @@ describe('TRPC user router', () => {
 		const mockedPubSubClient = createMockPubSubClient()
 		const fastify = await build({
 			dependencyOverrides: {
-				session: asValue(mockedSession),
 				pubsub: asValue(mockedPubSubClient),
 			},
 		})
 
-		const ctx = await createContextInner({ deps: fastify.diContainer.cradle })
+		const ctx = await createContextInner({
+			deps: fastify.diContainer.cradle,
+			session: mockedSession,
+		})
 		const caller = appRouter.createCaller(ctx)
 		const input: inferProcedureInput<AppRouter['user']['register']> = {
 			email: 'john@example.com',

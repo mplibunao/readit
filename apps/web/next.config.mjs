@@ -30,6 +30,14 @@ function getTranspilePackages() {
 getTranspilePackages()
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+	images: {
+		remotePatterns: [
+			{
+				protocol: 'https',
+				hostname: 'images.unsplash.com',
+			},
+		],
+	},
 	reactStrictMode: true,
 	swcMinify: true,
 	// Next.js i18n docs: https://nextjs.org/docs/advanced-features/i18n-routing

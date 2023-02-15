@@ -17,7 +17,7 @@ export const loginBasicEmailSubscriberRoute: FastifyPluginAsync = async (
 		url: '/login-basic-email',
 		method: 'POST',
 		schema: {
-			body: $ref('loginBasicAuthInput'),
+			body: $ref('pubSubPushSchema'),
 			response: {
 				'2xx': responseStatusOk,
 				'4xx': errorSchema,

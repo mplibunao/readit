@@ -5,8 +5,8 @@
 	"scripts": {
 		"dev": "run-p dev:*",
 		"dev:start": "next dev",
-		"dev:icons": "nodemon --watch src/icons/raw ./scripts/make-icons.js",
-		"_dev:icons": "node --watch ./scripts/make-icons.js",
+		"icons:watch": "nodemon --watch src/icons/raw -e .svg ./scripts/make-icons.js",
+		"icons": "node ./scripts/make-icons.js",
 		"build": "next build",
 		"start": "next start",
 		"lint:check": "TIMING=1 next lint --cache --cache-location .eslintcache --ignore-path ../../.eslintignore",
@@ -43,6 +43,7 @@
 		"next-superjson-plugin": "^0.5.4",
 		"react": "18.2.0",
 		"react-dom": "18.2.0",
+		"react-error-boundary": "^3.1.4",
 		"react-hook-form": "^7.40.0",
 		"react-hot-toast": "^2.4.0",
 		"superjson": "^1.12.0",

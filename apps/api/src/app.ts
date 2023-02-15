@@ -2,7 +2,6 @@ import { diContainer, fastifyAwilixPlugin } from '@fastify/awilix'
 import Cors from '@fastify/cors'
 import Helmet from '@fastify/helmet'
 import { fastifyTRPCPlugin } from '@trpc/server/adapters/fastify'
-import { asValue } from 'awilix'
 import { FastifyPluginAsync } from 'fastify'
 import NoIcon from 'fastify-no-icon'
 
@@ -59,10 +58,14 @@ export const app: FastifyPluginAsync<AppProps> = async (
 	/*
 	 * Register session and other values dependent on req so we don't get stale session data
 	 */
-	fastify.addHook('onRequest', (req, _, done) => {
-		diContainer.register('session', asValue(req.session))
-		done()
-	})
+	//fastify.addHook('onRequest', (req, reply, done) => {
+	//diContainer.register('session', asValue(req.session))
+	//diContainer.register('sessionStore', asValue(req.sessionStore))
+	//const cookie: Cookie = { clearCookie: reply.clearCookie }
+	//diContainer.register('cookie', asValue(cookie))
+
+	//done()
+	//})
 
 	fastify.register(Cors, {
 		origin: [config.env.FRONTEND_URL],

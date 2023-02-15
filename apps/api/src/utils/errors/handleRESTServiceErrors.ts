@@ -21,7 +21,7 @@ export const handleRESTServiceErrors = (
 	error: unknown,
 	logger: Logger,
 ): createError.HttpError => {
-	if (error instanceof ZodError) createError(400, error)
+	if (error instanceof ZodError) return createError(400, error)
 	if (error instanceof AppError) {
 		switch (error.constructor) {
 			case InvalidToken:
