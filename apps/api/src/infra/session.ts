@@ -31,8 +31,15 @@ declare module 'fastify' {
 
 export type Session = FastifyRequest['session']
 
+// This is separate from the sessionEnvSchema so we can use this as a definition and hijack the json schema output
+export const SESSION_SECRET = z
+	.string()
+	.describe(
+		'Secret for session encryption. Override this at the json schema level and add separator:, to allow passing of comma-separated string. This is so we can use arrays and rotate secrets. Note: First index in the array is used to sign new cookies and is the first to be checked for incoming cookies. This means that you have to gradually push the old keys and keep the new keys in index 0',
+	)
+
 export const sessionEnvSchema = {
-	SESSION_SECRET: z.string(),
+	SESSION_SECRET,
 	SESSION_COOKIE_NAME: z
 		.string()
 		.optional()

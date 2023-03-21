@@ -9,6 +9,7 @@ import {
 	getSessionOpts,
 	getSessionRedisStoreOpts,
 	sessionEnvSchema,
+	SESSION_SECRET,
 } from '@api/infra/session'
 import { getTrpcOpts, TrpcEnvSchema, trpcEnvSchema } from '@api/trpc/envSchema'
 import { RateLimitOptions } from '@fastify/rate-limit'
@@ -53,7 +54,21 @@ const zodEnvSchema = z.object({
 	GCP_PUBLIC_ASSET_URL: z.string(),
 })
 
-const jsonSchema = zodToJsonSchema(zodEnvSchema, { errorMessages: true })
+const jsonSchema = zodToJsonSchema(zodEnvSchema, {
+	errorMessages: true,
+	definitions: { SESSION_SECRET },
+})
+
+/*
+ *Since I don't know how to generate separator: ',' using zod
+ *I'll just hijack the json schema output and add the property before passing the schema to env-schema
+ */
+if (typeof jsonSchema.definitions!.SESSION_SECRET === 'object') {
+	jsonSchema.definitions!.SESSION_SECRET = {
+		...jsonSchema.definitions!.SESSION_SECRET,
+		separator: ',',
+	}
+}
 
 export type Env = z.infer<typeof zodEnvSchema>
 
