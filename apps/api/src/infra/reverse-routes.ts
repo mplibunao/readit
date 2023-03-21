@@ -34,7 +34,7 @@ export const reverse: Reverse = (name, opts = {}) => {
 	}
 
 	if (opts.fullUrl) {
-		return `${config.env.API_URL}${toPath(opts.args as object)}`
+		return `${config.env.API_SELF_URL}${toPath(opts.args as object)}`
 	}
 
 	return toPath(opts.args as object)

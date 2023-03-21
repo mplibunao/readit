@@ -48,7 +48,7 @@ const zodEnvSchema = z.object({
 	PORT: PortSchema.default(4000),
 	API_HOST: z.string().optional().default('127.0.0.1'),
 	FRONTEND_URL: z.string().describe('Url of the client'),
-	API_URL: z.string().describe('Url of this api'),
+	API_SELF_URL: z.string().describe('Url of this api'),
 	GCP_PROJECT_ID: z.string(),
 	GCP_PUBLIC_ASSET_URL: z.string(),
 })
