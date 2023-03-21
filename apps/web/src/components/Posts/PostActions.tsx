@@ -2,11 +2,9 @@ import { Menu, Transition } from '@headlessui/react'
 import { Fragment } from 'react'
 import { twMerge } from 'tailwind-merge'
 
-import { Icon } from '../Icon'
+import { Icon } from '../Icon/Icon'
 
-export interface PostActionsProps {}
-
-export const PostActions = (_props: PostActionsProps): JSX.Element => {
+export const PostActions = (): JSX.Element => {
 	return (
 		<div className='flex flex-shrink-0 self-center'>
 			<Menu as='div' className='relative inline-block text-left'>
@@ -43,7 +41,7 @@ export const PostActions = (_props: PostActionsProps): JSX.Element => {
 										<Icon
 											className='mr-3 h-5 w-5 text-gray-400'
 											id='star'
-											label='Add to favorites'
+											label='Add post to favorites'
 										/>
 										<span>Add to favorites</span>
 									</a>

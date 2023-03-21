@@ -58,7 +58,11 @@ export const InputGroup = React.memo(
 			const id = useId()
 
 			return (
-				<div role='group' data-testid='input-control'>
+				<div
+					role='group'
+					data-testid='input-control'
+					className={props.type === 'hidden' ? 'hidden' : ''}
+				>
 					<Label
 						id={id}
 						fieldName={name}
@@ -108,6 +112,7 @@ export const InputGroup = React.memo(
 									rightContent && 'pr-12',
 									leftContent && 'pl-12',
 									leftAddOn && 'rounded-l-none',
+									rightAddOn && 'rounded-r-none',
 									classNames.input,
 								)}
 								{...props}

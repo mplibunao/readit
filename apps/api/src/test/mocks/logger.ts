@@ -12,3 +12,13 @@ export const testLogger = {
 	log: (_: any) => {},
 	info: (_: any) => {},
 }
+
+export const silentLogger = {
+	error: (_: any) => {},
+	fatal: (_: any) => {},
+	warn: (_: any) => {},
+	debug: (_: any) => {},
+	trace: (_: any) => {},
+	log: (_: any) => {},
+	info: (_: any) => {},
+}

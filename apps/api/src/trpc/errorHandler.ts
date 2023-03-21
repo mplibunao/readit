@@ -15,16 +15,15 @@ export type OnErrorParams = {
 	type: QueryType
 }
 
-export const onError = ({ error, path, req, input, type }: OnErrorParams) => {
+export const onError = ({ error, path, req, type }: OnErrorParams) => {
 	if (error.code === 'INTERNAL_SERVER_ERROR') {
-		req.log.fatal({ error, input, type }, `Something went wrong on ${path}`)
+		req.log.fatal({ error, type }, `Something went wrong on ${path}`)
 	} else if (error.code === 'BAD_REQUEST' && error.cause instanceof ZodError) {
 		req.log.info(`zod validation error on ${path}`, error.cause.flatten(), {
 			error,
-			input,
 			type,
 		})
 	} else {
-		req.log.error({ error, input, type }, `Something went wrong on ${path}`)
+		req.log.error({ error, type }, `Something went wrong on ${path}`)
 	}
 }

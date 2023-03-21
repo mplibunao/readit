@@ -3,7 +3,7 @@ import { asFunction, Lifetime } from 'awilix'
 import { describe, expect, it } from 'vitest'
 
 import { closePgClient, createPgClient } from '../pg/createClient'
-import { closeRedisClient, createRedisClient } from '../redis/client'
+import { closeRedisClient, createRedisClient } from '../redis'
 
 describe('healthcheck db', () => {
 	it('should return ok for the db field if db is responsive', async () => {

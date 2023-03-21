@@ -1,9 +1,10 @@
-import { AppError, DBError, ErrorOpts } from '@readit/utils'
+import { AppError, ErrorOpts } from '@api/utils/errors/baseError'
+import { DBError } from '@api/utils/errors/repoErrors'
 
 export type SendConfirmEmailError = PostmarkError | DBError
 
 export class PostmarkError extends AppError {
-	static type = 'POSTMARK_ERROR'
+	static type = 'Postmark Error'
 
 	constructor({
 		message = 'Sending email through postmark failed',

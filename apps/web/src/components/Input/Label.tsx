@@ -23,7 +23,7 @@ export const Label = ({
 		<div className='flex justify-between'>
 			<label
 				id={`${id}-${name}-label`}
-				htmlFor={`${id}-${name}-input`}
+				htmlFor={`${id}-${name}`}
 				className={twMerge(
 					'block text-sm font-medium text-neutral-700',
 					hideLabel && 'sr-only',

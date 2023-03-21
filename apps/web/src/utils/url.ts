@@ -9,6 +9,6 @@ function getNextUrl() {
 
 export const nextBaseUrl = getNextUrl()
 
-const apiBaseUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL
+export const apiBaseUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL
 
 export const trpcUrl = `${apiBaseUrl}/trpc`

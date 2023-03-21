@@ -1,12 +1,13 @@
 import { vi } from 'vitest'
 
-export const createMockPubSubClient = (opts: object = {}) => {
+export const createMockPubSubClient = () => {
 	const publishMessage = vi.fn()
 	return {
 		publishMessage,
 		topic: () => {
 			return { publishMessage }
 		},
-		...opts,
 	}
 }
+
+export type MockPubSubClient = ReturnType<typeof createMockPubSubClient>

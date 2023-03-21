@@ -1,16 +1,16 @@
-import { AppError, ErrorOpts } from '@readit/utils'
+import { AppError, ErrorOpts } from '@api/utils/errors/baseError'
 
 export class TokenNotFound extends AppError {
-	static type = 'TOKEN_NOT_FOUND'
+	static type = 'Email Link has expired'
 
-	constructor({ message = 'Token was not found', ...opts }: ErrorOpts) {
+	constructor({ message = 'Please request a new one', ...opts }: ErrorOpts) {
 		super({ ...opts, type: TokenNotFound.type, message })
 		this.name = TokenNotFound.type
 	}
 }
 
 export class InvalidToken extends AppError {
-	static type = 'INVALID_TOKEN'
+	static type = 'Invalid Token'
 
 	constructor({ message = 'Token is invalid', ...opts }: ErrorOpts) {
 		super({ ...opts, type: InvalidToken.type, message })

@@ -4,6 +4,8 @@ function copyEmailComponents() {
 	const srcPath = 'emails/components'
 	const destPath = '../../apps/api/src/infra/mailer/components'
 	try {
+		console.log('deleting destination directory', destPath)
+		fs.rmSync(destPath, { recursive: true })
 		console.log(`Copying email components from ${srcPath} to ${destPath}...`)
 		fs.cpSync(srcPath, destPath, { recursive: true })
 	} catch (error) {

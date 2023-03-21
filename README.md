@@ -2,6 +2,12 @@
 
 [![ci](https://github.com/mplibunao/readit/actions/workflows/ci.yml/badge.svg)](https://github.com/mplibunao/readit/actions/workflows/ci.yml) [![staging](https://github.com/mplibunao/readit/actions/workflows/staging.yml/badge.svg)](https://github.com/mplibunao/readit/actions/workflows/staging.yml) [![production](https://github.com/mplibunao/readit/actions/workflows/production.yml/badge.svg)](https://github.com/mplibunao/readit/actions/workflows/production.yml)
 
+
+<p align="center">
+  <img src="docs/readit-logo-120x120.png" />
+</p>
+
+
 # URLs
 
 |           | Staging                               | Production                    |

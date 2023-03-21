@@ -1,31 +1,55 @@
-import { InvalidQueryFilter } from '@api/utils/errors/queryRepoErrors'
-import { AppError, DBError, ErrorOpts } from '@readit/utils'
+import {
+	AppError,
+	ErrorOpts,
+	InternalServerError,
+} from '@api/utils/errors/baseError'
+import { DBError, InvalidQueryFilter } from '@api/utils/errors/repoErrors'
 
+import { SocialAccountAlreadyExists } from './oAuth.errors'
 import { InvalidToken, TokenNotFound } from './token.errors'
 
-export type FindByIdError = UserNotFound | DBError | InvalidQueryFilter
-export type RegistrationError = UserAlreadyExists | DBError
+export type FindByIdError =
+	| UserNotFound
+	| DBError
+	| InvalidQueryFilter
+	| InternalServerError
+export type RegistrationError =
+	| UserAlreadyExists
+	| UsernameAlreadyExists
+	| DBError
+	| InternalServerError
+	| InvalidQueryFilter
 export type ConfirmUserError =
 	| TokenNotFound
 	| DBError
 	| InvalidToken
 	| UserAlreadyConfirmed
-	| TokenAlreadyUsed
 	| UserNotFound
 	| InvalidQueryFilter
+	| InternalServerError
 export type LoginError =
-	| IncorrectPassword
-	| UserNotFound
+	| InvalidCredentials
+	| NoPasswordConfigured
 	| DBError
 	| InvalidQueryFilter
+	| InternalServerError
 export type VerifyTokenError =
 	| TokenNotFound
 	| DBError
 	| InvalidToken
-	| TokenAlreadyExpired
+	| InvalidQueryFilter
+	| InternalServerError
+export type FindByEmailError = InvalidQueryFilter | DBError
+export type CreateUserFromSocial =
+	| InvalidQueryFilter
+	| DBError
+	| UserAlreadyExists
+	| UsernameAlreadyExists
+	| SocialAccountAlreadyExists
+	| InternalServerError
 
 export class UserNotFound extends AppError {
-	static type = 'USER_NOT_FOUND'
+	static type = 'User Not Found'
 
 	constructor({ message = 'User was not found', ...opts }: ErrorOpts) {
 		super({ ...opts, type: UserNotFound.type, message })
@@ -34,7 +58,7 @@ export class UserNotFound extends AppError {
 }
 
 export class UserAlreadyExists extends AppError {
-	static type = 'USER_ALREADY_EXISTS'
+	static type = 'User Already Exists'
 
 	constructor({ message = 'User already exists', ...opts }: ErrorOpts) {
 		super({ ...opts, type: UserAlreadyExists.type, message })
@@ -42,8 +66,17 @@ export class UserAlreadyExists extends AppError {
 	}
 }
 
+export class UsernameAlreadyExists extends AppError {
+	static type = 'Username Already Exists'
+
+	constructor({ message = 'Username already exists', ...opts }: ErrorOpts) {
+		super({ ...opts, type: UsernameAlreadyExists.type, message })
+		this.name = UsernameAlreadyExists.type
+	}
+}
+
 export class UserAlreadyConfirmed extends AppError {
-	static type = 'USER_ALREADY_CONFIRMED'
+	static type = 'User Already Confirmed'
 
 	constructor({ message = 'User already confirmed', ...opts }: ErrorOpts) {
 		super({ ...opts, type: UserAlreadyConfirmed.type, message })
@@ -51,29 +84,44 @@ export class UserAlreadyConfirmed extends AppError {
 	}
 }
 
-export class TokenAlreadyUsed extends AppError {
-	static type = 'TOKEN_ALREADY_USED'
+export class InvalidPassword extends AppError {
+	static type = 'Invalid Password'
 
-	constructor({ message = 'Token already used', ...opts }: ErrorOpts) {
-		super({ ...opts, type: TokenAlreadyUsed.type, message })
-		this.name = TokenAlreadyUsed.type
+	constructor({ message = 'Invalid password', ...opts }: ErrorOpts) {
+		super({ ...opts, type: InvalidPassword.type, message })
+		this.name = InvalidPassword.type
 	}
 }
 
-export class IncorrectPassword extends AppError {
-	static type = 'INCORRECT_PASSWORD'
+export class NoPasswordConfigured extends AppError {
+	static type = 'No Password Configured'
 
-	constructor({ message = 'Incorrect password', ...opts }: ErrorOpts) {
-		super({ ...opts, type: IncorrectPassword.type, message })
-		this.name = IncorrectPassword.type
+	constructor({
+		message = 'Existing account does not have a configured password yet. Please use social login or update your password to login using credentials',
+		...opts
+	}: ErrorOpts) {
+		super({ ...opts, type: NoPasswordConfigured.type, message })
+		this.name = NoPasswordConfigured.type
 	}
 }
 
-export class TokenAlreadyExpired extends AppError {
-	static type = 'TOKEN_ALREADY_EXPIRED'
+export class InvalidCredentials extends AppError {
+	static type = 'Invalid Credentials'
 
-	constructor({ message = 'Token already expired', ...opts }: ErrorOpts) {
-		super({ ...opts, type: TokenAlreadyExpired.type, message })
-		this.name = TokenAlreadyExpired.type
+	constructor({
+		message = 'Username, Email or Password is Incorrect',
+		...opts
+	}: ErrorOpts) {
+		super({ ...opts, type: InvalidCredentials.type, message })
+		this.name = InvalidCredentials.type
+	}
+}
+
+export class EmailAlreadyTaken extends AppError {
+	static type = 'Email Already Taken'
+
+	constructor({ message = 'Email already taken', ...opts }: ErrorOpts) {
+		super({ ...opts, type: EmailAlreadyTaken.type, message })
+		this.name = EmailAlreadyTaken.type
 	}
 }

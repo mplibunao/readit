@@ -1,8 +1,11 @@
-import { ErrorLayout } from '@/components/Layout/Error'
+import { ErrorPageTemplate } from '@/components/Error'
+import { Layout, MainLayout } from '@/components/Layout'
 
-export const Custom404 = (): JSX.Element => {
+import { NextPageWithLayout } from './_app'
+
+export const Custom404: NextPageWithLayout = (): JSX.Element => {
 	return (
-		<ErrorLayout
+		<ErrorPageTemplate
 			code='404'
 			title='Page not found'
 			message='Sorry, we couldn’t find the page you’re looking for.'
@@ -10,5 +13,11 @@ export const Custom404 = (): JSX.Element => {
 		/>
 	)
 }
+
+Custom404.getLayout = (page) => (
+	<Layout>
+		<MainLayout bgClass='bg-white'>{page}</MainLayout>
+	</Layout>
+)
 
 export default Custom404

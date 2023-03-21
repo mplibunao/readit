@@ -1,5 +1,11 @@
 /* auto generated list of available icons */
 module.exports = {
+  "arrow-left": {
+    "filename": "arrow-left.svg"
+  },
+  "arrow-small-up": {
+    "filename": "arrow-small-up.svg"
+  },
   "arrow-trending-up": {
     "filename": "arrow-trending-up.svg"
   },
@@ -11,6 +17,15 @@ module.exports = {
   },
   "chat-bubble-left-ellipsis": {
     "filename": "chat-bubble-left-ellipsis.svg"
+  },
+  "check": {
+    "filename": "check.svg"
+  },
+  "chevron-up-down": {
+    "filename": "chevron-up-down.svg"
+  },
+  "discord": {
+    "filename": "discord.svg"
   },
   "ellipsis-horizontal-circle": {
     "filename": "ellipsis-horizontal-circle.svg"
@@ -57,6 +72,9 @@ module.exports = {
   "outline-check-circle": {
     "filename": "outline-check-circle.svg"
   },
+  "plus-circle": {
+    "filename": "plus-circle.svg"
+  },
   "reddit": {
     "filename": "reddit.svg"
   },
@@ -66,8 +84,8 @@ module.exports = {
   "star": {
     "filename": "star.svg"
   },
-  "twitter": {
-    "filename": "twitter.svg"
+  "triangle-right": {
+    "filename": "triangle-right.svg"
   },
   "user-group": {
     "filename": "user-group.svg"

@@ -2,8 +2,8 @@ import { Button as AriaButton } from 'ariakit/button'
 import { VariantProps } from 'cva'
 import { twMerge } from 'tailwind-merge'
 
-import { Icon } from '../Icon'
-import { IconProps } from '../Icon'
+import { Icon } from '../Icon/Icon'
+import { IconProps } from '../Icon/Icon'
 import { button } from './Button'
 
 export interface IconButtonProps
@@ -12,7 +12,7 @@ export interface IconButtonProps
 			'color' | 'disabled' | 'id'
 		>,
 		VariantProps<typeof button>,
-		IconProps {
+		Omit<IconProps, 'role' | 'onClick'> {
 	iconClass?: string
 }
 
@@ -22,6 +22,7 @@ export const IconButton = ({
 	label,
 	id,
 	iconClass,
+	hidden,
 	...props
 }: IconButtonProps) => {
 	const disabled = props.disabled ?? false
@@ -45,17 +46,18 @@ export const IconButton = ({
 			{props.loading ? (
 				<span className='opacity-0'>{props.children}</span>
 			) : (
-				<Icon id={id} label={label} className={iconClass} />
+				<Icon id={id} label={label} className={iconClass} hidden={hidden} />
 			)}
 		</AriaButton>
 	)
 }
 
-export type SpecificIconButtonProps = Omit<IconButtonProps, 'id' | 'label'>
+export type SpecificIconButtonProps = Omit<IconButtonProps, 'id'>
 
 export const CloseButton = ({
 	size = 'xs',
 	iconClass,
+	label = 'Dismiss',
 	...props
 }: SpecificIconButtonProps) => {
 	return (
@@ -66,7 +68,28 @@ export const CloseButton = ({
 			)}
 			size={size}
 			id='mini-x-mark'
-			label='Close button'
+			label={label}
+			iconClass={twMerge('h-5 w-5', iconClass)}
+			{...props}
+		/>
+	)
+}
+
+export const BackButton = ({
+	size = 'xs',
+	iconClass,
+	label = 'Back',
+	...props
+}: SpecificIconButtonProps) => {
+	return (
+		<IconButton
+			className={twMerge(
+				'rounded-md bg-white text-neutral-400 hover:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2',
+				props.className,
+			)}
+			size={size}
+			id='arrow-left'
+			label={label}
 			iconClass={twMerge('h-5 w-5', iconClass)}
 			{...props}
 		/>

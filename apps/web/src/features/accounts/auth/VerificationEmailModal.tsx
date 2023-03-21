@@ -1,7 +1,6 @@
-import { Button } from '@/components/Button/Button'
+import { Button } from '@/components/Button'
 import { Icon } from '@/components/Icon'
-import { Modal } from '@/components/Modal'
-import { useDisclosure } from '@/components/Modal'
+import { Modal, useDisclosure } from '@/components/Modal'
 import React from 'react'
 
 export const useVerificationEmail = ({
@@ -63,11 +62,7 @@ export const VerificationEmailModal = ({
 					<Modal.CloseButton onClose={onClose} />
 					<div>
 						<div className='mx-auto flex items-center justify-center'>
-							<Icon
-								className='h-12 w-12'
-								id='email-fast-outline'
-								label='check'
-							/>
+							<Icon className='h-12 w-12' id='email-fast-outline' hidden />
 						</div>
 						<div className='mt-3 text-center sm:mt-5'>
 							<Modal.Title className='font-bold'>

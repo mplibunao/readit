@@ -58,7 +58,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
 			<input
 				data-testid='input'
 				name={name}
-				id={`${id}-${name}-input`}
+				id={`${id}-${name}`}
 				disabled={disabled}
 				readOnly={readOnly}
 				ref={ref}
@@ -67,7 +67,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
 				aria-required={required}
 				aria-readonly={readOnly}
 				aria-describedby={twMerge(
-					withHelperText && !isInvalid && `${id}-${name}-description`,
+					withHelperText && `${id}-${name}-description`,
 					isInvalid && `${id}-${name}-error`,
 					withCornerHint && `${id}-${name}-hint`,
 				)}

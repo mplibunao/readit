@@ -2,7 +2,7 @@ import { cva, VariantProps } from 'cva'
 import toast, { Toast } from 'react-hot-toast'
 import { twMerge } from 'tailwind-merge'
 
-import { CloseButton } from '../Button/IconButton'
+import { CloseButton } from '../Button'
 import { Icon } from '../Icon'
 
 const toastWrapper = cva(
@@ -64,7 +64,7 @@ export const SuccessToast = (props: ToastProps) => {
 					<div className='ml-4 flex flex-shrink-0'>
 						<CloseButton
 							className='inline-flex'
-							onClick={() => toast.dismiss(props.toast.id)}
+							onClick={() => toast.remove(props.toast.id)}
 						/>
 					</div>
 				</div>
@@ -102,7 +102,7 @@ export const ErrorToast = (props: ToastProps) => {
 					<div className='ml-4 flex flex-shrink-0'>
 						<CloseButton
 							className='inline-flex'
-							onClick={() => toast.dismiss(props.toast.id)}
+							onClick={() => toast.remove(props.toast.id)}
 						/>
 					</div>
 				</div>

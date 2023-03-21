@@ -1,10 +1,9 @@
-import { Favicon } from '@/components/Head/Favicon'
-import { SEO } from '@/components/Head/SEO'
+import { Favicon, SEO } from '@/components/Head'
 import { Head, Html, Main, NextScript } from 'next/document'
 
 export default function Document() {
 	return (
-		<Html lang='en' className='h-full bg-neutral-100'>
+		<Html lang='en' className='h-full'>
 			<Head>
 				<SEO />
 				<Favicon />

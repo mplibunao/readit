@@ -6,18 +6,6 @@ import { UserSchemas } from '../domain/user.schema'
 import { UserDto } from '../dtos/user.dto'
 
 export const userRouter = router({
-	register: publicProcedure
-		.input(UserSchemas.createUserInput)
-		.output(UserSchemas.createUserOutput)
-		.mutation(async ({ input, ctx: { deps, session } }) => {
-			const { UserService, logger } = deps
-			try {
-				return await UserService.register({ input, session })
-			} catch (error) {
-				throw handleTRPCServiceErrors(error, logger)
-			}
-		}),
-
 	byId: publicProcedure
 		.input(UserDto.findByIdInput)
 		.output(UserSchemas.user)
@@ -43,35 +31,53 @@ export const userRouter = router({
 			}
 		}),
 
-	login: publicProcedure
-		.input(UserSchemas.loginInput)
-		.output(z.void())
-		.mutation(async ({ ctx: { deps }, input }) => {
-			const { UserService, logger } = deps
+	updateProfile: protectedProcedure
+		.input(UserDto.updateProfileInput)
+		.output(UserSchemas.user)
+		.mutation(async ({ input, ctx }) => {
+			const {
+				deps: { UserService, logger },
+			} = ctx
+			const { id, ...user } = input
 			try {
-				await UserService.login(input)
+				return await UserService.updateById({ id, user })
 			} catch (error) {
 				throw handleTRPCServiceErrors(error, logger)
 			}
 		}),
 
-	logout: protectedProcedure
-		.output(z.boolean())
-		.mutation(async ({ ctx: { deps, session } }) => {
-			const { logger, config } = deps
+	getStatus: protectedProcedure.query(async ({ ctx }) => {
+		const {
+			session,
+			deps: { UserService, logger },
+		} = ctx
+
+		try {
+			return await UserService.getAccountStatus({ session })
+		} catch (error) {
+			throw handleTRPCServiceErrors(error, logger)
+		}
+	}),
+
+	upsertUserInterests: protectedProcedure
+		.input(UserSchemas.upsertUserInterestsInput)
+		.mutation(async ({ ctx, input }) => {
+			const { session, deps } = ctx
+			const { logger, UserService } = deps
 			try {
-				await session.destroy()
-				return true
+				return await UserService.upsertUserInterests(input, session.user!.id)
 			} catch (error) {
-				logger.error(
-					{
-						error,
-						cookieName: config.session.cookieName,
-						session,
-					},
-					'Error logging out',
-				)
 				throw handleTRPCServiceErrors(error, logger)
 			}
 		}),
+
+	getInterests: protectedProcedure.query(async ({ ctx }) => {
+		const { session, deps } = ctx
+		const { logger, UserService } = deps
+		try {
+			return await UserService.getUserInterests(session.user!.id)
+		} catch (error) {
+			throw handleTRPCServiceErrors(error, logger)
+		}
+	}),
 })

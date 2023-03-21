@@ -4,11 +4,7 @@ import {
 	UnderPressure,
 } from '@api/infra/healthcheck/server'
 import { getRateLimitOpts, rateLimitEnvSchema } from '@api/infra/ratelimit'
-import {
-	getRedisClientOpts,
-	redisEnvSchema,
-	RedisOpts,
-} from '@api/infra/redis/client'
+import { getRedisClientOpts, redisEnvSchema, RedisOpts } from '@api/infra/redis'
 import {
 	getSessionOpts,
 	getSessionRedisStoreOpts,
@@ -33,6 +29,7 @@ import {
 	PostmarkConfig,
 	postmarkEnvSchema,
 } from './mailer/client/postmarkClient'
+import { OAuthConfig, getOAuthConfig, oAuthEnvSchema } from './oauth'
 
 const zodEnvSchema = z.object({
 	...kyselyPGEnvSchema,
@@ -44,6 +41,7 @@ const zodEnvSchema = z.object({
 	...sessionEnvSchema,
 	...postmarkEnvSchema,
 	...trpcEnvSchema,
+	...oAuthEnvSchema,
 	NODE_ENV: z
 		.enum(['development', 'production', 'test'])
 		.default('development'),
@@ -109,6 +107,7 @@ export interface Config {
 	session: FastifySessionOptions
 	sessionRedisStore: RedisStoreOptions
 	postmark: PostmarkConfig
+	oauth: OAuthConfig
 }
 
 export const config: Config = {
@@ -146,4 +145,5 @@ export const config: Config = {
 	session: getSessionOpts(env),
 	sessionRedisStore: getSessionRedisStoreOpts(env),
 	postmark: getPostmarkOpts(env),
+	oauth: getOAuthConfig(env),
 }

@@ -1,22 +1,39 @@
 import {
+	SocialAccountAlreadyExists,
+	SocialAccountNotFound,
+	SocialNotOwnedByUser,
+} from '@api/modules/accounts/domain/oAuth.errors'
+import {
 	InvalidToken,
 	TokenNotFound,
 } from '@api/modules/accounts/domain/token.errors'
 import {
-	IncorrectPassword,
-	TokenAlreadyExpired,
-	TokenAlreadyUsed,
+	InvalidCredentials,
+	NoPasswordConfigured,
 	UserAlreadyConfirmed,
 	UserAlreadyExists,
+	UsernameAlreadyExists,
 	UserNotFound,
 } from '@api/modules/accounts/domain/user.errors'
 import { Logger } from '@readit/logger'
-import { AppError, DBError } from '@readit/utils'
 import { TRPCError } from '@trpc/server'
 import { TRPC_ERROR_CODE_KEY } from '@trpc/server/dist/rpc'
 import { ZodError } from 'zod'
 
-import { InvalidQueryFilter } from './queryRepoErrors'
+import {
+	AppError,
+	InternalServerError,
+	UnauthorizedError,
+	NotFound,
+	AlreadyExists,
+} from './baseError'
+import { VALIDATION_ERROR_TYPE } from './errorTypes'
+import {
+	InvalidDeleteFilter,
+	DBError,
+	InvalidQueryFilter,
+	InvalidUpdateFilter,
+} from './repoErrors'
 
 /*
  *Adds type to TRPCError so we can send it back to the frontend and match it to the ErrorClass.type
@@ -42,39 +59,93 @@ export class TrpcError extends TRPCError {
 
 export const handleTRPCServiceErrors = (
 	error: unknown,
-	_logger: Logger,
+	logger: Logger,
 ): TrpcError | TRPCError => {
 	if (error instanceof ZodError) {
-		return new TRPCError({
+		return new TrpcError({
+			type: VALIDATION_ERROR_TYPE,
 			code: 'BAD_REQUEST',
 			cause: error,
-			message: error.message,
+			message: error.cause as string,
 		})
 	}
 
 	if (error instanceof AppError) {
 		switch (error.constructor) {
+			// 400
 			case InvalidQueryFilter:
-			case IncorrectPassword:
 			case InvalidToken:
-				return new TrpcError({ ...error, code: 'BAD_REQUEST' }) // 400
+			case InvalidUpdateFilter:
+			case InvalidDeleteFilter:
+			case SocialNotOwnedByUser:
+				return new TrpcError({
+					...error,
+					cause: error,
+					code: 'BAD_REQUEST',
+					message: error.message,
+				})
+			// 401
+			case UnauthorizedError:
+			case InvalidCredentials:
+				return new TrpcError({
+					...error,
+					cause: error,
+					code: 'UNAUTHORIZED',
+					message: error.message,
+				})
+
+			// 403 - logged in but not enough permissions
+			case SocialNotOwnedByUser:
+				return new TrpcError({
+					...error,
+					cause: error,
+					code: 'FORBIDDEN',
+					message: error.message,
+				})
+			// 404
 			case TokenNotFound:
 			case UserNotFound:
-				return new TrpcError({ ...error, code: 'NOT_FOUND' }) // 404
-			case UserAlreadyExists:
+			case NotFound:
+			case SocialAccountNotFound:
+				return new TrpcError({
+					...error,
+					code: 'NOT_FOUND',
+					cause: error,
+					message: error.message,
+				})
+			// 409
 			case UserAlreadyConfirmed:
-			case TokenAlreadyUsed:
-			case TokenAlreadyExpired:
-				return new TrpcError({ ...error, code: 'CONFLICT' }) // 409
+			case UsernameAlreadyExists:
+			case UserAlreadyExists:
+			case AlreadyExists:
+			case SocialAccountAlreadyExists:
+			case NoPasswordConfigured:
+				return new TrpcError({
+					...error,
+					code: 'CONFLICT',
+					cause: error,
+					message: error.message,
+				})
+			// 500
 			case DBError:
 			default:
-				return new TrpcError({ ...error, code: 'INTERNAL_SERVER_ERROR' })
+				return new TrpcError({
+					...error,
+					code: 'INTERNAL_SERVER_ERROR',
+					cause: error,
+					message: error.message,
+				})
 		}
 	}
 
+	if (error instanceof TRPCError) {
+		return error
+	}
+
+	logger.error(error, 'Internal Server Error')
 	return new TRPCError({
 		cause: error,
-		message: 'Unhandled exception',
+		message: InternalServerError.message,
 		code: 'INTERNAL_SERVER_ERROR',
 	})
 }

@@ -1,20 +1,39 @@
 import {
+	FailedToGetOAuthToken,
+	FailedToGetOAuthUser,
+	OAuthAccountNotVerified,
+	SocialAccountAlreadyExists,
+	SocialAlreadyConnectedToAnotherAccount,
+	StateParameterMismatch,
+} from '@api/modules/accounts/domain/oAuth.errors'
+import {
 	InvalidToken,
 	TokenNotFound,
 } from '@api/modules/accounts/domain/token.errors'
 import {
-	IncorrectPassword,
-	TokenAlreadyExpired,
-	TokenAlreadyUsed,
 	UserAlreadyConfirmed,
 	UserAlreadyExists,
+	UsernameAlreadyExists,
+	InvalidCredentials,
 	UserNotFound,
+	NoPasswordConfigured,
+	EmailAlreadyTaken,
 } from '@api/modules/accounts/domain/user.errors'
 import { Logger } from '@readit/logger'
-import { AppError } from '@readit/utils'
 import { z, ZodError } from 'zod'
 
-import { InvalidQueryFilter } from './queryRepoErrors'
+import {
+	AppError,
+	InternalServerError,
+	UnauthorizedError,
+	NotFound,
+	AlreadyExists,
+} from './baseError'
+import {
+	InvalidQueryFilter,
+	InvalidUpdateFilter,
+	InvalidDeleteFilter,
+} from './repoErrors'
 
 export const getRedirectError = (error: unknown, logger: Logger): string => {
 	const errorProps = handleRedirectErrors(error, logger)
@@ -28,6 +47,7 @@ export const getRedirectError = (error: unknown, logger: Logger): string => {
 export const errorLayoutSchema = z.object({
 	title: z.string(),
 	message: z.string(),
+	errorJson: z.string().optional(),
 	code: z.string(),
 	supportSubject: z.string().optional(),
 	supportBody: z.string().optional(),
@@ -42,80 +62,113 @@ const handleRedirectErrors = (
 	if (error instanceof ZodError) {
 		return {
 			code: '400',
-			message: error.message,
+			message: error.errors.map((e) => e.message).join(', '),
 			title: 'Validation Error',
+			errorJson: error.toString(),
 		}
 	}
 
 	if (error instanceof AppError) {
+		const message = error.message
+		const defaultTitle = 'Something went wrong'
 		switch (error.constructor) {
+			// 400 errors
 			case InvalidToken:
-				return {
-					title: 'Invalid Token',
-					message: 'The type of token specified is invalid',
-					code: '400',
-				}
 			case InvalidQueryFilter:
+			case InvalidDeleteFilter:
+			case InvalidUpdateFilter:
+			case StateParameterMismatch:
 				return {
-					title: 'Invalid Query',
-					message: 'The query that was executed is invalid',
+					title: error.type,
 					code: '400',
+					message,
 				}
-			case IncorrectPassword:
+
+			// 401 errors
+			case UnauthorizedError:
+			case InvalidCredentials:
 				return {
-					code: '400',
-					title: 'Incorrect Password',
-					message: 'The password specified is incorrect',
+					code: '401',
+					title: error.type,
+					message,
 				}
+
+			// 403 errors
+			case FailedToGetOAuthUser: {
+				const title =
+					error instanceof FailedToGetOAuthUser
+						? `${error.provider} Login Error`
+						: 'Social Login Error'
+				return {
+					code: '403',
+					title: title,
+					message,
+				}
+			}
+			case FailedToGetOAuthToken: {
+				const title =
+					error instanceof FailedToGetOAuthToken
+						? `${error.provider} Login Error`
+						: 'Social Login Error'
+				return {
+					code: '403',
+					title: title,
+					message: 'Failed to get OAuth token from code',
+				}
+			}
+			case OAuthAccountNotVerified: {
+				const code = '403'
+				return error instanceof OAuthAccountNotVerified
+					? {
+							title: `${error.provider} Login Error`,
+							message: error.message,
+							code,
+					  }
+					: {
+							title: 'Social Login Error',
+							message: error.message,
+							code,
+					  }
+			}
+
+			// 404 errors
 			case TokenNotFound:
-				return {
-					code: '404',
-					title: 'Token Not Found',
-					message: "The token specified doesn't exist",
-				}
 			case UserNotFound:
+			case NotFound:
 				return {
 					code: '404',
-					title: 'User Not Found',
-					message: "The user specified doesn't exist",
+					title: defaultTitle,
+					message,
 				}
-			case TokenAlreadyUsed:
-				return {
-					code: '409',
-					title: 'Token Already Used',
-					message: 'The token specified has already been used',
-				}
+
+			// 409 errors
 			case UserAlreadyConfirmed:
-				return {
-					code: '409',
-					title: 'User Already Confirmed',
-					message: 'The user specified has already been confirmed',
-				}
+			case SocialAlreadyConnectedToAnotherAccount:
+			case UsernameAlreadyExists:
+			case EmailAlreadyTaken:
 			case UserAlreadyExists:
+			case SocialAccountAlreadyExists:
+			case NoPasswordConfigured:
+			case AlreadyExists:
 				return {
 					code: '409',
-					title: 'User Already Exists',
-					message: 'The user specified already exists',
-				}
-			case TokenAlreadyExpired:
-				return {
-					code: '409',
-					title: 'Token Already Expired',
-					message: 'The token specified is already expired',
+					title: error.type,
+					message,
 				}
 			default:
 				logger.error(error, 'Internal Server Error')
 				return {
 					code: '500',
-					title: 'Something went wrong',
-					message: 'Oopps, something went wrong. Please try again later.',
+					title: defaultTitle,
+					message,
 				}
 		}
 	}
 
+	logger.error(error, 'Internal Server Error')
 	return {
 		code: '500',
-		title: 'Something went wrong',
-		message: 'Oopps, something went wrong. Please try again later.',
+		title: 'Internal Server Error',
+		message: InternalServerError.message,
 	}
 }

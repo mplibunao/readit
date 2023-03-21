@@ -1,9 +1,14 @@
 import '../styles/global.css'
 import '@fontsource/inter/variable.css'
 
-import { ErrorFallback } from '@/components/Layout/Error'
+import { Banners } from '@/components/Banner'
+import { ErrorBoundaryFallback } from '@/components/Error'
+import { ScrollToTop } from '@/components/ScrollToTop'
+import { OnboardingRoot } from '@/features/accounts/onboarding'
+import { LazyMotionFeatures } from '@/utils/framerMotion/LazyMotionFeatures'
 import { TrpcClientProvider } from '@/utils/trpc/ClientProvider'
 import { Provider as JotaiProvider } from 'jotai'
+import { NextPage } from 'next'
 import { log } from 'next-axiom'
 import type { AppProps } from 'next/app'
 import { ErrorBoundary } from 'react-error-boundary'
@@ -17,19 +22,36 @@ const HandleBoundaryError = (
 	log.error('ErrorBoundary caught error: ', { error, info })
 }
 
-const Providers = composeProviders([JotaiProvider], [TrpcClientProvider])
+const Providers = composeProviders([TrpcClientProvider, JotaiProvider])
 
-function MyApp({ Component, pageProps }: AppProps) {
+export type NextPageWithLayout<P = Record<string, never>, IP = P> = NextPage<
+	P,
+	IP
+> & {
+	getLayout?: (page: React.ReactElement) => React.ReactNode
+}
+
+type AppPropsWithLayout = AppProps & {
+	Component: NextPageWithLayout
+}
+
+function MyApp({ Component, pageProps }: AppPropsWithLayout) {
+	const getLayout = Component.getLayout || ((page) => page)
 	return (
 		<ErrorBoundary
-			FallbackComponent={ErrorFallback}
+			FallbackComponent={ErrorBoundaryFallback}
 			onError={HandleBoundaryError}
 		>
 			<Providers>
+				<Banners />
 				<main className='h-full'>
-					<Component {...pageProps} />
-					<Toaster position='top-right' />
+					{getLayout(<Component {...pageProps} />)}
 				</main>
+				<Toaster position='top-right' />
+				<OnboardingRoot />
+				<LazyMotionFeatures>
+					<ScrollToTop />
+				</LazyMotionFeatures>
 			</Providers>
 		</ErrorBoundary>
 	)

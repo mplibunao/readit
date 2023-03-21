@@ -1,10 +1,11 @@
 import { TempPost } from '@/constants/posts'
 
+import { Avatar } from '../Avatar'
+import { Icon } from '../Icon'
 //import { Menu, Transition } from '@headlessui/react'
 //import { Fragment } from 'react'
 //import { twMerge } from 'tailwind-merge'
 
-import { Icon } from '../Icon'
 import { PostActions } from './PostActions'
 
 export interface PostProps {
@@ -21,10 +22,10 @@ export const Post = ({ post }: PostProps): JSX.Element => {
 				<div>
 					<div className='flex space-x-3'>
 						<div className='flex-shrink-0'>
-							<img
+							<Avatar
 								className='h-10 w-10 rounded-full'
 								src={post.author.imageUrl}
-								alt=''
+								name={post.author.name}
 							/>
 						</div>
 						<div className='min-w-0 flex-1'>
@@ -101,7 +102,7 @@ export const Post = ({ post }: PostProps): JSX.Element => {
 								type='button'
 								className='inline-flex space-x-2 text-gray-400 hover:text-gray-500'
 							>
-								<Icon id='eye' className='h-5 w-5' label='Views' />
+								<Icon id='eye' className='h-5 w-5' label='Post views' />
 								<span className='font-medium text-gray-900'>{post.views}</span>
 							</button>
 						</span>

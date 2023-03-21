@@ -29,7 +29,7 @@ export const buildPubSubService = ({ pubsub }: Dependencies) => {
 			const messageContent =
 				typeof message === 'object' ? JSON.stringify(message) : message
 			const data = Buffer.from(messageContent)
-			return pubsub.topic(topic).publishMessage({ data })
+			return await pubsub.topic(topic).publishMessage({ data })
 		},
 
 		decodePushMessage: <T>(

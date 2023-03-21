@@ -1,16 +1,23 @@
-import { ErrorLayout } from '@/components/Layout/Error'
+import { ErrorPageTemplate } from '@/components/Error'
+import { Layout, MainLayout } from '@/components/Layout'
+import { LoadingPage } from '@/components/Spinner'
 import { errorLayoutSchema } from '@api/utils/errors/handleRedirectErrors'
 import { useRouter } from 'next/router'
 
-export const ErrorPage = (): JSX.Element => {
+import { NextPageWithLayout } from './_app'
+
+export const ErrorPage: NextPageWithLayout = (): JSX.Element => {
 	const router = useRouter()
+	if (!router.isReady) {
+		return <LoadingPage />
+	}
 	const props = router.query
 	try {
 		const errorProps = errorLayoutSchema.parse(props)
-		return <ErrorLayout {...errorProps} />
+		return <ErrorPageTemplate {...errorProps} />
 	} catch (error) {
 		return (
-			<ErrorLayout
+			<ErrorPageTemplate
 				code='400'
 				title='Invalid error'
 				message='You may be trying to visit this page manually'
@@ -19,10 +26,10 @@ export const ErrorPage = (): JSX.Element => {
 	}
 }
 
-export function getServerSideProps() {
-	return {
-		props: {},
-	}
-}
+ErrorPage.getLayout = (page) => (
+	<Layout>
+		<MainLayout bgClass='bg-white'>{page}</MainLayout>
+	</Layout>
+)
 
 export default ErrorPage

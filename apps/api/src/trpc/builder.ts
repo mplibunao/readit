@@ -1,5 +1,5 @@
+import { PROTECTED_PROCEDURE_AUTH_ERROR_TYPE } from '@api/utils/errors/errorTypes'
 import { TrpcError } from '@api/utils/errors/handleTRPCServiceErrors'
-import { PROTECTED_PROCEDURE_AUTH_ERROR_TYPE } from '@api/utils/errors/trpcMiddlewareErrors'
 import { initTRPC } from '@trpc/server'
 import { performance } from 'perf_hooks'
 import superjson from 'superjson'

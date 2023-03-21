@@ -1,0 +1,711 @@
+import { Dependencies } from '@api/infra/diConfig'
+import { Session } from '@api/infra/session'
+import { AppError, InternalServerError } from '@api/utils/errors/baseError'
+import axios from 'axios'
+import { randomBytes } from 'crypto'
+import { z } from 'zod'
+
+import {
+	FailedToGetOAuthToken,
+	FailedToGetOAuthUser,
+	OAuthAccountNotVerified,
+	SocialAlreadyConnectedToAnotherAccount,
+	SocialNotOwnedByUser,
+} from '../domain/oAuth.errors'
+import { GetFacebookTokenOutput, OAuthSchemas } from '../domain/oAuth.schema'
+import { UserAlreadyExists } from '../domain/user.errors'
+
+export type OAuthServiceType = ReturnType<typeof buildOAuthService>
+
+export const buildOAuthService = ({
+	config,
+	logger,
+	UserMutationsRepo,
+	UserQueriesRepo,
+	SocialAccountRepository,
+	pg,
+}: Dependencies) => {
+	const { google, facebook, discord } = config.oauth
+
+	const generateState = (userId?: string) => {
+		const state: OAuthSchemas.OAuthState = {
+			nonce: randomBytes(16).toString('base64'),
+			timestamp: new Date().getTime(),
+		}
+
+		if (userId) {
+			state.userId = userId
+		}
+		const encodedState = Buffer.from(JSON.stringify(state)).toString('base64')
+		return encodedState
+	}
+
+	const decodeState = z
+		.function()
+		.args(z.string())
+		.returns(OAuthSchemas.oAuthState)
+		.implement((state) => {
+			return JSON.parse(
+				Buffer.from(state, 'base64').toString('ascii'),
+			) as OAuthSchemas.OAuthState
+		})
+
+	const getOAuthUrl = z
+		.function()
+		.args(z.object({ provider: OAuthSchemas.provider, state: z.string() }))
+		.returns(z.string())
+		.implement(({ provider, state }) => {
+			switch (provider) {
+				case 'google':
+					return getGoogleOAuthUrl(state)
+				case 'facebook':
+					return getFacebookOAuthUrl(state)
+				case 'discord':
+					return getDiscordOAuthUrl(state)
+				default:
+					throw new InternalServerError({ message: 'Invalid provider' })
+			}
+		})
+
+	const getGoogleOAuthUrl = (state: string) => {
+		const options = {
+			redirect_uri: google.redirectUrl,
+			client_id: google.clientId,
+			access_type: 'offline',
+			response_type: 'code',
+			prompt: 'consent',
+			scope: [
+				'https://www.googleapis.com/auth/userinfo.email',
+				'https://www.googleapis.com/auth/userinfo.profile',
+			].join(' '),
+			state,
+		}
+
+		const searchParams = new URLSearchParams(options)
+		return `https://accounts.google.com/o/oauth2/v2/auth?${searchParams.toString()}`
+	}
+
+	const getFacebookOAuthUrl = (state: string) => {
+		const options = {
+			redirect_uri: facebook.redirectUrl,
+			client_id: facebook.clientId,
+			scope: ['email', 'public_profile'].join(','),
+			response_type: 'code',
+			auth_type: 'rerequest',
+			display: 'popup',
+			state,
+		}
+
+		const searchParams = new URLSearchParams(options)
+		return `https://www.facebook.com/v11.0/dialog/oauth?${searchParams.toString()}`
+	}
+
+	const getDiscordOAuthUrl = (state: string) => {
+		const options = {
+			client_id: discord.clientId,
+			redirect_uri: discord.redirectUrl,
+			response_type: 'code',
+			scope: ['identify', 'email'].join(' '),
+			state,
+		}
+
+		const searchParams = new URLSearchParams(options)
+
+		return `https://discord.com/api/oauth2/authorize?${searchParams.toString()}`
+	}
+
+	const formatDiscordAvatar = z
+		.function()
+		.args(
+			z.object({
+				discordUser: OAuthSchemas.getDiscordUserOutput,
+				ext: OAuthSchemas.discordAvatarExt,
+			}),
+		)
+		.returns(z.string().url().nullable())
+		.implement(({ discordUser, ext }) => {
+			if (discordUser.avatar) {
+				return `https://cdn.discordapp.com/avatars/${discordUser.id}/${discordUser.avatar}.${ext}`
+			}
+			return null
+		})
+
+	const getDiscordOAuthToken = z
+		.function()
+		.args(OAuthSchemas.code)
+		.returns(z.promise(OAuthSchemas.getDiscordTokenOutput))
+		.implement(async (code: string) => {
+			const url = 'https://discord.com/api/v10/oauth2/token'
+			const queryString = new URLSearchParams({
+				client_id: discord.clientId,
+				client_secret: discord.clientSecret,
+				grant_type: 'authorization_code',
+				code,
+				redirect_uri: discord.redirectUrl,
+			})
+
+			try {
+				const res = await axios.post<OAuthSchemas.GetDiscordTokenOutput>(
+					url,
+					queryString,
+					{
+						headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+					},
+				)
+				return res.data
+			} catch (error) {
+				logger.error({ code, error }, 'Failed to fetch Discord Oauth Tokens')
+				throw new FailedToGetOAuthToken({ cause: error, provider: 'discord' })
+			}
+		})
+
+	const getDiscordUser = z
+		.function()
+		.args(OAuthSchemas.discordToken.access_token)
+		.returns(z.promise(OAuthSchemas.getDiscordUserOutput))
+		.implement(async (accessToken) => {
+			try {
+				const url = 'https://discord.com/api/v10/users/@me'
+				const res = await axios.get<OAuthSchemas.GetDiscordUserOutput>(url, {
+					headers: { Authorization: `Bearer ${accessToken}` },
+				})
+				return res.data
+			} catch (error) {
+				logger.error({ error, accessToken }, 'Failed to fetch Discord user')
+				throw new FailedToGetOAuthUser({ cause: error, provider: 'discord' })
+			}
+		})
+
+	const getFacebookOAuthToken = z
+		.function()
+		.args(OAuthSchemas.code)
+		.returns(z.promise(OAuthSchemas.getFacebookTokenOutput))
+		.implement(async (code) => {
+			const url = 'https://graph.facebook.com/v4.0/oauth/access_token'
+			const queryString = new URLSearchParams({
+				client_id: facebook.clientId,
+				client_secret: facebook.clientSecret,
+				redirect_uri: facebook.redirectUrl,
+				code,
+			}).toString()
+
+			try {
+				const response = await axios.get<GetFacebookTokenOutput>(
+					`${url}?${queryString}`,
+				)
+				return response.data as OAuthSchemas.GetFacebookTokenOutput
+			} catch (error) {
+				logger.error({ code, error }, 'Failed to fetch Facebook Oauth Tokens')
+				throw new FailedToGetOAuthToken({ cause: error, provider: 'facebook' })
+			}
+		})
+
+	const getFacebookUser = z
+		.function()
+		.args(OAuthSchemas.facebookToken.access_token)
+		.returns(z.promise(OAuthSchemas.getFacebookUserOutput))
+		.implement(async (accessToken) => {
+			try {
+				const url = 'https://graph.facebook.com/v4.0/me'
+				const queryString = new URLSearchParams({
+					fields: [
+						'id',
+						'name',
+						'first_name',
+						'last_name',
+						'email',
+						'picture.type(large)',
+					].join(','),
+				}).toString()
+
+				const res = await axios.get<OAuthSchemas.GetFacebookUserOutput>(
+					`${url}?${queryString}`,
+					{
+						headers: { Authorization: `Bearer ${accessToken}` },
+					},
+				)
+				return res.data
+			} catch (error) {
+				logger.error(
+					{ error, accessToken },
+					'Failed to fetch Facebook Oauth User',
+				)
+				throw new FailedToGetOAuthUser({ cause: error, provider: 'facebook' })
+			}
+		})
+
+	const getGoogleOAuthToken = z
+		.function()
+		.args(OAuthSchemas.code)
+		.returns(z.promise(OAuthSchemas.getGoogleTokenOutput))
+		.implement(async (code) => {
+			const url = 'https://oauth2.googleapis.com/token'
+
+			const queryString = new URLSearchParams({
+				code,
+				client_id: google.clientId,
+				client_secret: google.clientSecret,
+				redirect_uri: google.redirectUrl,
+				grant_type: 'authorization_code',
+			}).toString()
+
+			try {
+				const res = await axios.post<OAuthSchemas.GetGoogleTokenOutput>(
+					url,
+					queryString,
+					{
+						headers: {
+							'Content-Type': 'application/x-www-form-urlencoded',
+						},
+					},
+				)
+				return res.data
+			} catch (error) {
+				logger.error({ error, code }, 'Failed to fetch Google Oauth Tokens')
+				throw new FailedToGetOAuthToken({ cause: error, provider: 'google' })
+			}
+		})
+
+	const getGoogleUser = z
+		.function()
+		.args(OAuthSchemas.getGoogleUserInput)
+		.returns(z.promise(OAuthSchemas.getGoogleUserOutput))
+		.implement(async ({ id_token, access_token }) => {
+			try {
+				const url = 'https://www.googleapis.com/oauth2/v1/userinfo'
+				const res = await axios.get<OAuthSchemas.GetGoogleUserOutput>(
+					`${url}?alt=json&access_token=${access_token}`,
+					{
+						headers: {
+							Authorization: `Bearer ${id_token}`,
+						},
+					},
+				)
+				return res.data as OAuthSchemas.GetGoogleUserOutput
+			} catch (error) {
+				logger.error(
+					{ error, id_token, access_token },
+					'Error fetching Google user',
+				)
+				throw new FailedToGetOAuthUser({ cause: error, provider: 'google' })
+			}
+		})
+
+	const mapGoogleUserToUser = async (
+		googleUser: OAuthSchemas.GetGoogleUserOutput,
+	): Promise<OAuthSchemas.GooglePartialUser> => ({
+		firstName: googleUser.given_name,
+		lastName: googleUser.family_name,
+		email: googleUser.email,
+		imageUrl: googleUser.picture,
+	})
+
+	const mapFacebookUserToUser = async (
+		facebookUser: OAuthSchemas.GetFacebookUserOutput,
+	): Promise<OAuthSchemas.FacebookPartialUser> => ({
+		email: facebookUser.email as string,
+		firstName: facebookUser.first_name,
+		lastName: facebookUser.last_name,
+		imageUrl: facebookUser.picture.data.url,
+	})
+
+	const mapDiscordUserToUser = async (
+		discordUser: OAuthSchemas.GetDiscordUserOutput,
+	): Promise<OAuthSchemas.DiscordPartialUser> => ({
+		email: discordUser.email as string,
+		username: discordUser.username,
+		imageUrl: formatDiscordAvatar({ discordUser }),
+	})
+
+	const verifyGoogleUser = z
+		.function()
+		.args(z.string(), OAuthSchemas.oAuthState)
+		.returns(z.promise(OAuthSchemas.verifyGoogleUserOutput))
+		.implement(async (code, state) => {
+			try {
+				const { id_token, access_token } = await getGoogleOAuthToken(code)
+				const googleUser = (await getGoogleUser({
+					id_token,
+					access_token,
+				})) as OAuthSchemas.GetGoogleUserOutput
+
+				const socialAccount = await SocialAccountRepository.findBySocialId(
+					googleUser.id,
+				)
+				if (socialAccount) {
+					// If user is logged in and connecting a social account already connected to another account
+					// Otherwise, if user isn't logged in, then we can just log the user in without conflicts
+					if (state.userId && socialAccount.userId !== state.userId) {
+						throw new SocialAlreadyConnectedToAnotherAccount({})
+					} else {
+						return { user: socialAccount, status: 'loggedIn' }
+					}
+				}
+
+				if (!googleUser.verified_email) {
+					throw new OAuthAccountNotVerified({
+						message: 'Your Google account is not verified',
+						provider: 'google',
+					})
+				}
+
+				/*
+				 * If user is already logged in using credentials, link the social account to the user regardless if the email is same (this means the user is linking using the settings page)
+				 */
+				if (state.userId) {
+					const user = await UserQueriesRepo.findOneOrThrow({
+						where: { id: state.userId },
+					})
+
+					await SocialAccountRepository.create({
+						userId: user.id,
+						socialId: googleUser.id,
+						provider: 'google',
+						usernameOrEmail: googleUser.email,
+					})
+
+					return {
+						user,
+						status: 'loggedIn',
+					}
+				}
+
+				/*
+				 * First time logging in using this social account
+				 * Check if basic auth with same email exists then link the social account to that
+				 * Or create a new user/social account after completing the registration form
+				 */
+				const user = await UserQueriesRepo.findOne({
+					where: { email: googleUser.email },
+				})
+				if (user) {
+					await SocialAccountRepository.create({
+						provider: 'google',
+						socialId: googleUser.id,
+						userId: user.id,
+						usernameOrEmail: googleUser.email,
+					})
+
+					if (!user.imageUrl) {
+						return {
+							status: 'loggedIn',
+							user: await UserMutationsRepo.updateTakeOne({
+								where: { id: user.id },
+								data: { imageUrl: googleUser.picture },
+							}),
+						}
+					} else {
+						return { user, status: 'loggedIn' }
+					}
+				} else {
+					return {
+						status: 'newPartialUser',
+						user: await mapGoogleUserToUser(googleUser),
+						social: {
+							provider: 'google',
+							socialId: googleUser.id,
+							usernameOrEmail: googleUser.email,
+						},
+					}
+				}
+			} catch (error) {
+				if (error instanceof AppError) {
+					logger.error(
+						{ error, code },
+						`Error verifying and upserting OAuth user: ${error.type}`,
+					)
+					throw error
+				}
+				logger.error(
+					{ error, code },
+					`Error verifying and upserting OAuth user`,
+				)
+				throw new InternalServerError({ cause: error })
+			}
+		})
+
+	const verifyFacebookUser = z
+		.function()
+		.args(z.string(), OAuthSchemas.oAuthState)
+		.returns(z.promise(OAuthSchemas.verifyFacebookUserOutput))
+		.implement(async (code, state) => {
+			try {
+				const { access_token } = await getFacebookOAuthToken(code)
+				const facebookUser = await getFacebookUser(access_token)
+
+				const socialAccount = await SocialAccountRepository.findBySocialId(
+					facebookUser.id,
+				)
+				if (socialAccount) {
+					if (state.userId && socialAccount.userId !== state.userId) {
+						throw new SocialAlreadyConnectedToAnotherAccount({})
+					} else {
+						return { user: socialAccount, status: 'loggedIn' }
+					}
+				}
+
+				if (!facebookUser.email) {
+					throw new OAuthAccountNotVerified({
+						message: 'Facebook account is not linked to a verified email',
+						provider: 'facebook',
+					})
+				}
+
+				/*
+				 * If user is already logged in using credentials, link the social account to the user regardless if the email is same (this means the user is linking using the settings page)
+				 */
+				if (state.userId) {
+					const user = await UserQueriesRepo.findOneOrThrow({
+						where: { id: state.userId },
+					})
+
+					await SocialAccountRepository.create({
+						userId: user.id,
+						socialId: facebookUser.id,
+						provider: 'facebook',
+						usernameOrEmail: facebookUser.email,
+					})
+
+					return {
+						user,
+						status: 'loggedIn',
+					}
+				}
+
+				const user = await UserQueriesRepo.findOne({
+					where: { email: facebookUser.email },
+				})
+				if (user) {
+					await SocialAccountRepository.create({
+						provider: 'facebook',
+						socialId: facebookUser.id,
+						userId: user.id,
+						usernameOrEmail: facebookUser.email,
+					})
+
+					if (!user.imageUrl) {
+						return {
+							status: 'loggedIn',
+							user: await UserMutationsRepo.updateTakeOne({
+								where: { id: user.id },
+								data: { imageUrl: facebookUser.picture.data.url },
+							}),
+						}
+					} else {
+						return { status: 'loggedIn', user }
+					}
+				} else {
+					return {
+						status: 'newPartialUser',
+						user: await mapFacebookUserToUser(facebookUser),
+						social: {
+							provider: 'facebook',
+							socialId: facebookUser.id,
+							usernameOrEmail: facebookUser.email,
+						},
+					}
+				}
+			} catch (error) {
+				if (error instanceof AppError) {
+					logger.error(
+						{ error, code },
+						`Error verifying and upserting OAuth user: ${error.type}`,
+					)
+					throw error
+				}
+				logger.error(
+					{ error, code },
+					`Error verifying and upserting OAuth user`,
+				)
+				throw new InternalServerError({ cause: error })
+			}
+		})
+
+	const verifyDiscordUser = z
+		.function()
+		.args(z.string(), OAuthSchemas.oAuthState)
+		.returns(z.promise(OAuthSchemas.verifyDiscordUserOutput))
+		.implement(async (code, state) => {
+			try {
+				const { access_token } = await getDiscordOAuthToken(code)
+				const discordUser = await getDiscordUser(access_token)
+
+				const socialAccount = await SocialAccountRepository.findBySocialId(
+					discordUser.id,
+				)
+				if (socialAccount) {
+					if (state.userId && socialAccount.userId !== state.userId) {
+						throw new SocialAlreadyConnectedToAnotherAccount({})
+					} else {
+						return { user: socialAccount, status: 'loggedIn' }
+					}
+				}
+
+				if (!discordUser.email || !discordUser.verified) {
+					throw new OAuthAccountNotVerified({
+						message: 'Discord account is not linked to a verified email',
+						provider: 'discord',
+					})
+				}
+
+				/*
+				 * If user is already logged in using credentials, link the social account to the user regardless if the email is same (this means the user is linking using the settings page)
+				 */
+				if (state.userId) {
+					const user = await UserQueriesRepo.findOneOrThrow({
+						where: { id: state.userId },
+					})
+
+					await SocialAccountRepository.create({
+						userId: user.id,
+						socialId: discordUser.id,
+						provider: 'discord',
+						usernameOrEmail: discordUser.username,
+					})
+
+					return {
+						user,
+						status: 'loggedIn',
+					}
+				}
+
+				const user = await UserQueriesRepo.findOne({
+					where: { email: discordUser.email },
+				})
+				if (user) {
+					await SocialAccountRepository.create({
+						provider: 'discord',
+						socialId: discordUser.id,
+						userId: user.id,
+						usernameOrEmail: discordUser.username,
+					})
+
+					if (!user.imageUrl) {
+						return {
+							status: 'loggedIn',
+							user: await UserMutationsRepo.updateTakeOne({
+								where: { id: user.id },
+								data: {
+									imageUrl: formatDiscordAvatar({ discordUser }),
+								},
+							}),
+						}
+					} else {
+						return { status: 'loggedIn', user }
+					}
+				} else {
+					return {
+						status: 'newPartialUser',
+						user: await mapDiscordUserToUser(discordUser),
+						social: {
+							provider: 'discord',
+							socialId: discordUser.id,
+							usernameOrEmail: discordUser.username,
+						},
+					}
+				}
+			} catch (error) {
+				if (error instanceof AppError) {
+					logger.error(
+						{ error, code },
+						`Error verifying and upserting OAuth user: ${error.type}`,
+					)
+					throw error
+				}
+				logger.error(
+					{ error, code },
+					`Error verifying and upserting OAuth user`,
+				)
+				throw new InternalServerError({ cause: error })
+			}
+		})
+
+	const unlinkSocialAccount = async ({
+		session,
+		id,
+	}: {
+		session: Session
+		id: string
+	}) => {
+		try {
+			const social = await SocialAccountRepository.findOneOrThrow({
+				where: { id },
+			})
+
+			if (social.userId !== session.user?.id) {
+				throw new SocialNotOwnedByUser({})
+			}
+
+			await SocialAccountRepository.deleteTakeOneOrThrow(id)
+			return social.provider
+		} catch (error) {
+			if (error instanceof AppError) {
+				logger.error(
+					{ error, id, session },
+					`Error unlinking social account: ${error.type}`,
+				)
+			}
+			logger.error({ error, id, session }, `Error unlinking social account`)
+			throw new InternalServerError({ cause: error })
+		}
+	}
+
+	const createUserFromSocial = z
+		.function()
+		.args(OAuthSchemas.createOAuthUserInput)
+		.returns(z.promise(OAuthSchemas.createOAuthUserOutput))
+		.implement(async ({ social, user }) => {
+			try {
+				const userByEmail = await UserQueriesRepo.findOne({
+					where: { email: user.email },
+				})
+				if (userByEmail) {
+					logger.error(
+						{ ...userByEmail, email: user.email },
+						'User with email already exists',
+					)
+					throw new UserAlreadyExists({})
+				}
+				const result = await pg.transaction().execute(async (trx) => {
+					const createdUser = await UserMutationsRepo.create(
+						{ ...user, confirmedAt: 'NOW' },
+						trx,
+					)
+					const socialAccount = await SocialAccountRepository.create(
+						{
+							...social,
+							userId: createdUser.id,
+						},
+						trx,
+					)
+					return { user: createdUser, socialAccount }
+				})
+
+				return result
+			} catch (error) {
+				if (error instanceof AppError) {
+					logger.error(
+						{ user, social, error },
+						`Failed to create user from OAuth user: ${error.type}`,
+					)
+					throw error
+				}
+				logger.error(
+					{ user, social, error },
+					'Failed to create user from OAuth user',
+				)
+				throw new InternalServerError({ cause: error })
+			}
+		})
+
+	return {
+		verifyDiscordUser,
+		verifyGoogleUser,
+		verifyFacebookUser,
+		getOAuthUrl,
+		generateState,
+		decodeState,
+		unlinkSocialAccount,
+		createUserFromSocial,
+	}
+}

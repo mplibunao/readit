@@ -3,27 +3,26 @@ import { cva, VariantProps } from 'cva'
 import Image from 'next/image'
 import { twMerge } from 'tailwind-merge'
 
-const avatar = cva(['rounded-full'], {
+import { AvatarName, AvatarNameProps } from './AvatarName'
+
+const avatar = cva(['rounded-full inline-block'], {
 	variants: {
 		size: {
-			'2xs': 'h-4 w-4',
-			xs: 'h-5 w-5',
-			sm: 'h-6 w-6',
-			md: 'h-7 w-7',
-			lg: 'h-8 w-8',
-			xl: 'h-10 w-10',
-			'2xl': 'h-12 w-12',
-			'3xl': 'h-16 w-16',
-			full: 'full',
+			xs: 'h-6 w-6',
+			sm: 'h-8 w-8',
+			md: 'h-10 w-10',
+			lg: 'h-12 w-12',
+			xl: 'h-14 w-14',
 		},
 	},
-	defaultVariants: { size: 'md' },
+	defaultVariants: { size: 'sm' },
 })
 
 export interface AvatarProps extends VariantProps<typeof avatar> {
 	className?: string
 	src?: string | null
 	name: string
+	color?: AvatarNameProps['color']
 }
 
 export const Avatar = ({
@@ -31,6 +30,7 @@ export const Avatar = ({
 	src,
 	name,
 	size,
+	color,
 }: AvatarProps): JSX.Element => {
 	if (src) {
 		return (
@@ -44,43 +44,7 @@ export const Avatar = ({
 		)
 	}
 
-	return <AvatarName name={name} className={className} />
-}
-
-interface AvatarNameProps extends VariantProps<typeof avatar> {
-	name: string
-	className?: string
-}
-
-export const AvatarName = ({
-	name,
-	className,
-}: AvatarNameProps): JSX.Element => {
 	return (
-		<span
-			className={twMerge(
-				'relative inline-flex items-center justify-center shrink-0 bg-neutral-100',
-				avatar({ size: 'md' }),
-				className,
-			)}
-		>
-			<span
-				role='img'
-				className='text-neutral-800 font-medium text-center uppercase text-base'
-				aria-label={`${capitalize(name)}'s avatar`}
-			>
-				{getInitials(name)}
-			</span>
-		</span>
+		<AvatarName name={name} className={className} size={size} color={color} />
 	)
-}
-
-const getInitials = (name: string) => {
-	const [firstName, lastName] = name.split(' ')
-
-	if (firstName && lastName) {
-		return `${firstName.charAt(0)}${lastName.charAt(0)}`
-	} else {
-		return firstName!.charAt(0)
-	}
 }

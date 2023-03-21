@@ -1,22 +1,16 @@
-import { Card } from '@/components/Card/Card'
-import { Form } from '@/components/Forms/Form'
-import { FormButton } from '@/components/Forms/FormButton'
-import { FormInput } from '@/components/Forms/FormInput'
-import { useZodForm } from '@/components/Forms/useZodForm'
-import { Icon } from '@/components/Icon'
-import { styledLink } from '@/components/Link/Link'
-import { Separator } from '@/components/Separator/Separator'
-import { errorToast } from '@/components/Toast/useToast'
+import { Card } from '@/components/Card'
+import { Form, FormButton, FormInput, useZodForm } from '@/components/Forms'
+import { Icon, Logo } from '@/components/Icon'
+import { styledLink } from '@/components/Link'
+import { Separator } from '@/components/Separator'
+import { errorToast } from '@/components/Toast'
+import { OAUTH_URL } from '@/constants/oauth'
 import {
+	useLoggedIn,
 	useVerificationEmail,
 	VerificationEmailModal,
-} from '@/features/accounts/auth/VerificationEmailModal'
-import { useLoggedIn } from '@/features/accounts/auth/useLoggedIn'
+} from '@/features/accounts/auth'
 import { client } from '@/utils/trpc/client'
-import {
-	IncorrectPassword,
-	UserNotFound,
-} from '@api/modules/accounts/domain/user.errors'
 import { UserSchemas } from '@api/modules/accounts/domain/user.schema'
 import * as Toggle from '@radix-ui/react-toggle'
 import Link from 'next/link'
@@ -29,21 +23,12 @@ export const Login = (): JSX.Element => {
 
 	const form = useZodForm({ schema: UserSchemas.loginInput })
 
-	const loginMutation = client.user.login.useMutation({
+	const loginMutation = client.auth.login.useMutation({
 		onError: (error) => {
-			switch (error.data?.type) {
-				case IncorrectPassword.type:
-				case UserNotFound.type:
-					return errorToast({
-						title: 'Invalid username, email, or password',
-						message: 'Please check your credentials and try again',
-					})
-				default:
-					return errorToast({
-						title: 'Login Failed',
-						message: 'Something went wrong',
-					})
-			}
+			errorToast({
+				title: 'Login Failed',
+				message: error.message,
+			})
 		},
 		onSuccess() {
 			loginEmailModal.onOpen()
@@ -71,11 +56,7 @@ export const Login = (): JSX.Element => {
 			/>
 			<div className='flex min-h-full flex-col justify-center py-12 sm:px-6 lg:px-8'>
 				<div className='sm:mx-auto sm:w-full sm:max-w-md'>
-					<Icon
-						id='reddit'
-						className='mx-auto h-12 w-auto text-primary-600'
-						label='logo'
-					/>
+					<Logo className='mx-auto' />
 					<h2 className='mt-6 text-center text-3xl font-bold tracking-tight text-neutral-900'>
 						Login
 					</h2>
@@ -121,12 +102,14 @@ export const Login = (): JSX.Element => {
 												id='eye-slash'
 												label='hide password'
 												className='mr-3 h-5 w-5 text-neutral-400'
+												role='img'
 											/>
 										) : (
 											<Icon
 												id='eye'
 												label='show password'
 												className='mr-3 h-5 w-5 text-neutral-400'
+												role='img'
 											/>
 										)}
 									</Toggle.Root>
@@ -142,7 +125,8 @@ export const Login = (): JSX.Element => {
 							<div>
 								<FormButton
 									className='flex w-full justify-center'
-									loadingText='Signing up'
+									loadingText='Logging in..'
+									loading={loginMutation.isLoading}
 								>
 									Login
 								</FormButton>
@@ -163,8 +147,8 @@ export const Login = (): JSX.Element => {
 
 							<div className='mt-6 grid grid-cols-3 gap-3'>
 								<div>
-									<a
-										href='#'
+									<Link
+										href={OAUTH_URL.facebook}
 										className='inline-flex w-full justify-center rounded-md border border-neutral-300 bg-white py-2 px-4 text-sm font-medium text-neutral-500 shadow-sm hover:bg-neutral-50'
 									>
 										<Icon
@@ -172,12 +156,12 @@ export const Login = (): JSX.Element => {
 											className='h-5 w-5'
 											label='Sign in with Facebook'
 										/>
-									</a>
+									</Link>
 								</div>
 
 								<div>
-									<a
-										href='#'
+									<Link
+										href={OAUTH_URL.google}
 										className='inline-flex w-full justify-center rounded-md border border-neutral-300 bg-white py-2 px-4 text-sm font-medium text-neutral-500 shadow-sm hover:bg-neutral-50'
 									>
 										<Icon
@@ -185,20 +169,20 @@ export const Login = (): JSX.Element => {
 											className='h-5 w-5'
 											label='Sign in with Google'
 										/>
-									</a>
+									</Link>
 								</div>
 
 								<div>
-									<a
-										href='#'
+									<Link
+										href={OAUTH_URL.discord}
 										className='inline-flex w-full justify-center rounded-md border border-neutral-300 bg-white py-2 px-4 text-sm font-medium text-neutral-500 shadow-sm hover:bg-neutral-50'
 									>
 										<Icon
-											id='twitter'
+											id='discord'
 											className='h-5 w-5'
-											label='Sign in with Twitter'
+											label='Sign in with Discord'
 										/>
-									</a>
+									</Link>
 								</div>
 							</div>
 						</div>

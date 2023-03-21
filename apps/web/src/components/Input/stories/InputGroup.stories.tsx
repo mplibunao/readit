@@ -3,7 +3,7 @@ import * as Toggle from '@radix-ui/react-toggle'
 import React from 'react'
 import { FieldError } from 'react-hook-form'
 
-import { Icon } from '../../Icon'
+import { Icon } from '../../Icon/Icon'
 import {
 	InputGroup,
 	inputGroupDefaultProps,
@@ -112,7 +112,7 @@ RightContentSelect.args = {
 			<select
 				id='currency'
 				name='currency'
-				className='h-full rounded-md border-transparent bg-transparent py-0 pl-2 pr-7 text-gray-500 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+				className='h-full rounded-md border-transparent bg-transparent py-0 pl-2 pr-7 text-gray-500 focus:border-primary-500 focus:ring-primary-500 sm:text-sm'
 			>
 				<option>USD</option>
 				<option>CAD</option>
@@ -175,7 +175,7 @@ ToggleRightContentButton.args = {
 	placeholder: '000-00-0000',
 	rightContentClickable: true,
 	rightContent: (
-		<button className='inline-flex items-center rounded border border-transparent bg-indigo-100 px-2 py-1 text-xs font-medium text-indigo-700 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2'>
+		<button className='inline-flex items-center rounded border border-transparent bg-primary-100 px-2 py-1 text-xs font-medium text-primary-700 hover:bg-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2'>
 			Hide
 		</button>
 	),
@@ -185,7 +185,8 @@ export const LeftAddOn = Default.bind({})
 
 LeftAddOn.args = {
 	...inputGroupDefaultProps,
-	leftAddOn: <span>http://</span>,
+	leftAddOn: <span>https://</span>,
+	classNames: { leftAddOn: 'bg-white' },
 }
 
 export const ToggleLeftContentIcon: Story<InputGroupProps> = (props) => {

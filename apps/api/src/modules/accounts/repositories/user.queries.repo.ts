@@ -1,28 +1,20 @@
 import { Dependencies } from '@api/infra/diConfig'
-import { Trx, UserData } from '@api/infra/pg/types'
-import { InvalidQueryFilter } from '@api/utils/errors/queryRepoErrors'
-import { DB } from '@readit/pg-manager'
-import { DBError } from '@readit/utils'
-import { NoResultError, SelectQueryBuilder } from 'kysely'
-import { From } from 'kysely/dist/cjs/parser/table-parser'
+import { SelectOptions, SelectQuery, Trx, UserData } from '@api/infra/pg/types'
+import { DBError, InvalidQueryFilter } from '@api/utils/errors/repoErrors'
+import { NoResultError, sql } from 'kysely'
 
+import { OAuthSchemas } from '../domain/oAuth.schema'
 import { UserNotFound } from '../domain/user.errors'
 
-type FindOptions = {
-	where: Partial<UserData>
-}
+export type UserFindOptions = SelectOptions<'users'>
+type UserQuery = SelectQuery<'users'>
 
-type UserQuery = SelectQueryBuilder<From<DB, 'users'>, 'users', {}>
-export interface UserQueriesRepo {
-	findById: (id: string, trx?: Trx) => Promise<UserData>
-	findByUsernameOrEmail: (
-		params: { username: string } | { email: string },
-		trx?: Trx,
-	) => Promise<UserData>
-}
+export type UserQueriesRepo = ReturnType<typeof buildUserQueriesRepo>
 
 export const buildUserQueriesRepo = ({ pg }: Dependencies) => {
-	const find = ({ where }: FindOptions, trx?: Trx): UserQuery => {
+	// const { ref } = pg.dynamic
+
+	const find = ({ where }: UserFindOptions, trx?: Trx): UserQuery => {
 		if (Object.keys(where).length === 0) {
 			throw new InvalidQueryFilter({})
 		}
@@ -36,11 +28,15 @@ export const buildUserQueriesRepo = ({ pg }: Dependencies) => {
 			query = query.where(key as keyof UserData, '=', value)
 		}
 
+		// if (select.length > 0) {
+		// 	query.select(select.map((field) => ref<keyof UserTable>(field)))
+		// }
+
 		return query
 	}
 
-	const findOne = async (
-		options: FindOptions,
+	const findOneOrThrow = async (
+		options: UserFindOptions,
 		trx?: Trx,
 	): Promise<UserData> => {
 		try {
@@ -51,14 +47,53 @@ export const buildUserQueriesRepo = ({ pg }: Dependencies) => {
 			}
 			throw new DBError({
 				cause: error,
-				message: 'Database error occurred while finding user',
 			})
 		}
 	}
 
-	const userQueriesRepo: UserQueriesRepo = {
-		findById: (id, trx) => findOne({ where: { id } }, trx),
-		findByUsernameOrEmail: (params, trx) => findOne({ where: params }, trx),
+	const findOne = async (
+		options: UserFindOptions,
+		trx?: Trx,
+	): Promise<UserData | undefined> => {
+		try {
+			return await find(options, trx).selectAll().executeTakeFirst()
+		} catch (error) {
+			throw new DBError({
+				cause: error,
+			})
+		}
+	}
+
+	const userQueriesRepo = {
+		findOne,
+		findOneOrThrow,
+		findAccountStatus: async (id: string) => {
+			try {
+				const accountStatus = await pg
+					.selectFrom('users')
+					.where('users.id', '=', id)
+					.leftJoin('socialAccounts as s', 's.userId', 'users.id')
+					.selectAll('users')
+					.select(
+						sql<
+							OAuthSchemas.SocialAccount[]
+						>`COALESCE(json_agg(s.*) FILTER (WHERE s.id IS NOT NULL), '[]')`.as(
+							'socialAccounts',
+						),
+					)
+					.groupBy('users.id')
+					.executeTakeFirstOrThrow()
+
+				return accountStatus
+			} catch (error) {
+				if (error instanceof NoResultError) {
+					throw new UserNotFound({ cause: error })
+				}
+				throw new DBError({
+					cause: error,
+				})
+			}
+		},
 	}
 
 	return userQueriesRepo

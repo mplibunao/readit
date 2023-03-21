@@ -7,9 +7,9 @@ import fp from 'fastify-plugin'
 import { afterAll, afterEach, beforeAll, beforeEach } from 'vitest'
 
 import { clearDatabase } from './clearDatabase'
-import { testLogger } from './mocks/logger'
+import { buildMockEdgeConfig } from './mocks/edgeConfig'
+import { silentLogger } from './mocks/logger'
 import { createMockPubSubClient } from './mocks/pubsub'
-import { createMockSession } from './mocks/session'
 
 // Automatically build and tear down our instance
 async function build(opts?: {
@@ -23,9 +23,10 @@ async function build(opts?: {
 	 * See accounts/routers/user.router.test.ts for example
 	 */
 	const defaultDependencyOverrides: DependencyOverrides = {
-		logger: asValue(testLogger),
-		session: asFunction(createMockSession, SINGLETON_CONFIG),
+		//logger: asValue(testLogger),
+		logger: asValue(silentLogger),
 		pubsub: asFunction(createMockPubSubClient, SINGLETON_CONFIG),
+		edgeConfig: asFunction(buildMockEdgeConfig),
 	}
 
 	const dependencyOverrides = {

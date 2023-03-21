@@ -17,3 +17,17 @@ export type PublishLoginBasicAuthSchema = z.infer<
 >
 export const loginBasicAuthInput = z.object({ token: z.string() })
 export type LoginBasicAuthInput = z.infer<typeof loginBasicAuthInput>
+export const publishChangeEmail = z.object({
+	userId: id,
+	newEmail: z.string().email(),
+})
+export type PublishChangeEmail = z.infer<typeof publishChangeEmail>
+export const changeEmailInput = z.object({
+	newEmail: z.string().email(),
+	token: z.string(),
+})
+export type ChangeEmailInput = z.infer<typeof changeEmailInput>
+export const publishForgotPasswordSchema = z.object({ userId: id })
+export type PublishForgotPasswordSchema = z.infer<
+	typeof publishForgotPasswordSchema
+>

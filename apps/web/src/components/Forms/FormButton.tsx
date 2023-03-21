@@ -3,7 +3,9 @@ import { useFormContext } from 'react-hook-form'
 
 import { Button, ButtonProps } from '../Button/Button'
 
-export type FormButtonProps = ButtonProps
+export type FormButtonProps = Omit<ButtonProps, 'loading'> & {
+	loading: boolean
+}
 
 export const FormButton = ({ children, ...props }: FormButtonProps) => {
 	const { formState } = useFormContext()
@@ -13,7 +15,6 @@ export const FormButton = ({ children, ...props }: FormButtonProps) => {
 			type='submit'
 			{...props}
 			disabled={!formState.isValid || props.disabled}
-			loading={formState.isSubmitting}
 		>
 			{children}
 		</Button>

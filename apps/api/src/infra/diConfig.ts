@@ -3,13 +3,10 @@ import {
 	buildAccountEventsPublisher,
 } from '@api/modules/accounts/events/accountsEvents.publisher'
 import {
-	buildTokenMutationsRepo,
-	TokenMutationsRepo,
-} from '@api/modules/accounts/repositories/token.mutations.repo'
-import {
-	buildTokenQueriesRepo,
-	TokenQueriesRepo,
-} from '@api/modules/accounts/repositories/token.queries.repo'
+	buildSocialAccountRepository,
+	SocialAccountRepository,
+} from '@api/modules/accounts/repositories/socialAccount.repository'
+import { TokenRepository } from '@api/modules/accounts/repositories/token.repository'
 import {
 	buildUserMutationsRepo,
 	UserMutationsRepo,
@@ -19,14 +16,40 @@ import {
 	UserQueriesRepo,
 } from '@api/modules/accounts/repositories/user.queries.repo'
 import {
+	AuthService,
+	buildAuthService,
+} from '@api/modules/accounts/services/auth.service'
+import {
+	buildOAuthService,
+	OAuthServiceType,
+} from '@api/modules/accounts/services/oauth.service'
+import {
+	buildTokenService,
+	TokenService,
+} from '@api/modules/accounts/services/token.service'
+import {
 	buildUserService,
 	UserService,
 } from '@api/modules/accounts/services/user.service'
+import {
+	buildCommunityRepository,
+	CommunityRepository,
+} from '@api/modules/communities/repositories/community.repository'
+import {
+	CommunityService,
+	buildCommunityService,
+} from '@api/modules/communities/services/community.service'
+import {
+	buildTagRepository,
+	TagRepository,
+} from '@api/modules/recommendations/repositories/tag.repository'
+import { TagService } from '@api/modules/recommendations/services/tag.service'
 import { PubSub } from '@google-cloud/pubsub'
 import { FlagsRepo, FlagsService } from '@readit/flags'
 import { Logger } from '@readit/logger'
 import { EdgeConfigClient } from '@vercel/edge-config'
 import {
+	asClass,
 	asFunction,
 	asValue,
 	AwilixContainer,
@@ -44,7 +67,7 @@ import { registerEmailClient } from './mailer/registerEmailClient'
 import { closePgClient, createPgClient, PG } from './pg/createClient'
 import { buildPubSubService, PubSubService } from './pubsub/PubSubService'
 import { buildPubSubClient } from './pubsub/client'
-import { closeRedisClient, createRedisClient } from './redis/client'
+import { closeRedisClient, createRedisClient } from './redis'
 
 export type ExternalDependencies = {
 	config: Config
@@ -52,7 +75,18 @@ export type ExternalDependencies = {
 	logger: Logger
 }
 
-export const SINGLETON_CONFIG = { lifetime: Lifetime.SINGLETON }
+/*
+ * Reverts to default lifetime for tests since services depending on services that are passed as overrides still call the old registered service instead of the overrides resulting in hard to track down bugs
+ * Eg. When testing AuthService, services are register as usual, but when you pass a mock for pubsubClient, the override is registered after all the default registration (SINGLETON)
+ * Therefore when AuthService calls pubsubClient, it calls the default one instead of the mock passed as override
+ * This issue can happen in other envs as well but it only matters in tests since that is the only place where we pass overrides (for mocking)
+ */
+const getSingletonConfig = () =>
+	process.env.NODE_ENV === 'test'
+		? { lifetime: Lifetime.TRANSIENT }
+		: { lifetime: Lifetime.SINGLETON }
+
+export const SINGLETON_CONFIG = getSingletonConfig()
 
 export interface Dependencies {
 	config: Config
@@ -66,12 +100,19 @@ export interface Dependencies {
 	PubSubService: PubSubService
 	AccountEventsPublisher: AccountEventsPublisher
 	emailClient: EmailClient
-	TokenMutationsRepo: TokenMutationsRepo
-	TokenQueriesRepo: TokenQueriesRepo
+	TokenRepository: TokenRepository
+	TokenService: TokenService
 	MailerService: MailerService
 	UserQueriesRepo: UserQueriesRepo
 	UserMutationsRepo: UserMutationsRepo
+	SocialAccountRepository: SocialAccountRepository
+	OAuthService: OAuthServiceType
+	AuthService: AuthService
 	UserService: UserService
+	TagRepository: TagRepository
+	TagService: TagService
+	CommunityRepository: CommunityRepository
+	CommunityService: CommunityService
 }
 
 /*
@@ -115,12 +156,22 @@ export function registerDependencies(
 			SINGLETON_CONFIG,
 		),
 		emailClient: registerEmailClient(dependencies.config),
-		TokenMutationsRepo: asFunction(buildTokenMutationsRepo, SINGLETON_CONFIG),
-		TokenQueriesRepo: asFunction(buildTokenQueriesRepo, SINGLETON_CONFIG),
+		TokenRepository: asClass(TokenRepository, SINGLETON_CONFIG),
+		TokenService: asFunction(buildTokenService, SINGLETON_CONFIG),
 		MailerService: asFunction(buildMailerService, SINGLETON_CONFIG),
 		UserQueriesRepo: asFunction(buildUserQueriesRepo, SINGLETON_CONFIG),
 		UserMutationsRepo: asFunction(buildUserMutationsRepo, SINGLETON_CONFIG),
+		SocialAccountRepository: asFunction(
+			buildSocialAccountRepository,
+			SINGLETON_CONFIG,
+		),
+		OAuthService: asFunction(buildOAuthService, SINGLETON_CONFIG),
+		AuthService: asFunction(buildAuthService, SINGLETON_CONFIG),
 		UserService: asFunction(buildUserService, SINGLETON_CONFIG),
+		TagRepository: asFunction(buildTagRepository, SINGLETON_CONFIG),
+		TagService: asClass(TagService, SINGLETON_CONFIG),
+		CommunityRepository: asFunction(buildCommunityRepository, SINGLETON_CONFIG),
+		CommunityService: asFunction(buildCommunityService, SINGLETON_CONFIG),
 	}
 
 	diContainer.register(diConfig)

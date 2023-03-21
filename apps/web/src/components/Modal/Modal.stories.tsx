@@ -1,9 +1,9 @@
 import { Story } from '@ladle/react'
 import { useRef } from 'react'
 
-import { useDisclosure, Modal } from '.'
 import { Button } from '../Button/Button'
-import { Icon } from '../Icon'
+import { Icon } from '../Icon/Icon'
+import { useDisclosure, Modal } from './Modal'
 
 export const Default: Story = () => {
 	const cancelRef = useRef<HTMLButtonElement>(null)
@@ -27,18 +27,26 @@ export const Default: Story = () => {
 						<div className='mt-3 text-center sm:mt-5'>
 							<Modal.Title>Payment successful</Modal.Title>
 							<Modal.Description>
-								<p className='text-sm text-neutral-500'>
+								<span className='text-sm text-neutral-500'>
 									Lorem ipsum dolor sit amet consectetur adipisicing elit.
 									Consequatur amet labore.
-								</p>
+								</span>
 							</Modal.Description>
 						</div>
 					</div>
 					<Modal.Actions>
-						<Button loadingText='loading' className='sm:ml-3'>
+						<Button
+							loadingText='loading'
+							className='inline-flex w-full justify-center rounded-md sm:ml-3 sm:w-auto'
+						>
 							Deactivate
 						</Button>
-						<Button loadingText='loading' color='error' ref={cancelRef}>
+						<Button
+							loadingText='loading'
+							color='error'
+							ref={cancelRef}
+							className='mt-3 inline-flex w-full sm:mt-0 sm:w-auto'
+						>
 							Cancel
 						</Button>
 					</Modal.Actions>
@@ -48,7 +56,7 @@ export const Default: Story = () => {
 	)
 }
 
-export const Wide: Story = () => {
+export const WideCenterButtons: Story = () => {
 	const cancelRef = useRef<HTMLButtonElement>(null)
 	const { isOpen, onClose, onOpen } = useDisclosure()
 	return (
@@ -70,19 +78,23 @@ export const Wide: Story = () => {
 						<div className='mt-3 text-center sm:mt-0  sm:ml-4 sm:text-left'>
 							<Modal.Title className='mt-2'>Payment successful</Modal.Title>
 							<Modal.Description>
-								<p className='text-sm text-neutral-500'>
+								<span className='text-sm text-neutral-500'>
 									Are you sure you want to deactivate your account? All of your
 									data will be permanently removed from our servers forever.
 									This action cannot be undone.
-								</p>
+								</span>
 							</Modal.Description>
 						</div>
 					</div>
-					<Modal.Actions>
-						<Button loadingText='loading' className='sm:ml-3' ref={cancelRef}>
+					<Modal.Actions intent='centerColumns'>
+						<Button loadingText='loading' className='w-full' ref={cancelRef}>
 							Deactivate
 						</Button>
-						<Button loadingText='loading' color='error'>
+						<Button
+							loadingText='loading'
+							color='error'
+							className='w-full mt-3 sm:mt-0'
+						>
 							Cancel
 						</Button>
 					</Modal.Actions>
@@ -115,24 +127,24 @@ export const Registration: Story = () => {
 								Email Confirmation
 							</Modal.Title>
 							<Modal.Description>
-								<p className='text-sm text-neutral-500'>
+								<span className='text-sm text-neutral-500'>
 									We sent an email confirmation link to your registered{' '}
 									<span className='font-bold'>email address</span>. Please check
 									your inbox and click the link to verify your email and
 									continue.
-								</p>
+								</span>
 
-								<div className='py-2' />
+								<span className='py-2' />
 
-								<p className='text-sm text-neutral-500'>
+								<span className='text-sm text-neutral-500'>
 									Did not recieve the email?
-								</p>
+								</span>
 							</Modal.Description>
 						</div>
 					</div>
 					<Modal.Actions intent='centerAlign' className='flex justify-center'>
-						<Button loadingText='Sending..' className='w-1/2'>
-							Resend confirmation email
+						<Button loadingText='Resending..' className='w-1/2'>
+							Resend
 						</Button>
 					</Modal.Actions>
 				</Modal.Panel>

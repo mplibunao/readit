@@ -1,8 +1,13 @@
 import { pubSubPushSchema } from '@api/infra/pubsub/PubSubService'
 import {
+	changeEmailInput,
 	confirmEmailInput,
 	loginBasicAuthInput,
 } from '@api/modules/accounts/dtos/email.dto'
+import {
+	oAuthCallbackParams,
+	oAuthCallbackQs,
+} from '@api/modules/accounts/dtos/user.dto'
 
 import { buildJsonSchemas } from './buildJsonSchema'
 
@@ -14,4 +19,7 @@ export const { schemas, $ref } = buildJsonSchemas({
 	pubSubPushSchema,
 	confirmEmailInput,
 	loginBasicAuthInput,
+	oAuthCallbackQs,
+	oAuthCallbackParams,
+	changeEmailInput,
 })

@@ -6,7 +6,7 @@
 	"scripts": {
 		"dev": "run-p dev:*",
 		"dev:start": "email dev -p 3001",
-		"dev:copy": "nodemon --watch emails/components ./script.js",
+		"copy": "node ./script.js",
 		"export": "email export",
 		"typecheck": "tsc"
 	},

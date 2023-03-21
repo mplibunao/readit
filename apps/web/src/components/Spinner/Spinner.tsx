@@ -12,12 +12,12 @@ const spinner = cva(
 	{
 		variants: {
 			size: {
-				xs: 'h-3 w-3 border-[2px]',
-				sm: 'h-3.5 w-3.5 border-[2px]',
-				md: 'h-5 w-5 border-[2px]',
-				lg: 'h-7 w-7 border-[2px]',
-				xl: 'h-11 w-11 border-[2px]',
-				em: 'h-[1em] w-[1em] border-[1.5px]',
+				xs: 'h-3 w-3',
+				sm: 'h-3.5 w-3.5',
+				md: 'h-5 w-5',
+				lg: 'h-7 w-7',
+				xl: 'h-11 w-11',
+				em: 'h-[1em] w-[1em]',
 			},
 			stroke: {
 				transparent: 'border-l-transparent',
@@ -30,6 +30,11 @@ const spinner = cva(
 				warning: 'text-warning-800',
 				error: 'text-error-800',
 				info: 'text-info-800',
+			},
+			thickness: {
+				sm: 'border-[1.5px]',
+				md: 'border-2',
+				lg: 'border-4',
 			},
 		},
 		compoundVariants: [
@@ -66,8 +71,9 @@ const spinner = cva(
 		],
 		defaultVariants: {
 			size: 'md',
-			stroke: 'visible',
+			stroke: 'transparent',
 			color: 'primary',
+			thickness: 'md',
 		},
 	},
 )
@@ -78,6 +84,7 @@ export const Spinner = ({
 	label = 'Loading...',
 	stroke,
 	color,
+	thickness,
 }: SpinnerProps): JSX.Element => {
 	return (
 		<div
@@ -87,6 +94,7 @@ export const Spinner = ({
 					stroke,
 					color,
 					className,
+					thickness,
 				}),
 			)}
 		>

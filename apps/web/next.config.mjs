@@ -36,6 +36,21 @@ const nextConfig = {
 				protocol: 'https',
 				hostname: 'images.unsplash.com',
 			},
+			{
+				// fb profile picture
+				protocol: 'https',
+				hostname: 'platform-lookaside.fbsbx.com',
+			},
+			{
+				// google profile picture
+				protocol: 'https',
+				hostname: 'lh3.googleusercontent.com',
+			},
+			{
+				// discord profile picture
+				protocol: 'https',
+				hostname: 'cdn.discordapp.com',
+			},
 		],
 	},
 	reactStrictMode: true,

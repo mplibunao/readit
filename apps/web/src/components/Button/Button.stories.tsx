@@ -1,7 +1,9 @@
 import type { Story } from '@ladle/react'
 
-import { Icon } from '../Icon'
+import { Icon } from '../Icon/Icon'
 import { Button, ButtonProps } from './Button'
+import { CircularButton } from './CircularButton'
+import { IconButton, CloseButton } from './IconButton'
 
 const buttonDefaultProps = {
 	size: 'md',
@@ -116,4 +118,59 @@ export const RightIcon = Default.bind({})
 RightIcon.args = {
 	...buttonDefaultProps,
 	rightIcon: <Icon id='eye' label='See' className='ml-1 h-6 w-6' />,
+}
+
+export const iconButton = () => {
+	return (
+		<IconButton id='triangle-right' label='Icon button' iconClass='h-5 w-5' />
+	)
+}
+
+export const Close = () => {
+	return <CloseButton />
+}
+
+export const Circular = () => {
+	const intents = ['primary', 'secondary', 'outline'] as const
+	const colors = ['primary', 'neutral', 'error'] as const
+	return (
+		<div className='flex justify-evenly'>
+			{colors.map((color) => {
+				return intents.map((intent) => {
+					return (
+						<CircularButton
+							key={`${intent}${color}`}
+							color={color}
+							intent={intent}
+						>
+							<Icon
+								id='arrow-small-up'
+								label='Arrow'
+								className='xl:w-12 xl:h-12 w-7 h-7'
+							/>
+						</CircularButton>
+					)
+				})
+			})}
+		</div>
+	)
+}
+
+export const CircularSize = () => {
+	return (
+		<div className='flex justify-evenly'>
+			<CircularButton size='xs'>
+				<Icon id='arrow-small-up' label='Arrow' className='w-3 h-3' />
+			</CircularButton>
+			<CircularButton size='sm'>
+				<Icon id='arrow-small-up' label='Arrow' className='w-5 h-5' />
+			</CircularButton>
+			<CircularButton size='md'>
+				<Icon id='arrow-small-up' label='Arrow' className='w-6 h-6' />
+			</CircularButton>
+			<CircularButton size='lg'>
+				<Icon id='arrow-small-up' label='Arrow' className='w-6 h-6' />
+			</CircularButton>
+		</div>
+	)
 }

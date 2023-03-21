@@ -1,8 +1,8 @@
-import { ResetPasswordEmail } from './components/reset-password'
+import { ForgotPasswordEmail } from './components/forgot-password'
 
 export default function Email() {
 	return (
-		<ResetPasswordEmail
+		<ForgotPasswordEmail
 			logoImage='https://storage.googleapis.com/readit-shared-public-assets/logo.png'
 			companyAddress='Manila, Philippines'
 			resetPasswordUrl='http://localhost:4000/api/events/login/utoeueo132'
