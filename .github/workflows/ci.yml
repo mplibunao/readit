@@ -36,7 +36,7 @@ env:
   REVALIDATE_TOKEN: de18b03be86939d7484c42856706c240bfc6c5ecb5fe837ee697867c2488e697
   SESSION_SECRET: e8a9bab1ff59ebb961527614fd03480808efff14ab4ae1f638dca2c2ad0d8dda
   SESSION_SECURE_COOKIE: false
-  POSTMARK_API: notneeded
+  POSTMARK_API_TOKEN: notneeded
   GCP_PROJECT_ID: notneeded
   FROM_SUPPORT_EMAIL: hello@mplibunao.tech
   FROM_ALERTS_EMAIL: hello@mplibunao.tech
