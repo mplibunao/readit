@@ -45,6 +45,22 @@ jobs:
       NEXT_PUBLIC_API_URL: http://localhost:4000/api
       NEXT_TELEMETRY_DISABLED: 1
       REVALIDATE_TOKEN: de18b03be86939d7484c42856706c240bfc6c5ecb5fe837ee697867c2488e697
+      SESSION_SECRET: e8a9bab1ff59ebb961527614fd03480808efff14ab4ae1f638dca2c2ad0d8dda
+      SESSION_SECURE_COOKIE: false
+      POSTMARK_API_TOKEN: notneeded
+      GCP_PROJECT_ID: notneeded
+      FROM_SUPPORT_EMAIL: hello@mplibunao.tech
+      FROM_ALERTS_EMAIL: hello@mplibunao.tech
+      API_SELF_URL: http://localhost:4000
+      GCP_PUBLIC_ASSET_URL: https://storage.googleapis.com/readit-shared-public-assets
+      OAUTH_GOOGLE_CLIENT_ID: ueuoeuoeu
+      OAUTH_GOOGLE_CLIENT_SECRET: euouoetuhno
+      OAUTH_FACEBOOK_CLIENT_ID: unoeuosauh
+      OAUTH_FACEBOOK_CLIENT_SECRET: ueounoeuo
+      OAUTH_DISCORD_CLIENT_ID: teuoneuoe
+      OAUTH_DISCORD_CLIENT_SECRET: euououosuh
+      OAUTH_BASE_REDIRECT_URL: http://localhost:4000/api/auth/oauth
+
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

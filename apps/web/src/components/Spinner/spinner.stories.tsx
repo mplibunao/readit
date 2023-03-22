@@ -1,6 +1,6 @@
 import type { Story } from '@ladle/react'
 
-import { Spinner, SpinnerProps } from '.'
+import { Spinner, SpinnerProps } from './Spinner'
 
 const defaultProps: SpinnerProps = {
 	size: 'md',

@@ -23,12 +23,36 @@ function getTranspilePackages() {
 	const transpilePackages = [...Object.keys(packageJson.dependencies)]
 		//.filter((deps) => included.has(deps))
 		.filter((deps) => deps.startsWith('@readit/'))
+		.concat(['@fastify/awilix'])
 	return transpilePackages
 }
 
 getTranspilePackages()
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+	images: {
+		remotePatterns: [
+			{
+				protocol: 'https',
+				hostname: 'images.unsplash.com',
+			},
+			{
+				// fb profile picture
+				protocol: 'https',
+				hostname: 'platform-lookaside.fbsbx.com',
+			},
+			{
+				// google profile picture
+				protocol: 'https',
+				hostname: 'lh3.googleusercontent.com',
+			},
+			{
+				// discord profile picture
+				protocol: 'https',
+				hostname: 'cdn.discordapp.com',
+			},
+		],
+	},
 	reactStrictMode: true,
 	swcMinify: true,
 	// Next.js i18n docs: https://nextjs.org/docs/advanced-features/i18n-routing

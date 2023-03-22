@@ -1,26 +1,47 @@
-import { client } from '@/utils/trpc/client'
+import { Layout, MainLayout } from '@/components/Layout'
+import { Post } from '@/components/Posts/Post'
+import { TimelineTabs } from '@/components/Tabs/TimelineTabs'
+import { posts } from '@/constants/posts'
 
-const IndexPage = () => {
-	const { data, error, isLoading } = client.uptime.uptime.useQuery(undefined, {
-		trpc: { ssr: false },
-	})
-	if (error) {
-		//console.log('DatabaseError.prototype.type', DBError.type) // eslint-disable-line no-console
-		//if (error.data?.type === DBError.type) {
-		//console.log('woo')
-		//} else {
-		//console.log('no')
-		//}
+import { NextPageWithLayout } from './_app'
 
-		return <div>{JSON.stringify(error)}</div>
-	}
-	if (isLoading) return <div>Loading...</div>
-
+const IndexPage: NextPageWithLayout = () => {
 	return (
-		<div>
-			<h1>{data.uptime}</h1>
-		</div>
+		<>
+			<TimelineTabs />
+			<div className='mt-4'>
+				<h1 className='sr-only'>Recent questions</h1>
+				<ul role='list' className='space-y-4'>
+					{posts.map((post) => (
+						<Post key={post.id} post={post} />
+					))}
+
+					{posts.map((post) => (
+						<Post key={post.id} post={post} />
+					))}
+
+					{posts.map((post) => (
+						<Post key={post.id} post={post} />
+					))}
+
+					{posts.map((post) => (
+						<Post key={post.id} post={post} />
+					))}
+					{posts.map((post) => (
+						<Post key={post.id} post={post} />
+					))}
+					{posts.map((post) => (
+						<Post key={post.id} post={post} />
+					))}
+				</ul>
+			</div>
+		</>
 	)
 }
 
+IndexPage.getLayout = (page) => (
+	<Layout>
+		<MainLayout>{page}</MainLayout>
+	</Layout>
+)
 export default IndexPage

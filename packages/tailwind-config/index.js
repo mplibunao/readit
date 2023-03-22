@@ -34,7 +34,9 @@ module.exports = {
 		'./src/components/**/*.{tsx,ts}',
 		'./src/pages/**/*.{tsx,ts}',
 		'./src/app/**/*.{tsx,ts}',
+		'./src/features/**/*.{tsx,ts}',
 	],
+	darkMode: 'class',
 	theme: {
 		extend: {
 			fontFamily: {
@@ -90,5 +92,5 @@ module.exports = {
 			},
 		},
 	},
-	plugins: [require('@tailwindcss/forms')],
+	plugins: [require('@tailwindcss/forms'), require('@tailwindcss/typography')],
 }

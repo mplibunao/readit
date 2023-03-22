@@ -34,6 +34,7 @@ const generateIdTypes = (iconData) => {
 		.map((key) => `'${key}'`)
 		.join(' | ')}\n`
 
+	console.log('type', type) // eslint-disable-line no-console
 	fs.writeFile(listPath, type, (err) => {
 		if (err) {
 			throw new Error(`error writing icon types ${err.message}`)

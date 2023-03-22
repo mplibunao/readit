@@ -13,6 +13,18 @@ Usage:
   docker-compose -f docker-compose.test.yml up $@
 }
 
+function db:reset { ## Reset database
+  echo "destroying database"
+  destroy -y
+  echo "starting db"
+  up
+}
+
+function db:setup { ## Setup database
+  echo "setting up database"
+  pnpm -F pg-manager dev:setup
+}
+
 function run { ## Runs [SERVICE] for one-off commands; Does not use ports specified in the service config preventing port collisions;
   if [ $# -eq 0 ]; then echo 1>&2 "Usage: $0 $FUNCNAME run [SERVICE] [OPTIONAL COMMANDS]
 $0 $FUNCNAME run api pnpm add -D express 

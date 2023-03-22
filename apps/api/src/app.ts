@@ -1,31 +1,80 @@
-import cors from '@fastify/cors'
+import { diContainer, fastifyAwilixPlugin } from '@fastify/awilix'
+import Cors from '@fastify/cors'
+import Helmet from '@fastify/helmet'
 import { fastifyTRPCPlugin } from '@trpc/server/adapters/fastify'
 import { FastifyPluginAsync } from 'fastify'
+import NoIcon from 'fastify-no-icon'
 
-import { Config } from './config'
-import healthcheckDeps from './infra/healthcheck/deps'
-import healthcheck from './infra/healthcheck/server'
-import { pg } from './infra/pg/client'
-import pgPlugin from './infra/pg/plugin'
-import ratelimit from './infra/ratelimit'
-import { redis } from './infra/redis/client'
+import { Config } from './infra/config'
+import { DependencyOverrides, registerDependencies } from './infra/diConfig'
+import HealthcheckDeps from './infra/healthcheck/deps'
+import Healthcheck from './infra/healthcheck/server'
+import Ratelimit from './infra/ratelimit'
+import reverseRoutes from './infra/reverse-routes'
+import Session from './infra/session'
+import { apiRoutes } from './modules/routes'
 import { appRouter, createContext, onError, responseMeta } from './trpc'
+import { schemas } from './utils/schema/zodJsonSchema'
 
-export const app: FastifyPluginAsync<Config> = async (
+type AppProps = {
+	config: Config
+	dependencyOverrides?: DependencyOverrides
+}
+
+export const app: FastifyPluginAsync<AppProps> = async (
 	fastify,
-	config,
+	{ config, dependencyOverrides = {} },
 ): Promise<void> => {
-	fastify.register(pgPlugin, pg)
-	fastify.register(healthcheck, config)
-	fastify.register(ratelimit, { ...config.rateLimit, redis })
-	fastify.register(healthcheckDeps, { prefix: config.healthcheckDeps.baseUrl })
+	fastify.register(
+		Helmet,
+		config.env.IS_PROD ? { contentSecurityPolicy: false } : {},
+	)
+	fastify.register(fastifyAwilixPlugin, { disposeOnClose: true })
+	registerDependencies(
+		diContainer,
+		{
+			app: fastify,
+			logger: fastify.log,
+			config: config,
+		},
+		dependencyOverrides,
+	)
 
-	fastify.register(cors, {
+	fastify.register(Healthcheck, config)
+	fastify.register(Ratelimit, {
+		...config.rateLimit,
+		redis: diContainer.cradle.redis,
+	})
+	fastify.register(reverseRoutes)
+	fastify.register(HealthcheckDeps, { prefix: config.healthcheckDeps.baseUrl })
+	fastify.register(Session, {
+		session: config.session,
+		sessionRedisStore: {
+			...config.sessionRedisStore,
+			client: diContainer.cradle.redis as any,
+		},
+	})
+
+	/*
+	 * Register session and other values dependent on req so we don't get stale session data
+	 */
+	//fastify.addHook('onRequest', (req, reply, done) => {
+	//diContainer.register('session', asValue(req.session))
+	//diContainer.register('sessionStore', asValue(req.sessionStore))
+	//const cookie: Cookie = { clearCookie: reply.clearCookie }
+	//diContainer.register('cookie', asValue(cookie))
+
+	//done()
+	//})
+
+	fastify.register(Cors, {
 		origin: [config.env.FRONTEND_URL],
 		methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
 		allowedHeaders: ['Content-Type', 'Authorization'],
 		credentials: true,
 	})
+
+	fastify.register(NoIcon)
 
 	fastify.register(fastifyTRPCPlugin, {
 		prefix: config.trpc.endpoint,
@@ -37,17 +86,11 @@ export const app: FastifyPluginAsync<Config> = async (
 		},
 	})
 
-	// broken
-	//if (config.trpc.enablePlayground) {
-	//fastify.register(
-	//await getFastifyPlugin({
-	//playgroundEndpoint: config.trpc.playgroundEndpoint,
-	//trpcApiEndpoint: config.trpc.endpoint,
-	//router: appRouter,
-	//}),
-	//{ prefix: config.trpc.playgroundEndpoint }
-	//)
-	//}
+	for (const schema of schemas) {
+		fastify.addSchema(schema)
+	}
+
+	fastify.register(apiRoutes, { prefix: '/api' })
 }
 
 export default app

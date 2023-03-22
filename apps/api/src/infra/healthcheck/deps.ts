@@ -1,8 +1,9 @@
+import { Logger } from '@readit/logger'
 import { FastifyInstance } from 'fastify'
 import Redis from 'ioredis'
 import { sql } from 'kysely'
 
-import { redis } from '../redis/client'
+import { PG } from '../pg/createClient'
 
 async function healthcheckDeps(fastify: FastifyInstance) {
 	fastify.get(
@@ -25,36 +26,39 @@ async function healthcheckDeps(fastify: FastifyInstance) {
 			},
 		},
 		async function (req) {
-			const db = await dbCheck(req.server)
-			const redisStatus = await redisCheck(req.server, redis)
+			const db = await dbCheck(req.diScope.resolve('pg'), req.server.log)
+			const redis = await redisCheck(
+				req.diScope.resolve('redis'),
+				req.server.log,
+			)
 
-			return { db, redis: redisStatus, timestamp: new Date().toISOString() }
+			return { db, redis, timestamp: new Date().toISOString() }
 		},
 	)
 }
 
-async function dbCheck(server: FastifyInstance) {
+async function dbCheck(pg: PG, logger: Logger) {
 	try {
 		const result =
-			await sql<string>`select 'Hello world!'::TEXT AS message`.execute(
-				server.pg,
-			)
+			await sql<string>`select 'Hello world!'::TEXT AS message`.execute(pg)
 
 		if (result.rows.length === 1) return 'ok'
 	} catch (err) {
 		if (process.env.NODE_ENV !== 'test') {
-			server.log.error({ err }, 'failed to read DB during health check')
+			logger.error({ err }, 'failed to read DB during health check')
 		}
 	}
 	return 'fail'
 }
 
-async function redisCheck(server: FastifyInstance, redis: Redis) {
+async function redisCheck(redis: Redis, logger: Logger) {
 	try {
 		const response = await redis.ping()
 		if (response === 'PONG') return 'ok'
 	} catch (err) {
-		server.log.debug({ err }, 'failed to read DB during health check')
+		if (process.env.NODE_ENV !== 'test') {
+			logger.debug({ err }, 'failed to read DB during health check')
+		}
 	}
 	return 'fail'
 }

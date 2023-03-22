@@ -37,7 +37,7 @@ async function main() {
 
 		// Manually include/exclude any packages
 		//const included = new Set([])
-		const excluded = ['pg-native', 'hiredis']
+		const excluded = ['pg-native', 'hiredis', 'preview-email']
 
 		const external = [...Object.keys(packageJson.dependencies)]
 			.filter((deps) => !deps.startsWith('@readit/'))

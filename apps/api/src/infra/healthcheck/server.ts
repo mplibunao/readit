@@ -1,4 +1,4 @@
-import { Config } from '@api/config'
+import { Config, Env } from '@api/infra/config'
 import underPressure, {
 	TYPE_EVENT_LOOP_DELAY,
 	TYPE_EVENT_LOOP_UTILIZATION,
@@ -7,6 +7,7 @@ import underPressure, {
 } from '@fastify/under-pressure'
 import { FastifyInstance, FastifyPluginAsync } from 'fastify'
 import fp from 'fastify-plugin'
+import { z } from 'zod'
 
 /*
  * This plugin is especially useful if you expect an high load
@@ -81,4 +82,49 @@ export const healthCheck: FastifyPluginAsync<Config> = async (
 
 export default fp(healthCheck, {
 	name: 'healthCheck',
+})
+
+export const healthcheckEnvSchema = {
+	HEALTHCHECK_BASE_URL: z.string().optional().default('/health'),
+
+	/*
+	 *max heap threshold to return 503 service unavaliable to prevent taking down your server
+	 *463 MB for a 512 MB instance
+	 *Using a high value since we're using cloud run so we can afford for the servers to get overloaded
+	 *50 MB is what node:18.7.0-alpine uses on an empty container
+	 *20 is overhead for other parts of the memory like new space
+	 */
+	HEALTHCHECK_MAX_HEAP_USED: z
+		.number()
+		.optional()
+		.default((512 - 50 - 20) * 1024 * 1024),
+
+	/*
+	 *512 MB
+	 *Resident Set Size – the amount of memory allocated in the v8 context
+	 */
+	HEALTHCHECK_MAX_RSS: z
+		.number()
+		.optional()
+		.default(512 * 1024 * 1024)
+		.describe(
+			'Resident Set Size – the amount of memory allocated in the v8 context',
+		),
+	HEALTHCHECK_MAX_EVENT_LOOP_UTILIZATION: z.number().optional().default(0.98),
+	HEALTHCHECK_MAX_EVENT_LOOP_DELAY: z.number().optional().default(1000),
+}
+
+export const getUnderPressureOpts = (env: Env): Config['underPressure'] => ({
+	version: env.APP_VERSION,
+	maxHeapUsedBytes: env.HEALTHCHECK_MAX_HEAP_USED,
+	maxRssBytes: env.HEALTHCHECK_MAX_RSS,
+	maxEventLoopUtilization: env.HEALTHCHECK_MAX_EVENT_LOOP_UTILIZATION,
+	maxEventLoopDelay: env.HEALTHCHECK_MAX_EVENT_LOOP_DELAY,
+	exposeStatusRoute: {
+		routeResponseSchemaOpts,
+		url: `${env.HEALTHCHECK_BASE_URL}/server`,
+		routeOpts: {
+			logLevel: 'debug',
+		},
+	},
 })
