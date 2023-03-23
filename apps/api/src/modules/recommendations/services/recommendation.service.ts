@@ -35,5 +35,3 @@ export const buildRecommendationService = (_: Dependencies) => {
  *JOIN tags ON tags.id = community_tags.tag_id
  *;
  */
-
-
