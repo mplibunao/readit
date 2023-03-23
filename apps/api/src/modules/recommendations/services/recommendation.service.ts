@@ -3,7 +3,6 @@ import { Dependencies } from '@api/infra/diConfig'
 //import { z } from 'zod'
 
 export const buildRecommendationService = (_: Dependencies) => {
-	// get ready
 	//const getRecommendedCommunities = z.function().args(z.string().uuid())
 	/*
 	 *SELECT communities.*, tags.name FROM communities
@@ -36,3 +35,5 @@ export const buildRecommendationService = (_: Dependencies) => {
  *JOIN tags ON tags.id = community_tags.tag_id
  *;
  */
+
+
