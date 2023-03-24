@@ -190,7 +190,7 @@ const Register: NextPageWithLayout = () => {
 								</div>
 							</div>
 
-							<div className='mt-6 grid grid-cols-3 gap-3'>
+							<div className='mt-6 flex flex-col space-y-3'>
 								<div>
 									<Link
 										href={OAUTH_URL.google}
@@ -198,9 +198,10 @@ const Register: NextPageWithLayout = () => {
 									>
 										<Icon
 											id='google'
-											className='h-5 w-5 text-neutral-500'
+											className='h-5 w-5 mr-2'
 											label='Sign in with Google'
 										/>
+										Login with Google
 									</Link>
 								</div>
 
@@ -211,9 +212,10 @@ const Register: NextPageWithLayout = () => {
 									>
 										<Icon
 											id='discord'
-											className='h-5 w-5 text-neutral-500'
+											className='h-5 w-5 mr-2 text-indigo-600'
 											label='Sign in with Discord'
 										/>
+										Login with Discord
 									</Link>
 								</div>
 							</div>

@@ -167,7 +167,7 @@ export const Login = (): JSX.Element => {
 									>
 										<Icon
 											id='discord'
-											className='h-5 w-5 mr-2'
+											className='h-5 w-5 mr-2 text-indigo-600'
 											label='Sign in with Discord'
 										/>
 										Login with Discord
