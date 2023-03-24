@@ -6,7 +6,7 @@ import { UserSchemas } from './user.schema'
 export * as OAuthSchemas from './oAuth.schema'
 
 export const code = z.string()
-export const provider = z.enum(['google', 'facebook', 'discord'])
+export const provider = z.enum(['google', 'discord'])
 export type Provider = z.infer<typeof provider>
 export const socialAccountOutput = z.object({
 	id,
@@ -31,13 +31,6 @@ export const googlePartialUser = z.object({
 	imageUrl: UserSchemas.imageUrl,
 })
 export type GooglePartialUser = z.infer<typeof googlePartialUser>
-export const facebookPartialUser = z.object({
-	firstName: UserSchemas.firstName,
-	lastName: UserSchemas.lastName,
-	email: email.optional(),
-	imageUrl: UserSchemas.imageUrl,
-})
-export type FacebookPartialUser = z.infer<typeof facebookPartialUser>
 export const discordPartialUser = z.object({
 	username: UserSchemas.username,
 	imageUrl: UserSchemas.imageUrl,
@@ -56,18 +49,6 @@ export const verifyGoogleUserOutput = z.union([
 	}),
 ])
 export type VerifyGoogleUserOutput = z.infer<typeof verifyGoogleUserOutput>
-export const verifyFacebookUserOutput = z.union([
-	z.object({
-		user: UserSchemas.user.optional(),
-		status: z.literal('loggedIn'),
-	}),
-	z.object({
-		status: z.literal('newPartialUser'),
-		user: facebookPartialUser,
-		social: createSocialInput,
-	}),
-])
-export type VerifyFacebookUserOutput = z.infer<typeof verifyFacebookUserOutput>
 export const verifyDiscordUserOutput = z.union([
 	z.object({
 		user: UserSchemas.user.optional(),
@@ -105,29 +86,6 @@ export const getGoogleUserOutput = z.object({
 	locale: z.string(),
 })
 export type GetGoogleUserOutput = z.infer<typeof getGoogleUserOutput>
-export const facebookToken = {
-	access_token: z.string(),
-	token_type: z.string(),
-	expires_in: z.number(),
-}
-export const getFacebookTokenOutput = z.object(facebookToken)
-export type GetFacebookTokenOutput = z.infer<typeof getFacebookTokenOutput>
-export const getFacebookUserOutput = z.object({
-	id: z.string(),
-	name: z.string(),
-	first_name: z.string(),
-	last_name: z.string(),
-	email: email.nullable(),
-	picture: z.object({
-		data: z.object({
-			height: z.number(),
-			is_silhouette: z.boolean(),
-			url: z.string(),
-			width: z.number(),
-		}),
-	}),
-})
-export type GetFacebookUserOutput = z.infer<typeof getFacebookUserOutput>
 export const discordToken = {
 	access_token: z.string(),
 	token_type: z.string(),
@@ -167,7 +125,7 @@ export const createUserWithoutPassword = z.object({
 	username: UserSchemas.username,
 })
 export const getPartialOAuthUserOutput = z.object({
-	user: z.union([googlePartialUser, facebookPartialUser, discordPartialUser]),
+	user: z.union([googlePartialUser, discordPartialUser]),
 	social: createSocialInput,
 })
 export const createOAuthUserInput = z.object({

@@ -193,19 +193,6 @@ const Register: NextPageWithLayout = () => {
 							<div className='mt-6 grid grid-cols-3 gap-3'>
 								<div>
 									<Link
-										href={OAUTH_URL.facebook}
-										className='inline-flex w-full justify-center rounded-md border border-neutral-300 bg-white py-2 px-4 text-sm font-medium text-neutral-500 shadow-sm hover:bg-neutral-50'
-									>
-										<Icon
-											id='facebook'
-											className='h-5 w-5 text-neutral-500'
-											label='Sign in with Facebook'
-										/>
-									</Link>
-								</div>
-
-								<div>
-									<Link
 										href={OAUTH_URL.google}
 										className='inline-flex w-full justify-center rounded-md border border-neutral-300 bg-white py-2 px-4 text-sm font-medium text-neutral-500 shadow-sm hover:bg-neutral-50'
 									>

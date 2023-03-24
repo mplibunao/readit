@@ -2,7 +2,6 @@ import { Config, Env } from '@api/infra/config'
 import {
 	GooglePartialUser,
 	OAuthSchemas,
-	FacebookPartialUser,
 	DiscordPartialUser,
 } from '@api/modules/accounts/domain/oAuth.schema'
 import Cookie from '@fastify/cookie'
@@ -17,7 +16,7 @@ type UserSession = {
 }
 
 type PartialUser = {
-	user: GooglePartialUser | FacebookPartialUser | DiscordPartialUser
+	user: GooglePartialUser | DiscordPartialUser
 	social: OAuthSchemas.CreateSocialInput
 }
 

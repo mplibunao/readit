@@ -91,20 +91,6 @@ export const handleOauthCallback = async function (
 				req.session.partialUser = { user, social }
 				return reply.redirect(`${oauthFormUrl}/google`)
 			}
-		} else if (req.params.provider === 'facebook') {
-			const { status, user, social } = await OAuthService.verifyFacebookUser(
-				req.query.code,
-				decodedState,
-			)
-			req.session.oauthState = undefined
-			if (status === 'loggedIn' && user) {
-				req.session.user = { id: user.id }
-				return reply.redirect(config.env.FRONTEND_URL)
-			}
-			if (status === 'newPartialUser') {
-				req.session.partialUser = { user, social }
-				return reply.redirect(`${oauthFormUrl}/facebook`)
-			}
 		} else if (req.params.provider === 'discord') {
 			const { status, user, social } = await OAuthService.verifyDiscordUser(
 				req.query.code,

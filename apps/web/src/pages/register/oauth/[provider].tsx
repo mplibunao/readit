@@ -5,6 +5,7 @@ import { PageLayout } from '@/components/Layout'
 import { styledLink } from '@/components/Link'
 import { LoadingPage } from '@/components/Spinner'
 import { errorToast, successToast } from '@/components/Toast'
+import { providers } from '@/constants/oauth'
 import { OAuthRegisterForm } from '@/features/accounts/auth/OAuthRegisterForm'
 import { NextPageWithLayout } from '@/pages/_app'
 import { client } from '@/utils/trpc/client'
@@ -14,8 +15,6 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React from 'react'
 import { twMerge } from 'tailwind-merge'
-
-const providers = ['google', 'facebook', 'discord']
 
 export const OAuthRegister: NextPageWithLayout = (): JSX.Element => {
 	const router = useRouter()

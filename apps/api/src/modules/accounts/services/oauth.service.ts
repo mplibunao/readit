@@ -12,7 +12,7 @@ import {
 	SocialAlreadyConnectedToAnotherAccount,
 	SocialNotOwnedByUser,
 } from '../domain/oAuth.errors'
-import { GetFacebookTokenOutput, OAuthSchemas } from '../domain/oAuth.schema'
+import { OAuthSchemas } from '../domain/oAuth.schema'
 import { UserAlreadyExists } from '../domain/user.errors'
 
 export type OAuthServiceType = ReturnType<typeof buildOAuthService>
@@ -25,7 +25,7 @@ export const buildOAuthService = ({
 	SocialAccountRepository,
 	pg,
 }: Dependencies) => {
-	const { google, facebook, discord } = config.oauth
+	const { google, discord } = config.oauth
 
 	const generateState = (userId?: string) => {
 		const state: OAuthSchemas.OAuthState = {
@@ -58,8 +58,6 @@ export const buildOAuthService = ({
 			switch (provider) {
 				case 'google':
 					return getGoogleOAuthUrl(state)
-				case 'facebook':
-					return getFacebookOAuthUrl(state)
 				case 'discord':
 					return getDiscordOAuthUrl(state)
 				default:
@@ -83,21 +81,6 @@ export const buildOAuthService = ({
 
 		const searchParams = new URLSearchParams(options)
 		return `https://accounts.google.com/o/oauth2/v2/auth?${searchParams.toString()}`
-	}
-
-	const getFacebookOAuthUrl = (state: string) => {
-		const options = {
-			redirect_uri: facebook.redirectUrl,
-			client_id: facebook.clientId,
-			scope: ['email', 'public_profile'].join(','),
-			response_type: 'code',
-			auth_type: 'rerequest',
-			display: 'popup',
-			state,
-		}
-
-		const searchParams = new URLSearchParams(options)
-		return `https://www.facebook.com/v11.0/dialog/oauth?${searchParams.toString()}`
 	}
 
 	const getDiscordOAuthUrl = (state: string) => {
@@ -176,64 +159,6 @@ export const buildOAuthService = ({
 			}
 		})
 
-	const getFacebookOAuthToken = z
-		.function()
-		.args(OAuthSchemas.code)
-		.returns(z.promise(OAuthSchemas.getFacebookTokenOutput))
-		.implement(async (code) => {
-			const url = 'https://graph.facebook.com/v4.0/oauth/access_token'
-			const queryString = new URLSearchParams({
-				client_id: facebook.clientId,
-				client_secret: facebook.clientSecret,
-				redirect_uri: facebook.redirectUrl,
-				code,
-			}).toString()
-
-			try {
-				const response = await axios.get<GetFacebookTokenOutput>(
-					`${url}?${queryString}`,
-				)
-				return response.data as OAuthSchemas.GetFacebookTokenOutput
-			} catch (error) {
-				logger.error({ code, error }, 'Failed to fetch Facebook Oauth Tokens')
-				throw new FailedToGetOAuthToken({ cause: error, provider: 'facebook' })
-			}
-		})
-
-	const getFacebookUser = z
-		.function()
-		.args(OAuthSchemas.facebookToken.access_token)
-		.returns(z.promise(OAuthSchemas.getFacebookUserOutput))
-		.implement(async (accessToken) => {
-			try {
-				const url = 'https://graph.facebook.com/v4.0/me'
-				const queryString = new URLSearchParams({
-					fields: [
-						'id',
-						'name',
-						'first_name',
-						'last_name',
-						'email',
-						'picture.type(large)',
-					].join(','),
-				}).toString()
-
-				const res = await axios.get<OAuthSchemas.GetFacebookUserOutput>(
-					`${url}?${queryString}`,
-					{
-						headers: { Authorization: `Bearer ${accessToken}` },
-					},
-				)
-				return res.data
-			} catch (error) {
-				logger.error(
-					{ error, accessToken },
-					'Failed to fetch Facebook Oauth User',
-				)
-				throw new FailedToGetOAuthUser({ cause: error, provider: 'facebook' })
-			}
-		})
-
 	const getGoogleOAuthToken = z
 		.function()
 		.args(OAuthSchemas.code)
@@ -298,15 +223,6 @@ export const buildOAuthService = ({
 		lastName: googleUser.family_name,
 		email: googleUser.email,
 		imageUrl: googleUser.picture,
-	})
-
-	const mapFacebookUserToUser = async (
-		facebookUser: OAuthSchemas.GetFacebookUserOutput,
-	): Promise<OAuthSchemas.FacebookPartialUser> => ({
-		email: facebookUser.email as string,
-		firstName: facebookUser.first_name,
-		lastName: facebookUser.last_name,
-		imageUrl: facebookUser.picture.data.url,
 	})
 
 	const mapDiscordUserToUser = async (
@@ -405,103 +321,6 @@ export const buildOAuthService = ({
 							provider: 'google',
 							socialId: googleUser.id,
 							usernameOrEmail: googleUser.email,
-						},
-					}
-				}
-			} catch (error) {
-				if (error instanceof AppError) {
-					logger.error(
-						{ error, code },
-						`Error verifying and upserting OAuth user: ${error.type}`,
-					)
-					throw error
-				}
-				logger.error(
-					{ error, code },
-					`Error verifying and upserting OAuth user`,
-				)
-				throw new InternalServerError({ cause: error })
-			}
-		})
-
-	const verifyFacebookUser = z
-		.function()
-		.args(z.string(), OAuthSchemas.oAuthState)
-		.returns(z.promise(OAuthSchemas.verifyFacebookUserOutput))
-		.implement(async (code, state) => {
-			try {
-				const { access_token } = await getFacebookOAuthToken(code)
-				const facebookUser = await getFacebookUser(access_token)
-
-				const socialAccount = await SocialAccountRepository.findBySocialId(
-					facebookUser.id,
-				)
-				if (socialAccount) {
-					if (state.userId && socialAccount.userId !== state.userId) {
-						throw new SocialAlreadyConnectedToAnotherAccount({})
-					} else {
-						return { user: socialAccount, status: 'loggedIn' }
-					}
-				}
-
-				if (!facebookUser.email) {
-					throw new OAuthAccountNotVerified({
-						message: 'Facebook account is not linked to a verified email',
-						provider: 'facebook',
-					})
-				}
-
-				/*
-				 * If user is already logged in using credentials, link the social account to the user regardless if the email is same (this means the user is linking using the settings page)
-				 */
-				if (state.userId) {
-					const user = await UserQueriesRepo.findOneOrThrow({
-						where: { id: state.userId },
-					})
-
-					await SocialAccountRepository.create({
-						userId: user.id,
-						socialId: facebookUser.id,
-						provider: 'facebook',
-						usernameOrEmail: facebookUser.email,
-					})
-
-					return {
-						user,
-						status: 'loggedIn',
-					}
-				}
-
-				const user = await UserQueriesRepo.findOne({
-					where: { email: facebookUser.email },
-				})
-				if (user) {
-					await SocialAccountRepository.create({
-						provider: 'facebook',
-						socialId: facebookUser.id,
-						userId: user.id,
-						usernameOrEmail: facebookUser.email,
-					})
-
-					if (!user.imageUrl) {
-						return {
-							status: 'loggedIn',
-							user: await UserMutationsRepo.updateTakeOne({
-								where: { id: user.id },
-								data: { imageUrl: facebookUser.picture.data.url },
-							}),
-						}
-					} else {
-						return { status: 'loggedIn', user }
-					}
-				} else {
-					return {
-						status: 'newPartialUser',
-						user: await mapFacebookUserToUser(facebookUser),
-						social: {
-							provider: 'facebook',
-							socialId: facebookUser.id,
-							usernameOrEmail: facebookUser.email,
 						},
 					}
 				}
@@ -701,7 +520,6 @@ export const buildOAuthService = ({
 	return {
 		verifyDiscordUser,
 		verifyGoogleUser,
-		verifyFacebookUser,
 		getOAuthUrl,
 		generateState,
 		decodeState,

@@ -42,9 +42,6 @@ module.exports = {
   "eye": {
     "filename": "eye.svg"
   },
-  "facebook": {
-    "filename": "facebook.svg"
-  },
   "fire": {
     "filename": "fire.svg"
   },
