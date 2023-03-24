@@ -42,6 +42,9 @@ if [ ! -z "$2" ]; then
     "latest")
       COMMAND="node,dist/index.js,latest"
       ;;
+    "seed")
+      COMMAND="node,dist/seed.js"
+      ;;
     *)
       echo "Invalid command, please choose one of the following commands: up, down, redo, latest"
       exit 1

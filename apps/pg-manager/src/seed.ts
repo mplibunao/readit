@@ -65,6 +65,7 @@ export const seed = async () => {
 		lastName: 'Libunao',
 		isAdmin: true,
 	})
+	console.info(admin, 'admin')
 
 	const adminResult = await db
 		.insertInto('users')
