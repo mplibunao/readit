@@ -1,5 +1,6 @@
 ARG BASE_IMAGE=node:18.12.1-bullseye-slim
-ARG PRODUCTION_IMAGE=node:18.12.1-alpine
+ARG PRODUCTION_IMAGE=node:18.12.1-bullseye-slim
+#ARG PRODUCTION_IMAGE=node:18.12.1-alpine
 
 FROM $BASE_IMAGE AS base
 RUN npm i -g pnpm && \
