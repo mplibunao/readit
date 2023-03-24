@@ -155,17 +155,15 @@ describe('UserRepository', () => {
 			const userParams = createTestUser()
 			const user = await UserMutationsRepo.create(userParams)
 			const googleSocial = createSocialAccount({ userId: user.id })
-			const facebookSocial = createSocialAccount({
+			const discordSocial = createSocialAccount({
 				userId: user.id,
-				socialId: 'fb12354',
-				provider: 'facebook',
+				socialId: 'discord123',
+				provider: 'discord',
 			})
 
 			const googleAccount = await SocialAccountRepository.create(googleSocial)
-			const facebookAccount = await SocialAccountRepository.create(
-				facebookSocial,
-			)
-			const socialAccounts = [googleAccount, facebookAccount].map(
+			const discordAccount = await SocialAccountRepository.create(discordSocial)
+			const socialAccounts = [googleAccount, discordAccount].map(
 				({ createdAt: _createdAt, updatedAt: _updatedAt, ...social }) => social,
 			)
 

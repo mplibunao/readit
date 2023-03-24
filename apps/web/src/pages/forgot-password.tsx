@@ -123,20 +123,7 @@ export const ForgotPasswordPage: NextPageWithLayout = (): JSX.Element => {
 								</div>
 							</div>
 
-							<div className='mt-6 grid grid-cols-3 gap-3'>
-								<div>
-									<Link
-										href={OAUTH_URL.facebook}
-										className='inline-flex w-full justify-center rounded-md border border-neutral-300 bg-white py-2 px-4 text-sm font-medium text-neutral-500 shadow-sm hover:bg-neutral-50'
-									>
-										<Icon
-											id='facebook'
-											className='h-5 w-5'
-											label='Sign in with Facebook'
-										/>
-									</Link>
-								</div>
-
+							<div className='mt-6 flex flex-col space-y-3'>
 								<div>
 									<Link
 										href={OAUTH_URL.google}
@@ -144,9 +131,10 @@ export const ForgotPasswordPage: NextPageWithLayout = (): JSX.Element => {
 									>
 										<Icon
 											id='google'
-											className='h-5 w-5'
+											className='h-5 w-5 mr-2'
 											label='Sign in with Google'
 										/>
+										Login with Google
 									</Link>
 								</div>
 
@@ -157,9 +145,10 @@ export const ForgotPasswordPage: NextPageWithLayout = (): JSX.Element => {
 									>
 										<Icon
 											id='discord'
-											className='h-5 w-5'
+											className='h-5 w-5 mr-2'
 											label='Sign in with Discord'
 										/>
+										Login with Discord
 									</Link>
 								</div>
 							</div>

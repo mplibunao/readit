@@ -13,7 +13,7 @@ export async function up(db: Kysely<any>): Promise<void> {
 		.addColumn('usernameOrEmail', 'text', (col) => col.notNull())
 		.addCheckConstraint(
 			'social_accounts_provider_check',
-			sql`provider IN ('google', 'facebook', 'discord')`,
+			sql`provider IN ('google', 'discord')`,
 		)
 		.addColumn('userId', 'uuid', (col) =>
 			col.notNull().references('users.id').onDelete('cascade'),

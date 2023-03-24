@@ -56,7 +56,7 @@ export type UserData = Selectable<UserTable>
 export type InsertableUser = Insertable<UserTable>
 export type UpdatableUser = Updateable<UserTable>
 
-export type ProviderType = 'google' | 'facebook' | 'discord'
+export type ProviderType = 'google' | 'discord'
 export type SocialAccountTable = DB['socialAccounts']
 export type SocialAccountData = Selectable<SocialAccountTable>
 export type InsertableSocialAccount = Insertable<SocialAccountTable> & {

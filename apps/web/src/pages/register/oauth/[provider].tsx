@@ -15,7 +15,7 @@ import { useRouter } from 'next/router'
 import React from 'react'
 import { twMerge } from 'tailwind-merge'
 
-const providers = ['google', 'facebook', 'discord']
+const providers = ['google', 'discord']
 
 export const OAuthRegister: NextPageWithLayout = (): JSX.Element => {
 	const router = useRouter()
