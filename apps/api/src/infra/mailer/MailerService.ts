@@ -1,5 +1,9 @@
 import { UserSchemas } from '@api/modules/accounts/domain/user.schema'
-import { HOUR_IN_SECONDS, MINUTE_IN_SECONDS } from '@api/utils/date'
+import {
+	DAY_IN_SECONDS,
+	HOUR_IN_SECONDS,
+	MINUTE_IN_SECONDS,
+} from '@api/utils/date'
 import { capitalize, getFullName } from '@api/utils/string'
 import { render } from '@react-email/render'
 
@@ -7,6 +11,7 @@ import { Dependencies } from '../diConfig'
 import { reverse } from '../reverse-routes'
 import { ChangeEmail } from './components/change-email'
 import { ConfirmEmail } from './components/confirm-email'
+import { EmailHasBeenChanged } from './components/email-has-been-changed'
 import { ForgotPasswordEmail } from './components/forgot-password'
 import { LoginEmail } from './components/login'
 
@@ -85,14 +90,14 @@ export const buildMailerService = ({
 		return 'ok'
 	}
 
-	const sendChangeEmail = async (
+	const sendVerifyNewEmail = async (
 		user: UserSchemas.User,
 		newEmail: string,
 	): Promise<'ok'> => {
 		const token = await TokenService.create({
 			type: 'emailChange',
 			userId: user.id,
-			expirationTimeInSeconds: MINUTE_IN_SECONDS * 5,
+			expirationTimeInSeconds: DAY_IN_SECONDS * 3,
 		})
 
 		const changeEmail = ChangeEmail({
@@ -100,6 +105,8 @@ export const buildMailerService = ({
 			logoImage,
 			name: getFullName(user),
 			productName,
+			newEmail,
+			username: user.username,
 			changeEmailUrl: reverse('changeEmail', {
 				fullUrl: true,
 				args: { token: token.id, newEmail },
@@ -113,6 +120,40 @@ export const buildMailerService = ({
 			html,
 			from: FROM_SUPPORT_EMAIL,
 			subject: `Confirm change email for ${productName}`,
+			to: newEmail,
+			text,
+		})
+
+		return 'ok'
+	}
+
+	const sendChangedEmail = async (
+		user: UserSchemas.User,
+		newEmail: string,
+	): Promise<'ok'> => {
+		const token = await TokenService.create({
+			type: 'passwordReset',
+			userId: user.id,
+			expirationTimeInSeconds: DAY_IN_SECONDS * 5,
+		})
+
+		const emailHasBeenChangedEmail = EmailHasBeenChanged({
+			companyAddress,
+			logoImage,
+			name: getFullName(user),
+			productName,
+			changePasswordUrl: `${config.env.FRONTEND_URL}/reset-password?token=${token.id}`,
+			newEmail,
+			username: user.username,
+		})
+
+		const html = render(emailHasBeenChangedEmail)
+		const text = render(emailHasBeenChangedEmail, { plainText: true })
+
+		await emailClient.sendEmail({
+			html,
+			from: FROM_SUPPORT_EMAIL,
+			subject: `Reset password for ${productName}`,
 			to: user.email,
 			text,
 		})
@@ -152,9 +193,10 @@ export const buildMailerService = ({
 	}
 
 	return {
-		sendChangeEmail,
+		sendChangeEmail: sendVerifyNewEmail,
 		sendLoginBasicAuth,
 		sendConfirmEmail,
 		sendForgotPasswordEmail,
+		sendChangedEmail,
 	}
 }

@@ -63,7 +63,10 @@ export const sendChangeEmail = async function (
 			publishChangeEmail,
 		)
 		const user = await UserService.findById(message.userId)
-		const data = await MailerService.sendChangeEmail(user, message.newEmail)
+		const data = await Promise.all([
+			MailerService.sendChangeEmail(user, message.newEmail),
+			MailerService.sendChangedEmail(user, message.newEmail),
+		])
 		return { status: data }
 	} catch (error) {
 		return handleRESTServiceErrors(error, logger)
