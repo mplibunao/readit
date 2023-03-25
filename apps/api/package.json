@@ -50,6 +50,7 @@
 		"@readit/logger": "workspace:*",
 		"@readit/utils": "workspace:*",
 		"@sindresorhus/slugify": "^2.2.0",
+		"@total-typescript/ts-reset": "^0.4.2",
 		"@trpc/server": "^10.9.0",
 		"@vercel/edge-config": "^0.1.0",
 		"argon2": "^0.30.2",
