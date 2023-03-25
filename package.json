@@ -21,7 +21,7 @@
 		"lint:fix": "turbo run lint:fix --parallel",
 		"format:fix": "turbo format:fix --parallel",
 		"format:check": "turbo format:check",
-		"ci": "turbo run ci",
+		"ci": "./dc ci",
 		"typecheck": "turbo run typecheck",
 		"docker:up": "docker-compose up -d",
 		"prepare": "husky install"
