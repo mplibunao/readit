@@ -10,56 +10,42 @@
 
 # URLs
 
-|           | Staging                               | Production                    |
-| Web       | readit.staging.mplibunao.tech         | readit.mplibunao.tech         |
-| Api       | readit-api-staging.mplibunao.tech     | readit-api.mplibunao.tech     |
-| Storybook | readit.stories.staging.mplibunao.tech | readit.stories.mplibunao.tech |
+## Staging
+
+- Web: readit.staging.mplibunao.tech
+- API: readit-api-staging.mplibunao.tech
+- Storybook/Ladle: readit.stories.staging.mplibunao.tech
+
+## Production
+
+- Web: readit.mplibunao.tech
+- API: readit-api.mplibunao.tech
+- Storybook/Ladle: readit.stories.mplibunao.tech
 
 
 # Domains
 
-- Accounts/User: User registration, login, profile management
+- Accounts: User registration, login, profile management
+- Communities: Community/Groups, Create, Manage
+- Recommendations: Recommendation of content based on interests (posts and subreddits)
+
 - Moderation/Admin: Owners and Moderators, Content moderation, NFSW flagging/blurring, lock thread, pin thread, user ban 
-- Subreddit: Community/Groups, Create, Manage
 - Notifications: Realtime, Email
 - Posts: Posts, Comments, Replies, upvotes, downvotes
 - Search: Search posts, subreddits. 
-- Discovery: Recommendation of content based on interests (posts and subreddits)
 
 # Documentation
 
 - [Migrations](./apps/pg-manager/README.md)
 - [Tunneling](./docs/tunnel.md)
+- [CLI](./cli/README.md)
 
 # Reddit Clone v2
 
 This is a more production-ready rewrite of [reddit clone](https://github.com/mplibunao/reddit-clone) based on the things that I've learned in the past year or so
 
+
 # What's the difference?
-
-## Performance
-
-### API
-
-I've tried to consider performance in a lot of my decisions in this project like:
-
-- Switching the http and graphql server to mercurius due to it's high throughput (still not as fast as compiled languages like go, rust, crystal, etc but it's one of the few that gets close in node land)
-- Using raw sql for better query performance, [postgres.js](https://github.com/porsager/postgres) in particular
-- Reducing cold starts _as much as possible within reason_ due to me dabbling into cloud run which is basically serverless containers.
-  - _Within reason_ because I believe this approach is more of a hybrid of serverless and traditional long-running servers therefore both throughput and cold starts are important metrics and should be measured (priority would depend on the whether you plan to move to long-running services in the future as well as the stage of the product)
-  - Achieved by:
-    - Being bundle size conscious when choosing dependencies
-    - Lazy loading dependencies
-    - Bundling and minifying code using esbuild
-
-#### References
-
-- ORMs performance
-  - [github edgedb imdbench](https://github.com/edgedb/imdbench)
-  - [github porsager postgres benchmarks](https://github.com/porsager/postgres-benchmarks)
-  - [porsager github imdbench sql](https://porsager.github.io/imdbench/sql.html)
-  - [github gajus slonik tree master benchmark](https://github.com/gajus/slonik/tree/master/benchmark)
-  - [github jamescmartinez rust vs node postgres bench](https://github.com/jamescmartinez/rust-vs-node-postgres-bench)
 
 ## Developer experience
 
@@ -95,6 +81,12 @@ In any case, both tools offer similar advantages, which is:
 - Adding things like watch capabilities.
 
 So far one thing, I didn't like about wireit was I all the cache-miss I was getting when running the CI using docker. I've managed to get the cache-hits when running the CI using docker on my dev machine so it's possibly due to the ephemeral nature of the CI runner. You can cache wireit on github actions using a plugin but I don't think you can do that inside a container.
+
+### Turborepo
+
+I switched to turborepo again after I managed solved my issues building docker images using turborepo.
+
+I forgot the exact reasons I had for switching back to turborepo but I think it had something to do with performance, caching and turborepo's remote caching. In any case, it's hard to compare the build performance when I was wrote the piece on wireit to the build performance now because a lot of variables have changed like completely moving CI off docker (which reduced cache misses) as well as the project and number of internal packages growing in size. I'm still okay with using wireit today but if I don't encounter blockers like the ones I've encountered before when using turbo, pnpm and docker together then I would pick turborepo just for the remote cache alone.
 
 ### Docker
 
@@ -135,7 +127,7 @@ p -F api add -D express
 
 #### CI
 
-Currently, I'm still using `docker-compose` to run my tests. But I'm kinda partial to migrating it out of docker as well due to 2 reasons:
+At first I was using `docker-compose` to run my tests but decided to migrate it out of docker as well due to 2 reasons:
 
 1. It's hard to cache docker layers with a monorepo
 
@@ -166,7 +158,7 @@ RUN pnpm i -F eslint-config-custom-server --prefer-offline --frozen-lockfile
 CMD ["pnpm", "-F", "api", "check"]
 ```
 
-2. As mentioned in the wireit section, I was getting all cache-misses when running the CI on `docker-compose`. I'm not sure if it's because of my wireit configuration, or if it will result in a cache-hit if I move out of `docker-compose` but I have a feeling that if I atlease utilize github action's cache, it should result in some cache-hits if there really is nothing that changed
+2. I was getting all cache-misses when running the CI on `docker-compose`. I don't recall exactly but I'm pretty sure moving off docker for the ci improved cache-hit rate for both wireit and turborepo. I was also able to utilize the github action cache for both monorepo tools which helped if there was really nothing that changed
 
 #### Production
 
@@ -195,142 +187,163 @@ Disadvantages:
 - [github GoogleContainerTools distroless tree main examples nodejs](https://github.com/GoogleContainerTools/distroless/tree/main/examples/nodejs)
 - [github GoogleContainerTools distroless blob main nodejs README](https://github.com/GoogleContainerTools/distroless/blob/main/nodejs/README.md)
 
-#### Rough CI Benchmarks (API)
 
-##### Running tests
+## API
 
-Running tests in a non-docker env really improves the speed by a lot especially with cache-hits
 
-|     | Docker   | Non-docker           |
-| --- | -------- | -------------------- |
-| API | 45s-1:16 | 23s                  |
-|     |          | 20s                  |
-|     |          | 13s (full cache hit) |
-|     |          | 11s (full cache hit) |
+### Stack
 
-##### API CI
-
-For a full CI pipeline, non-dockerized is closer to the dockerized env pipeline but still much faster
-
-|       | Docker | Non-docker             |
-| ----- | ------ | ---------------------- |
-| Speed | 1:44s  | 1:47s                  |
-|       | 1:49s  | 1:27s                  |
-|       | 1:34s  | 1:16s (full cache hit) |
-|       | 1:32s  | 1:02s (skip base pnpm) |
-|       | 1:57s  |                        |
-|       | 1:30s  |                        |
-|       | 1:36s  |                        |
-|       | 1:57s  |                        |
-|       | 1:51s  |                        |
-
-#### Rough CICD Benchmarks (API)
-
-> **Note**: Lots of changes happened with CICD pipeline. So numbers may not be exact
-
-- Fully dockerized numbers seem to be better (not by much) although those numbers are much older
-- Billable time for hybrid of docker and non-docker seemed higher although in the latest runs, I've managed to make it clock at around 4m so more or less the same with full docker.
-- One thing to note is that github actions bills a minimum of 1 min per job even though the job only runs for a few seconds so some optimization might be possible there
-
-##### Docker CI & build
-
-- 2:57s
-  - 51s CI
-  - 1:17s build/push
-  - 5m billable time
-- 2:26s
-  - 45s CI
-  - 50s Build/push
-  - 4m billable time
-- 2:14s
-  - 44s CI
-  - 43s build/push
-  - 4m billable time
-
-##### Non-docker CI & docker build
-
-- 3:51s
-  - 25s CI (cache miss tests)
-  - 48s base_pnpm (cache miss)
-  - 1m 1s Build/push
-  - 6m billable time
-- 2:43s
-  - 14s CI
-  - 36s base_pnpm (I think `/commands` always cause a cache miss because it references main or something)
-  - 51s build/push
-  - 5m billable time
-- 2:38s
-  - 19s CI
-  - 30s base image
-  - 51s build/push
-  - 4m billable time
-
-### API
-
+- Fastify for backend framework
+- TRPC for typesafe API
+- Fastify Rest API Routes for Pubsub push endpoints, webhooks, etc
+- Redis for cache and session store
+- Neon Postgres for Database
+- Awilix for dependency injection (using mostly functions) 
+- Google Cloud Run for scale up and scale to 0 compute that supports concurrent requests
+- Google Cloud Storage for object storage
+- Google PubSub for dead letter queue
+- Google Secret Manager for Secret Manager
+- Terraform for Infrastructure as Code (Not included in this repo)
 - Using `esbuild` instead of `tsc` for converting typescript code to javascript
 - Using `vitest` instead of `jest` (Tried `tap` but appreciated how api compatible vitest is with jest and other testing tools)
+- Email
+  - React Email for email templates
+  - Postmark for client (production)
+  - `preview-email` for development
+- edge-config for low latency feature flags on the edge
 
-# What's inside?
+## Web
 
-This repo includes the following packages/apps:
-
-## Apps and Packages
-
-- `docs`: a [Next.js](https://nextjs.org) app
-- `web`: another [Next.js](https://nextjs.org) app
-- `api`: A fastify graphql API
-- `ui`: a stub React component library shared by both `web` and `docs` applications
-- `eslint-config-custom`: `eslint` configurations
-- `tsconfig`: `tsconfig.json`s used throughout the monorepo
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-## Utilities
-
-This turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+- NextJS
+- TRPC for typesafe communication with the API
+- Jest for tests
+- Ladle for lightweight alternative to storybook
+- Tailwind, tailwind-merge and cva for styling
+- react-hook-form and zod for forms
+- edge-config for low latency feature flags on the edge
+- headlessui, radix-ui and ariakit for accessible headless components (should probably remove ariakit since we only use Button but it's pretty lightweight plus tree-shaking)
+- jotai for state management
 
 # Usage
 
 ## Develop
 
-To develop all apps and packages, run the following command:
+To develop all apps and packages, run the following commands
+
+### Initialize .env files
+
+```sh
+pnpm cli init
+```
+
+### Start databases
+
+Start the postgres and redis containers
+
+```sh
+./dc up
+```
+
+### Migrate the database, generate types and seed the database
+
+```sh
+./dc db:setup
+```
+
+### Start the dev servers
 
 ```sh
 pnpm dev
 ```
 
-## Turborepo
+## To run ci tests
 
-### Remote Caching
-
-Turborepo can use a technique known as [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup), then enter the following commands:
-
-```
-cd my-turborepo
-pnpm dlx turbo login
+```sh
+./dc ci
 ```
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+## To clear the postgres database
 
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your turborepo:
+```sh
+# alias for docker-compose down -v
+./dc destroy
 
+# or destroy then start it back up again with no data
+./dc db:reset
 ```
-pnpm dlx turbo link
+
+## To know more about the dc bash script and it's commands
+
+```sh
+./dc
 ```
 
-## Useful Links
+## SVG Icons
 
-Learn more about the power of Turborepo:
+The frontend uses an icon pipeline that generates an svg spritesheet for better performance
 
-- [Pipelines](https://turbo.build/repo/docs/core-concepts/monorepos/running-tasks)
-- [Caching](https://turbo.build/repo/docs/core-concepts/caching)
-- [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching)
-- [Filtering](https://turbo.build/repo/docs/core-concepts/monorepos/filtering)
-- [Configuration Options](https://turbo.build/repo/docs/reference/configuration)
-- [CLI Usage](https://turbo.build/repo/docs/reference/command-line-reference)
+### Raw
+
+To add new svg icons to the spritesheet, create an svg file in `src/icons/raw/`
+
+Then run
+
+```sh
+pnpm -F web icons
+```
+
+This does the following:
+
+- Optimize the icons in `raw` using `svgo` and puts the optimized svgs in `src/icons/processed`
+- Creates the svg sprite and puts it in the `public` directory
+- Updates the union types in `components/Icon/types`
+
+### Usage
+
+To use the Icon component, just pass the name of the svg file you used as the `id` prop
+
+```tsx
+return (
+  <Icon id='eye-slash' />
+)
+```
+
+### Notes
+
+- This will help improve performance since the browser will only download the svg sprite once and then use it for all icons especially if you are rendering an icon multiple times like for example, a trash icon for every row
+- Also rendering icons using jsx can a higher cost and can bloat the js bundle
+- Try to keep the svg sprites below 125kb
+
+The trade-off for this is you:
+- You download the whole sprite even if you don't need everything. No tree shaking
+
+### References
+
+- [benadam thoughts react svg sprites](https://benadam.me/thoughts/react-svg-sprites/)
+- [twitter _developit status](https://twitter.com/_developit/status/1382838799420514317)
+
+## Email
+
+Email uses cloud pubsub to send emails asynchronously and to allow retries in case of api errors
+
+### Stand-alone Preview
+
+To preview emails, run the following command:
+
+```sh
+pnpm -F emails dev
+```
+
+This will start react-email on `localhost:3001`
+
+### Copying to api
+
+Unfortunately, for some reason it's not possible to import the components in `packages/emails` to `api` as it causes errors
+
+Therefore if you want to iterate on the components using the react-email server and copy it to api after you're done, you can run the ff command
+
+```sh
+pnpm -F emails copy
+```
+
+This will copy the components in `packages/emails` to `api`

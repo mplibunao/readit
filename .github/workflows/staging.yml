@@ -91,10 +91,21 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --prefer-offline
 
-      - name: Run CI
+      - name: Run Containers
         run: |
           docker-compose up -d
-          pnpm ci
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Lint
+        run: pnpm lint:check
+
+      - name: Format
+        run: pnpm format:check
+
+      - name: Test
+        run: pnpm test
 
   migration:
     name: migration

@@ -126,6 +126,11 @@ If you are interested check out the following repos:
 - It's also the only thing being exported in this package just to be sure we don't increase the bundle size any more than we need to
 - You can also use prisma's type generation if you prefer. You can check out [create-t3-turbo's](https://github.com/t3-oss/create-t3-turbo/tree/main/packages/db) implementation if you want
 
+### Seed
+
+- To seed database, run `pnpm -F pg-manager seed`
+- This will execute the file in `src/seed.ts`
+
 ## Prisma studio
 
 - Since we removed prisma, we can't use prisma studio anymore since it requires a prisma schema

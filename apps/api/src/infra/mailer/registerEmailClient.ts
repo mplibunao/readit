@@ -7,7 +7,6 @@ import { buildPostmarkClient } from './client/postmarkClient'
 import { buildPreviewEmailClient } from './client/previewEmailClient'
 
 export const registerEmailClient = ({ env }: Config) => {
-	console.info(env.IS_PROD, 'env.IS_PROD')
 	if (env.IS_PROD) {
 		return asFunction(buildPostmarkClient, SINGLETON_CONFIG)
 	}

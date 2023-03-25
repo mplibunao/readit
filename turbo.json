@@ -101,9 +101,6 @@
 			"outputs": [],
 			"inputs": ["src/**/*.{js,jsx,ts,tsx,md,mdx,graphql,css,scss,yaml,json}"]
 		},
-		"ci": {
-			"dependsOn": ["typecheck", "lint:check", "format:check", "test"]
-		},
 		"db:gen:types": {
 			"outputs": ["src/db.d.ts"],
 			"inputs": ["src/migrations/**"],

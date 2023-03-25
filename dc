@@ -3,24 +3,31 @@
 #NO_COLOR="\033[0m"
 #SPACING="-20s"
 
-function ci { ## Runs tests for the specified service as specified in the docker-compose.test.yml
-  if [ $# -eq 0 ]; then echo 1>&2 "Must specify the service to run
-Usage:
-  $0 $FUNCNAME [SERVICE]
-  $0 $FUNCNAME api";exit 3;fi
+#function ci { ## Runs tests for the specified service as specified in the docker-compose.test.yml
+  #if [ $# -eq 0 ]; then echo 1>&2 "Must specify the service to run
+#Usage:
+  #$0 $FUNCNAME [SERVICE]
+  #$0 $FUNCNAME api";exit 3;fi
 
-  echo "docker-compose -f docker-compose.test.yml up $@"
-  docker-compose -f docker-compose.test.yml up $@
+  #echo "docker-compose -f docker-compose.test.yml up $@"
+  #docker-compose -f docker-compose.test.yml up $@
+#}
+
+function ci { ## Runs ci
+  pnpm typecheck
+  pnpm lint:check
+  pnpm format:check
+  pnpm test
 }
 
-function db:reset { ## Reset database
+function db:reset { ## Reset database. Destroy then start it back up
   echo "destroying database"
   destroy -y
   echo "starting db"
   up
 }
 
-function db:setup { ## Setup database
+function db:setup { ## Setup database. Run migrations, Generate types and seed database
   echo "setting up database"
   pnpm -F pg-manager dev:setup
 }
