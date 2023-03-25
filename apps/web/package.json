@@ -29,6 +29,7 @@
 		"@readit/api": "workspace:*",
 		"@readit/flags": "workspace:*",
 		"@tanstack/react-query": "^4.22.0",
+		"@total-typescript/ts-reset": "^0.4.2",
 		"@trpc/client": "^10.9.0",
 		"@trpc/react-query": "^10.9.0",
 		"@trpc/server": "^10.9.0",
