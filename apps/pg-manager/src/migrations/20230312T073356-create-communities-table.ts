@@ -1,10 +1,6 @@
-import { Kysely } from 'kysely'
+import { Kysely, sql } from 'kysely'
 
-import {
-	createTable,
-	createUpdatedAtTrigger,
-	dropUpdatedAtTrigger,
-} from '../utils'
+import { createTable } from '../utils'
 
 export async function up(db: Kysely<any>): Promise<void> {
 	await createTable(db.schema, 'communities', {})
@@ -13,10 +9,17 @@ export async function up(db: Kysely<any>): Promise<void> {
 		.addColumn('isNsfw', 'boolean', (col) => col.notNull().defaultTo('false'))
 		.execute()
 
-	await createUpdatedAtTrigger(db, 'communities')
+	await sql`
+    CREATE TRIGGER update_communities_updated_at
+    BEFORE UPDATE ON communities
+    FOR EACH ROW
+    EXECUTE PROCEDURE on_updated_at_timestamp();
+  `.execute(db)
 }
 
 export async function down(db: Kysely<any>): Promise<void> {
-	await dropUpdatedAtTrigger(db, 'communities')
+	await sql`
+		DROP TRIGGER IF EXISTS update_communities_updated_at ON communities;
+	`.execute(db)
 	await db.schema.dropTable('communities').ifExists().execute()
 }

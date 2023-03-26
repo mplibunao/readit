@@ -1,10 +1,6 @@
 import { Kysely, sql } from 'kysely'
 
-import {
-	createTable,
-	createUpdatedAtTrigger,
-	dropUpdatedAtTrigger,
-} from '../utils'
+import { createTable } from '../utils'
 
 export async function up(db: Kysely<any>): Promise<void> {
 	await createTable(db.schema, 'social_accounts', { deletedAt: false })
@@ -25,7 +21,12 @@ export async function up(db: Kysely<any>): Promise<void> {
 		])
 		.execute()
 
-	await createUpdatedAtTrigger(db, 'social_accounts')
+	await sql`
+    CREATE TRIGGER update_social_accounts_updated_at
+    BEFORE UPDATE ON social_accounts
+    FOR EACH ROW
+    EXECUTE PROCEDURE on_updated_at_timestamp();
+  `.execute(db)
 
 	await db.schema
 		.createIndex('idx_social_accounts_social_id')
@@ -45,6 +46,8 @@ export async function down(db: Kysely<any>): Promise<void> {
 		.dropIndex('idx_social_accounts_social_id')
 		.ifExists()
 		.execute()
-	await dropUpdatedAtTrigger(db, 'social_accounts')
+	await sql`
+		DROP TRIGGER IF EXISTS update_social_accounts_updated_at ON social_accounts;
+	`.execute(db)
 	await db.schema.dropTable('social_accounts').ifExists().execute()
 }
