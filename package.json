@@ -29,7 +29,7 @@
 	"devDependencies": {
 		"@readit/prettier-config": "workspace:*",
 		"husky": "^8.0.0",
-		"turbo": "1.7.0",
+		"turbo": "1.8.5",
 		"typescript": "^5.0.0"
 	},
 	"engines": {
