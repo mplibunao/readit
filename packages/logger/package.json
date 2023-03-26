@@ -20,7 +20,7 @@
 		"eslint-config-custom-server": "workspace:*",
 		"@readit/prettier-config": "workspace:*",
 		"@readit/tsconfig": "workspace:*",
-		"@types/node": "^17.0.12",
+		"@types/node": "^18.0.0",
 		"eslint": "^8.26.0",
 		"pino-pretty": "^10.0.0",
 		"prettier": "2.8.0",
