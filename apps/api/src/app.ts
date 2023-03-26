@@ -55,18 +55,6 @@ export const app: FastifyPluginAsync<AppProps> = async (
 		},
 	})
 
-	/*
-	 * Register session and other values dependent on req so we don't get stale session data
-	 */
-	//fastify.addHook('onRequest', (req, reply, done) => {
-	//diContainer.register('session', asValue(req.session))
-	//diContainer.register('sessionStore', asValue(req.sessionStore))
-	//const cookie: Cookie = { clearCookie: reply.clearCookie }
-	//diContainer.register('cookie', asValue(cookie))
-
-	//done()
-	//})
-
 	fastify.register(Cors, {
 		origin: [config.env.FRONTEND_URL],
 		methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
