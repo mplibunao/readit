@@ -162,7 +162,7 @@ export const buildAuthService = ({
 				await TokenService.del(token.id)
 				await UserMutationsRepo.updateTakeOneOrThrow({
 					where: { id: user.id },
-					data: { confirmedAt: sql`NOW()` },
+					data: { confirmedAt: 'NOW()' },
 				})
 			} catch (error) {
 				if (error instanceof AppError) {
