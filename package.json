@@ -37,5 +37,5 @@
 		"node": ">=16.19.0"
 	},
 	"prettier": "@readit/prettier-config",
-	"packageManager": "pnpm@7.14.1"
+	"packageManager": "pnpm@7.14.2"
 }
