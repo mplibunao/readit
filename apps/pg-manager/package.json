@@ -42,7 +42,7 @@
 		"@cspotcode/source-map-support": "^0.8.1",
 		"@readit/prettier-config": "workspace:*",
 		"@readit/tsconfig": "workspace:*",
-		"@types/node": "^17.0.12",
+		"@types/node": "^18.0.0",
 		"@types/pg": "^8.6.5",
 		"esbuild": "^0.15.12",
 		"esbuild-register": "^3.3.3",

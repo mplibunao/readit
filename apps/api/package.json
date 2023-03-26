@@ -82,7 +82,7 @@
 		"@readit/tsconfig": "workspace:*",
 		"@types/connect-redis": "^0.0.19",
 		"@types/http-errors": "^2.0.1",
-		"@types/node": "^17.0.12",
+		"@types/node": "^18.0.0",
 		"@types/pg": "^8.6.5",
 		"@types/preview-email": "^2.0.1",
 		"@types/react": "^18.0.22",
