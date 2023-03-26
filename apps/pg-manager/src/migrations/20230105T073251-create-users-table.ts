@@ -1,9 +1,7 @@
+import { sql } from 'kysely'
+
 import { IDB } from '../db'
-import {
-	createUpdatedAtTrigger,
-	createTable,
-	dropUpdatedAtTrigger,
-} from '../utils'
+import { createTable } from '../utils'
 
 export async function up(db: IDB): Promise<void> {
 	await createTable(db.schema, 'users', {})
@@ -17,7 +15,12 @@ export async function up(db: IDB): Promise<void> {
 		.addColumn('onboardedAt', 'timestamptz')
 		.execute()
 
-	await createUpdatedAtTrigger(db, 'users')
+	await sql`
+    CREATE TRIGGER update_users_updated_at
+    BEFORE UPDATE ON users
+    FOR EACH ROW
+    EXECUTE PROCEDURE on_updated_at_timestamp();
+  `.execute(db)
 
 	await db.schema
 		.createIndex('idx_users_email')
@@ -35,6 +38,9 @@ export async function up(db: IDB): Promise<void> {
 export async function down(db: IDB): Promise<void> {
 	await db.schema.dropIndex('idx_users_username').ifExists().execute()
 	await db.schema.dropIndex('idx_users_email').ifExists().execute()
-	await dropUpdatedAtTrigger(db, 'users')
+
+	await sql`
+		DROP TRIGGER IF EXISTS update_users_updated_at ON users;
+	`.execute(db)
 	await db.schema.dropTable('users').ifExists().execute()
 }

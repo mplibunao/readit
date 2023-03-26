@@ -1,10 +1,6 @@
-import { Kysely } from 'kysely'
+import { Kysely, sql } from 'kysely'
 
-import {
-	createTable,
-	createUpdatedAtTrigger,
-	dropUpdatedAtTrigger,
-} from '../utils'
+import { createTable } from '../utils'
 
 export async function up(db: Kysely<any>): Promise<void> {
 	await createTable(db.schema, 'tags', {})
@@ -14,7 +10,12 @@ export async function up(db: Kysely<any>): Promise<void> {
 		)
 		.execute()
 
-	await createUpdatedAtTrigger(db, 'tags')
+	await sql`
+    CREATE TRIGGER update_tags_updated_at
+    BEFORE UPDATE ON tags
+    FOR EACH ROW
+    EXECUTE PROCEDURE on_updated_at_timestamp();
+  `.execute(db)
 	await db.schema
 		.createIndex('idx_tags_is_recommended')
 		.on('tags')
@@ -31,6 +32,8 @@ export async function up(db: Kysely<any>): Promise<void> {
 export async function down(db: Kysely<any>): Promise<void> {
 	await db.schema.dropIndex('idx_tags_is_recommended').ifExists().execute()
 	await db.schema.dropIndex('idx_deleted_at').ifExists().execute()
-	await dropUpdatedAtTrigger(db, 'tags')
+	await sql`
+		DROP TRIGGER IF EXISTS update_tags_updated_at ON tags;
+	`.execute(db)
 	await db.schema.dropTable('tags').ifExists().execute()
 }

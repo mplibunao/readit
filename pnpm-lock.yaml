@@ -73,7 +73,7 @@ importers:
       globby: ^13.1.2
       http-errors: ^2.0.0
       ioredis: ^5.2.5
-      kysely: ^0.22.0
+      kysely: ^0.23.5
       minimist: ^1.2.7
       nodemon: ^2.0.20
       npm-run-all: ^4.1.5
@@ -136,7 +136,7 @@ importers:
       fastify-plugin: 4.3.0
       http-errors: 2.0.0
       ioredis: 5.2.5
-      kysely: 0.22.0
+      kysely: 0.23.5
       path-to-regexp: 6.2.1
       pg: 8.8.0
       pino: 8.7.0
@@ -189,7 +189,7 @@ importers:
       esbuild-register: ^3.3.3
       eslint: ^8.26.0
       eslint-config-custom-server: workspace:*
-      kysely: ^0.22.0
+      kysely: ^0.23.5
       kysely-codegen: ^0.8.0
       kysely-migration-cli: ^0.1.1
       npm-run-all: ^4.1.5
@@ -203,7 +203,7 @@ importers:
       '@faker-js/faker': 7.6.0
       argon2: 0.30.2
       dotenv: 16.0.3
-      kysely: 0.22.0
+      kysely: 0.23.5
       kysely-migration-cli: 0.1.1
       pg: 8.8.0
       pino: 8.7.0
@@ -218,7 +218,7 @@ importers:
       esbuild-register: 3.4.1_esbuild@0.15.13
       eslint: 8.27.0
       eslint-config-custom-server: link:../../packages/eslint-config-custom-server
-      kysely-codegen: 0.8.0_kysely@0.22.0+pg@8.8.0
+      kysely-codegen: 0.8.0_kysely@0.23.5+pg@8.8.0
       npm-run-all: 4.1.5
       pino-pretty: 10.0.0
       prettier: 2.8.0
@@ -498,13 +498,13 @@ importers:
       '@types/pg': ^8.6.5
       eslint: ^8.26.0
       eslint-config-custom-server: workspace:*
-      kysely: ^0.22.0
+      kysely: ^0.23.5
       pg: ^8.8.0
       prettier: 2.8.0
       typescript: ^5.0.0
       zod: ^3.20.2
     dependencies:
-      kysely: 0.22.0
+      kysely: 0.23.5
       pg: 8.8.0
       zod: 3.20.2
     devDependencies:
@@ -8792,7 +8792,7 @@ packages:
     engines: {node: '>=6'}
     dev: true
 
-  /kysely-codegen/0.8.0_kysely@0.22.0+pg@8.8.0:
+  /kysely-codegen/0.8.0_kysely@0.23.5+pg@8.8.0:
     resolution: {integrity: sha512-GgWev7KdlHz7pVo8m7i+SvzQUffI8ulewNoN/h8IVNZsbI/nZOeqUbfTT0CT73xrhMLjahNWpIcp+d7vGlX+mg==}
     hasBin: true
     peerDependencies:
@@ -8810,7 +8810,7 @@ packages:
     dependencies:
       chalk: 4.1.2
       dotenv: 16.0.3
-      kysely: 0.22.0
+      kysely: 0.23.5
       micromatch: 4.0.5
       minimist: 1.2.7
       pg: 8.8.0
@@ -8822,8 +8822,8 @@ packages:
       commander: 9.4.1
     dev: false
 
-  /kysely/0.22.0:
-    resolution: {integrity: sha512-ZE3qWtnqLOalodzfK5QUEcm7AEulhxsPNuKaGFsC3XiqO92vMLm+mAHk/NnbSIOtC4RmGm0nsv700i8KDp1gfQ==}
+  /kysely/0.23.5:
+    resolution: {integrity: sha512-TH+b56pVXQq0tsyooYLeNfV11j6ih7D50dyN8tkM0e7ndiUH28Nziojiog3qRFlmEj9XePYdZUrNJ2079Qjdow==}
     engines: {node: '>=14.0.0'}
 
   /language-subtag-registry/0.3.22:
