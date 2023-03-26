@@ -89,8 +89,8 @@ importers:
       superjson: ^1.12.0
       tslib: ^2.4.1
       typescript: ^5.0.0
-      vite-tsconfig-paths: ^4.0.0
       vite: ^4.0.0
+      vite-tsconfig-paths: ^4.0.0
       vitest: ^0.24.5
       zod: ^3.20.2
       zod-to-json-schema: ^3.20.2
@@ -171,8 +171,8 @@ importers:
       prettier: 2.8.0
       preview-email: 3.0.7
       typescript: 5.0.2
-      vite-tsconfig-paths: 4.0.7_l22bgoesu352gjediipbuzzqm4
-      vite: 4.2.1_@types+node@17.0.45
+      vite: 4.2.1_@types+node@18.11.19
+      vite-tsconfig-paths: 4.0.7_bi7wsi5xkno72wnymskyicz4pu
       vitest: 0.24.5_@vitest+ui@0.24.5
 
   apps/pg-manager:
@@ -8198,45 +8198,6 @@ packages:
       - supports-color
     dev: true
 
-  /jest-config/29.3.1_@types+node@18.11.19:
-    resolution: {integrity: sha512-y0tFHdj2WnTEhxmGUK1T7fgLen7YK4RtfvpLFBXfQkh2eMJAQq24Vx9472lvn5wg0MAO6B+iPfJfzdR9hJYalg==}
-    engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
-    peerDependencies:
-      '@types/node': '*'
-      ts-node: '>=9.0.0'
-    peerDependenciesMeta:
-      '@types/node':
-        optional: true
-      ts-node:
-        optional: true
-    dependencies:
-      '@babel/core': 7.20.2
-      '@jest/test-sequencer': 29.3.1
-      '@jest/types': 29.3.1
-      '@types/node': 18.11.19
-      babel-jest: 29.3.1_@babel+core@7.20.2
-      chalk: 4.1.2
-      ci-info: 3.7.0
-      deepmerge: 4.2.2
-      glob: 7.2.3
-      graceful-fs: 4.2.10
-      jest-circus: 29.3.1
-      jest-environment-node: 29.3.1
-      jest-get-type: 29.2.0
-      jest-regex-util: 29.2.0
-      jest-resolve: 29.3.1
-      jest-runner: 29.3.1
-      jest-util: 29.3.1
-      jest-validate: 29.3.1
-      micromatch: 4.0.5
-      parse-json: 5.2.0
-      pretty-format: 29.3.1
-      slash: 3.0.0
-      strip-json-comments: 3.1.1
-    transitivePeerDependencies:
-      - supports-color
-    dev: true
-
   /jest-diff/29.3.1:
     resolution: {integrity: sha512-vU8vyiO7568tmin2lA3r2DP8oRvzhvRcD4DjpXc6uGveQodyk7CKLhQlCSiwgx3g0pFaE88/KLZ0yaTWMc4Uiw==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
@@ -12267,8 +12228,7 @@ packages:
       - supports-color
     dev: true
 
-  /vite/3.2.3_@types+node@18.11.19:
-  /vite-tsconfig-paths/4.0.7_l22bgoesu352gjediipbuzzqm4:
+  /vite-tsconfig-paths/4.0.7_bi7wsi5xkno72wnymskyicz4pu:
     resolution: {integrity: sha512-MwIYaby6kcbQGZqMH+gAK6h0UYQGOkjsuAgw4q6bP/5vWkn8VKvnmLuCQHA2+IzHAJHnE8OFTO4lnJLFMf9+7Q==}
     peerDependencies:
       vite: '*'
@@ -12279,11 +12239,13 @@ packages:
       debug: 4.3.4
       globrex: 0.1.2
       tsconfck: 2.1.1_typescript@5.0.2
-      vite: 3.2.3_@types+node@17.0.45
+      vite: 4.2.1_@types+node@18.11.19
     transitivePeerDependencies:
       - supports-color
       - typescript
     dev: true
+
+  /vite/3.2.3_@types+node@18.11.19:
     resolution: {integrity: sha512-h8jl1TZ76eGs3o2dIBSsvXDLb1m/Ec1iej8ZMdz+PsaFUsftZeWe2CZOI3qogEsMNaywc17gu0q6cQDzh/weCQ==}
     engines: {node: ^14.18.0 || >=16.0.0}
     hasBin: true
@@ -12317,7 +12279,7 @@ packages:
       fsevents: 2.3.2
     dev: true
 
-  /vite/4.2.1_@types+node@17.0.45:
+  /vite/4.2.1_@types+node@18.11.19:
     resolution: {integrity: sha512-7MKhqdy0ISo4wnvwtqZkjke6XN4taqQ2TBaTccLIpOKv7Vp2h4Y+NpmWCnGDeSvvn45KxvWgGyb0MkHvY1vgbg==}
     engines: {node: ^14.18.0 || >=16.0.0}
     hasBin: true
@@ -12342,7 +12304,7 @@ packages:
       terser:
         optional: true
     dependencies:
-      '@types/node': 17.0.45
+      '@types/node': 18.11.19
       esbuild: 0.17.14
       postcss: 8.4.21
       resolve: 1.22.1
