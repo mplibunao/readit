@@ -22,9 +22,9 @@
 		"@readit/tsconfig": "workspace:*",
 		"@types/node": "^18.0.0",
 		"eslint": "^8.26.0",
-		"pino-pretty": "^9.1.1",
+		"pino-pretty": "^10.0.0",
 		"prettier": "2.8.0",
-		"typescript": "^4.8.4"
+		"typescript": "^5.0.0"
 	},
 	"dependencies": {
 		"pino": "8.7.0",
