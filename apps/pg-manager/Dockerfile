@@ -1,5 +1,5 @@
-ARG BASE_IMAGE=node:18.12.1-bullseye-slim
-ARG PRODUCTION_IMAGE=node:18.12.1-bullseye-slim
+ARG BASE_IMAGE=node:19.8.1-bullseye-slim
+ARG PRODUCTION_IMAGE=node:19.8.1-bullseye-slim
 #ARG PRODUCTION_IMAGE=node:18.12.1-alpine
 
 FROM $BASE_IMAGE AS base
