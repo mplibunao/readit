@@ -101,7 +101,7 @@
 		"preview-email": "^3.0.7",
 		"typescript": "^5.0.0",
 		"vite": "^3.2.2",
-		"vite-tsconfig-paths": "^3.5.2",
+		"vite-tsconfig-paths": "^4.0.0",
 		"vitest": "^0.24.5"
 	},
 	"prettier": "@readit/prettier-config",
