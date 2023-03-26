@@ -25,6 +25,7 @@
 	"labels": ["dependencies", "renovate"],
 	"dependencyDashboard": true,
 	"includeForks": false,
+	"ignorePaths": ["packages/emails/.react-email/**"],
 	"packageRules": [
 		{
 			"matchDatasources": ["docker"],
