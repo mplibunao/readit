@@ -27,7 +27,7 @@ importers:
       '@google-cloud/pubsub': ^3.3.0
       '@react-email/button': ^0.0.6
       '@react-email/container': ^0.0.6
-      '@react-email/head': ^0.0.4
+      '@react-email/head': ^0.0.5
       '@react-email/heading': ^0.0.7
       '@react-email/hr': ^0.0.4
       '@react-email/html': ^0.0.4
@@ -106,7 +106,7 @@ importers:
       '@google-cloud/pubsub': 3.3.0
       '@react-email/button': 0.0.6
       '@react-email/container': 0.0.6
-      '@react-email/head': 0.0.4
+      '@react-email/head': 0.0.5
       '@react-email/heading': 0.0.7
       '@react-email/hr': 0.0.4
       '@react-email/html': 0.0.4
@@ -388,7 +388,7 @@ importers:
     specifiers:
       '@react-email/button': ^0.0.6
       '@react-email/container': ^0.0.6
-      '@react-email/head': ^0.0.4
+      '@react-email/head': ^0.0.5
       '@react-email/heading': ^0.0.7
       '@react-email/hr': ^0.0.4
       '@react-email/html': ^0.0.4
@@ -409,7 +409,7 @@ importers:
     dependencies:
       '@react-email/button': 0.0.6
       '@react-email/container': 0.0.6
-      '@react-email/head': 0.0.4
+      '@react-email/head': 0.0.5
       '@react-email/heading': 0.0.7
       '@react-email/hr': 0.0.4
       '@react-email/html': 0.0.4
@@ -549,7 +549,7 @@ importers:
       prettier: 2.8.7
       prettier-plugin-tailwindcss: 0.2.0
     dependencies:
-      '@ianvs/prettier-plugin-sort-imports': 3.7.1_prettier@2.8.7
+      '@ianvs/prettier-plugin-sort-imports': 3.7.2_prettier@2.8.7
       prettier-plugin-tailwindcss: 0.2.0_prettier@2.8.7
     devDependencies:
       prettier: 2.8.7
@@ -2629,8 +2629,8 @@ packages:
   /@humanwhocodes/object-schema/1.2.1:
     resolution: {integrity: sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==}
 
-  /@ianvs/prettier-plugin-sort-imports/3.7.1_prettier@2.8.7:
-    resolution: {integrity: sha512-XDnBUUruJY9KgNd7T2ZHnVPWo5B9NzVDCLEMm7HjXTA3rTtMg5Q46gYRjLvampDXSmN8+icu54aRE3IIT8U+1w==}
+  /@ianvs/prettier-plugin-sort-imports/3.7.2_prettier@2.8.7:
+    resolution: {integrity: sha512-bVckKToJM8XV2wTOG1VpeXrSmfAG49esVrikbxeFbY51RJdNke9AdMANJtGuACB59uo+pGlz0wBdWFrRzWyO1A==}
     peerDependencies:
       '@vue/compiler-sfc': '>=3.0.0'
       prettier: 2.x
@@ -3340,8 +3340,8 @@ packages:
       react: 18.2.0
     dev: false
 
-  /@react-email/head/0.0.4:
-    resolution: {integrity: sha512-hTvxNtTFCOyt3zdG62G3AkKO1Vm8ZhN0XIUv0iSdYachvzYvW10FNHwTqzXbXor4Bvz1GRKF+FyIYVD6AnaHog==}
+  /@react-email/head/0.0.5:
+    resolution: {integrity: sha512-s84OxJxZMee2z5b1a+RVwY1NOSUNNf1ecjPf6n64aZmMNcNUyn4gOl7RO6xbfBrZko7TigBwsFB1Cgjxtn/ydg==}
     engines: {node: '>=16.0.0'}
     dependencies:
       react: 18.2.0
