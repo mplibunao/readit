@@ -44,7 +44,7 @@
 		"@readit/tsconfig": "workspace:*",
 		"@types/node": "^18.0.0",
 		"@types/pg": "^8.6.5",
-		"esbuild": "^0.15.12",
+		"esbuild": "^0.17.0",
 		"esbuild-register": "^3.3.3",
 		"eslint": "^8.26.0",
 		"eslint-config-custom-server": "workspace:*",

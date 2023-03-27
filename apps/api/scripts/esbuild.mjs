@@ -1,4 +1,4 @@
-import { build, analyzeMetafile } from 'esbuild'
+import esbuild, { analyzeMetafile } from 'esbuild'
 import fs from 'fs'
 import { globby } from 'globby'
 import minimist from 'minimist'
@@ -23,7 +23,6 @@ import minimist from 'minimist'
  *	-w  --watch									 Watch for changes and rebuild
  *	-m	--minify								 Minify the bundle.
  *	-d	--directory							 Directory to output the bundle to. Defaults to `dist`
- *	-i  --incremental 					 Incremental build. Defaults to false
  */
 async function main() {
 	const getPlugins = () => {
@@ -55,12 +54,11 @@ async function main() {
 	const watch = argv.w || argv.watch
 	const minify = argv.m || argv.minify
 	const directory = argv.d || argv.directory || 'dist'
-	const incremental = argv.i || argv.incremental
 
 	const entryPoints = await globby(entrypoint)
 	const plugins = getPlugins()
 
-	const result = await build({
+	const context = await esbuild.context({
 		entryPoints,
 		bundle: true,
 		[entryPoints.length > 1 ? 'outdir' : 'outfile']:
@@ -74,23 +72,26 @@ async function main() {
 		sourcemap: true,
 		plugins,
 		metafile: true,
-		watch: !!watch,
-		incremental: !!incremental,
 	})
 
-	const text = await analyzeMetafile(result.metafile, {
-		verbose: true,
-	})
-
-	if (argv.saveAnalyze) {
-		fs.writeFile('analyze', text, (err) => {
-			if (err) {
-				console.error(err)
-			}
-		})
-	} else {
-		//console.log(text)
+	if (watch) {
+		await context.watch()
 	}
+
+	/*
+	 *  Upgrading broke this
+	 *  const text = await analyzeMetafile(context.metafile, {
+	 *    verbose: true,
+	 *  })
+	 *
+	 *  if (argv.saveAnalyze) {
+	 *    fs.writeFile('analyze', text, (err) => {
+	 *      if (err) {
+	 *        console.error(err)
+	 *      }
+	 *    })
+	 *  }
+	 */
 }
 
 main()
