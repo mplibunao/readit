@@ -255,7 +255,7 @@ importers:
       '@types/react-dom': ^18.0.7
       '@types/testing-library__jest-dom': ^5.14.5
       '@vercel/edge-config': ^0.1.0
-      ariakit: 2.0.0-next.41
+      ariakit: 2.0.0-next.43
       autoprefixer: ^10.4.13
       cva: npm:class-variance-authority@^0.4.0
       eslint: ^8.26.0
@@ -298,7 +298,7 @@ importers:
       '@trpc/react-query': 10.9.0_qw4miir7nnxijwjta54q3esyeq
       '@trpc/server': 10.9.0
       '@vercel/edge-config': 0.1.0
-      ariakit: 2.0.0-next.41_biqbaboplfbrettd7655fr4n2y
+      ariakit: 2.0.0-next.43_2zx2umvpluuhvlq44va5bta2da
       cva: /class-variance-authority/0.4.0_typescript@5.0.2
       framer-motion: 10.9.1_biqbaboplfbrettd7655fr4n2y
       jotai: 2.0.2_react@18.2.0
@@ -3828,7 +3828,6 @@ packages:
 
   /@types/prop-types/15.7.5:
     resolution: {integrity: sha512-JCB8C6SnDoQf0cNycqd/35A7MjcnK+ZTqE7judS6o7utxUCg6imJg3QK2qzHKszlTjcj2cn+NwMB2i96ubpj7w==}
-    dev: true
 
   /@types/q/1.5.5:
     resolution: {integrity: sha512-L28j2FcJfSZOnL1WBjDYp2vUHCeIFlyYI/53EwD/rKUBQ7MtUUfbQWiyKJGpcnv4/WgrhWsFKrcPstcAt/J0tQ==}
@@ -3854,7 +3853,6 @@ packages:
       '@types/prop-types': 15.7.5
       '@types/scheduler': 0.16.2
       csstype: 3.1.1
-    dev: true
 
   /@types/redis/2.8.32:
     resolution: {integrity: sha512-7jkMKxcGq9p242exlbsVzuJb57KqHRhNl4dHoQu2Y5v9bCAbtIXXH0R3HleSQW4CTOqpHIYUW3t6tpUj4BVQ+w==}
@@ -3864,7 +3862,6 @@ packages:
 
   /@types/scheduler/0.16.2:
     resolution: {integrity: sha512-hppQEBDmlwhFAXKJX2KnWLYu5yMfi91yazPb2l+lbJiwW+wdo1gNeRA+3RgNSO39WYX2euey41KEwnqesU2Jew==}
-    dev: true
 
   /@types/semver/7.3.13:
     resolution: {integrity: sha512-21cFJr9z3g5dW8B0CVI9g2O9beqaThGQ6ZFBqHfwhzLDKUxaqTIy3vnfah/UPkfOiF2pLq+tGz+W8RyCskuslw==}
@@ -4309,24 +4306,34 @@ packages:
       deep-equal: 2.1.0
     dev: true
 
-  /ariakit-utils/0.17.0-next.26_react@18.2.0:
-    resolution: {integrity: sha512-Su1MA0nWcMKI/lPS++jgkXek6Z+Az4SGOTIjGz2mn7kN6pSRO3Xm4gW/6gLpbu0kmVd+MYNSpmEvFnJUf/udhA==}
+  /ariakit-react-utils/0.17.0-next.27_fan5qbzahqtxlm5dzefqlqx5ia:
+    resolution: {integrity: sha512-YyL3sEowwaw6r8wRjENB9S4Hjz/ppyv5nJNeFkb6xaEX/QYUYmqL+lQch50LW04vj9oa8RGHlY2SmyQX3d7g3w==}
     peerDependencies:
+      '@types/react': ^17.0.0 || ^18.0.0
       react: ^17.0.0 || ^18.0.0
     dependencies:
+      '@types/react': 18.0.25
+      ariakit-utils: 0.17.0-next.27
       react: 18.2.0
     dev: false
 
-  /ariakit/2.0.0-next.41_biqbaboplfbrettd7655fr4n2y:
-    resolution: {integrity: sha512-79ACgnIofsC7ULirjz/dqjNCwUW9TmX7ULdCqHHrpJP1H+lw9vtpWv4eeuRAII2lsyfNtXmLnY6qZ1ZV3ucxmA==}
+  /ariakit-utils/0.17.0-next.27:
+    resolution: {integrity: sha512-IcjtuHl7FZP5mGrpvTSXqPUj+jRuIuBHlJAlxr3y4pxRgYpsYVpyZOClU3yrOoG7KUVApfmJjPOGWy00y+Gi+Q==}
+    dev: false
+
+  /ariakit/2.0.0-next.43_2zx2umvpluuhvlq44va5bta2da:
+    resolution: {integrity: sha512-CatNgIMyurefYTEvp8aF3aQQGR5m9bZxYQXuqyw/MKwxJ/aJ295SSSY5pXyTHbbsgDI28GOKFYa5pfUBvkd7cQ==}
     peerDependencies:
       react: ^17.0.0 || ^18.0.0
       react-dom: ^17.0.0 || ^18.0.0
     dependencies:
       '@floating-ui/dom': 1.0.10
-      ariakit-utils: 0.17.0-next.26_react@18.2.0
+      ariakit-react-utils: 0.17.0-next.27_fan5qbzahqtxlm5dzefqlqx5ia
+      ariakit-utils: 0.17.0-next.27
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
+    transitivePeerDependencies:
+      - '@types/react'
     dev: false
 
   /arr-diff/1.1.0:
@@ -5440,7 +5447,6 @@ packages:
 
   /csstype/3.1.1:
     resolution: {integrity: sha512-DJR/VvkAvSZW9bTouZue2sSxDwdTN92uHjqeKVm+0dAqdfNykRzQ95tay8aXMBAAPpUiq4Qcug2L7neoRh2Egw==}
-    dev: true
 
   /damerau-levenshtein/1.0.8:
     resolution: {integrity: sha512-sdQSFB7+llfUcQHUQO3+B8ERRj0Oa4w9POWMI/puGtuf7gFywGmkaLCElnudfTiKZV+NvHqL0ifzdrI8Ro7ESA==}
