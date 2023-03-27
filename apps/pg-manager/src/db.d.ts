@@ -1,85 +1,81 @@
-import { ColumnType, RawBuilder } from 'kysely'
+import type { ColumnType } from 'kysely'
 
 export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
 	? ColumnType<S, I | undefined, U>
 	: ColumnType<T, T | undefined, T>
 
-export type Timestamp = ColumnType<
-	Date,
-	Date | string | RawBuilder,
-	Date | string | RawBuilder
->
+export type Timestamp = ColumnType<Date, Date | string, Date | string>
 
 export interface Communities {
-	createdAt: Generated<Timestamp>
-	deletedAt: Timestamp | null
-	description: string | null
 	id: Generated<string>
-	isNsfw: Generated<boolean>
-	name: string
+	createdAt: Generated<Timestamp>
 	updatedAt: Generated<Timestamp>
+	deletedAt: Timestamp | null
+	name: string
+	description: string | null
+	isNsfw: Generated<boolean>
 }
 
 export interface CommunityTags {
-	communityId: string
-	createdAt: Generated<Timestamp>
 	id: Generated<string>
-	isPrimary: Generated<boolean>
-	tagId: string
+	createdAt: Generated<Timestamp>
 	updatedAt: Generated<Timestamp>
+	tagId: string
+	communityId: string
+	isPrimary: Generated<boolean>
 }
 
 export interface Memberships {
-	communityId: string
-	createdAt: Generated<Timestamp>
-	deletedAt: Timestamp | null
 	id: Generated<string>
-	role: string
+	createdAt: Generated<Timestamp>
 	updatedAt: Generated<Timestamp>
+	deletedAt: Timestamp | null
 	userId: string
+	communityId: string
+	role: string
 }
 
 export interface SocialAccounts {
-	createdAt: Generated<Timestamp>
 	id: Generated<string>
-	provider: string
-	socialId: string
+	createdAt: Generated<Timestamp>
 	updatedAt: Generated<Timestamp>
-	userId: string
+	socialId: string
+	provider: string
 	usernameOrEmail: string
+	userId: string
 }
 
 export interface Tags {
-	createdAt: Generated<Timestamp>
-	deletedAt: Timestamp | null
 	id: Generated<string>
-	isRecommended: Generated<boolean>
-	name: string
+	createdAt: Generated<Timestamp>
 	updatedAt: Generated<Timestamp>
+	deletedAt: Timestamp | null
+	name: string
+	isRecommended: Generated<boolean>
 }
 
 export interface UserInterests {
-	createdAt: Generated<Timestamp>
 	id: Generated<string>
-	tagId: string
+	createdAt: Generated<Timestamp>
 	updatedAt: Generated<Timestamp>
 	userId: string
+	tagId: string
 }
 
 export interface Users {
-	confirmedAt: Timestamp | null
+	id: Generated<string>
 	createdAt: Generated<Timestamp>
+	updatedAt: Generated<Timestamp>
 	deletedAt: Timestamp | null
 	email: string
-	firstName: string
-	hashedPassword: string | null
-	id: Generated<string>
-	imageUrl: string | null
-	isAdmin: Generated<boolean>
-	lastName: string
-	onboardedAt: Timestamp | null
-	updatedAt: Generated<Timestamp>
 	username: string
+	hashedPassword: string | null
+	firstName: string
+	lastName: string
+	confirmedAt: Timestamp | null
+	isAdmin: Generated<boolean>
+	onboardedAt: Timestamp | null
+	imageUrl: string | null
 }
 
 export interface DB {

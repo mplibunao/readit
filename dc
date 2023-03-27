@@ -14,10 +14,10 @@
 #}
 
 function ci { ## Runs ci
-  pnpm typecheck
-  pnpm lint:check
-  pnpm format:check
-  pnpm test
+  pnpm typecheck || return $?
+  pnpm lint:check || return $?
+  pnpm format:check || return $?
+  pnpm test || return $?
 }
 
 function db:reset { ## Reset database. Destroy then start it back up

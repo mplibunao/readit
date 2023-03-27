@@ -8,7 +8,6 @@ import { createMockSession } from '@api/test/mocks/session'
 import { asValue } from 'awilix'
 import { randomUUID } from 'crypto'
 import type { FastifyInstance } from 'fastify'
-import { sql } from 'kysely'
 import { describe, beforeEach, test, expect } from 'vitest'
 
 import { InvalidToken, TokenNotFound } from '../../domain/token.errors'
@@ -203,7 +202,7 @@ describe('AuthService', () => {
 				firstName: 'John',
 				lastName: 'Doe',
 				username: 'johnny',
-				confirmedAt: sql`now()`,
+				confirmedAt: 'Now()',
 			}
 			await UserMutationsRepo.create(confirmedUser)
 			const token = await TokenService.create({
