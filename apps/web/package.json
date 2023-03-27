@@ -34,7 +34,7 @@
 		"@trpc/react-query": "^10.9.0",
 		"@trpc/server": "^10.9.0",
 		"@vercel/edge-config": "^0.1.0",
-		"ariakit": "2.0.0-next.41",
+		"ariakit": "2.0.0-next.43",
 		"cva": "npm:class-variance-authority@^0.4.0",
 		"framer-motion": "^10.0.0",
 		"jotai": "^2.0.2",
