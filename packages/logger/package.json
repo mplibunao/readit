@@ -27,7 +27,7 @@
 		"typescript": "^5.0.0"
 	},
 	"dependencies": {
-		"pino": "8.7.0",
+		"pino": "8.11.0",
 		"zod": "^3.20.2"
 	},
 	"prettier": "@readit/prettier-config",
