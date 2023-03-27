@@ -30,6 +30,12 @@ function getTranspilePackages() {
 getTranspilePackages()
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+	transpilePackages: getTranspilePackages(),
+	compiler: {
+		removeConsole: {
+			exclude: ['error', 'warn'],
+		},
+	},
 	images: {
 		remotePatterns: [
 			{
@@ -63,7 +69,6 @@ const nextConfig = {
 	experimental: {
 		scrollRestoration: true,
 		legacyBrowsers: false,
-		transpilePackages: getTranspilePackages(),
 		swcPlugins: [
 			// Allow Date/Map in getStaticProps
 			['next-superjson-plugin', {}],
