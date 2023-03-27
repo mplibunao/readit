@@ -32,7 +32,7 @@ jobs:
   ci:
     env:
       API_HOST: 127.0.0.1
-      DATABASE_URL: postgres://readit:postgres@localhost:5432/readit
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/readit_test
       FRONTEND_URL: http://localhost:3000
       IS_PROD: false
       NODE_ENV: test
