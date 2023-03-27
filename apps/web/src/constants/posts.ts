@@ -102,4 +102,4 @@ export const posts = [
 	// More questions...
 ]
 
-export type TempPost = typeof posts[0]
+export type TempPost = (typeof posts)[0]
