@@ -3,7 +3,6 @@ import { Session } from '@api/infra/session'
 import { AppError, InternalServerError } from '@api/utils/errors/baseError'
 import { email, id } from '@readit/utils'
 import argon2 from 'argon2'
-import { sql } from 'kysely'
 import { z } from 'zod'
 
 import { InvalidToken } from '../domain/token.errors'
