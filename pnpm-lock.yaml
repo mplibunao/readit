@@ -82,7 +82,7 @@ importers:
       pino: 8.7.0
       pino-pretty: ^10.0.0
       postmark: ^3.0.15
-      prettier: 2.8.0
+      prettier: 2.8.7
       preview-email: ^3.0.7
       react: 18.2.0
       react-email: ^1.7.10
@@ -168,7 +168,7 @@ importers:
       nodemon: 2.0.20
       npm-run-all: 4.1.5
       pino-pretty: 10.0.0
-      prettier: 2.8.0
+      prettier: 2.8.7
       preview-email: 3.0.7
       typescript: 5.0.2
       vite: 4.2.1_@types+node@18.11.19
@@ -196,7 +196,7 @@ importers:
       pg: ^8.8.0
       pino: 8.7.0
       pino-pretty: ^10.0.0
-      prettier: 2.8.0
+      prettier: 2.8.7
       typescript: ^5.0.0
       zod: ^3.20.2
     dependencies:
@@ -218,10 +218,10 @@ importers:
       esbuild-register: 3.4.1_esbuild@0.15.13
       eslint: 8.27.0
       eslint-config-custom-server: link:../../packages/eslint-config-custom-server
-      kysely-codegen: 0.10.0_kysely@0.22.0+pg@8.8.0
+      kysely-codegen: 0.10.0_kysely@0.23.5+pg@8.8.0
       npm-run-all: 4.1.5
       pino-pretty: 10.0.0
-      prettier: 2.8.0
+      prettier: 2.8.7
       typescript: 5.0.2
 
   apps/web:
@@ -273,7 +273,7 @@ importers:
       nodemon: ^2.0.20
       npm-run-all: ^4.1.5
       postcss: ^8.4.19
-      prettier: 2.8.0
+      prettier: 2.8.7
       react: 18.2.0
       react-dom: 18.2.0
       react-error-boundary: ^4.0.0
@@ -343,7 +343,7 @@ importers:
       nodemon: 2.0.20
       npm-run-all: 4.1.5
       postcss: 8.4.19
-      prettier: 2.8.0
+      prettier: 2.8.7
       tailwindcss: 3.2.4_postcss@8.4.19
       typescript: 5.0.2
 
@@ -475,7 +475,7 @@ importers:
       '@vercel/edge-config': ^0.1.0
       eslint: ^8.26.0
       eslint-config-custom-server: workspace:*
-      prettier: 2.8.0
+      prettier: 2.8.7
       typescript: ^5.0.0
       vitest: ^0.24.5
     devDependencies:
@@ -485,7 +485,7 @@ importers:
       '@vercel/edge-config': 0.1.0
       eslint: 8.27.0
       eslint-config-custom-server: link:../eslint-config-custom-server
-      prettier: 2.8.0
+      prettier: 2.8.7
       typescript: 5.0.2
       vitest: 0.24.5
 
@@ -500,7 +500,7 @@ importers:
       eslint-config-custom-server: workspace:*
       kysely: ^0.23.5
       pg: ^8.8.0
-      prettier: 2.8.0
+      prettier: 2.8.7
       typescript: ^5.0.0
       zod: ^3.20.2
     dependencies:
@@ -515,7 +515,7 @@ importers:
       '@types/pg': 8.6.5
       eslint: 8.27.0
       eslint-config-custom-server: link:../eslint-config-custom-server
-      prettier: 2.8.0
+      prettier: 2.8.7
       typescript: 5.0.2
 
   packages/logger:
@@ -527,7 +527,7 @@ importers:
       eslint-config-custom-server: workspace:*
       pino: 8.7.0
       pino-pretty: ^10.0.0
-      prettier: 2.8.0
+      prettier: 2.8.7
       typescript: ^5.0.0
       zod: ^3.20.2
     dependencies:
@@ -540,19 +540,19 @@ importers:
       eslint: 8.27.0
       eslint-config-custom-server: link:../eslint-config-custom-server
       pino-pretty: 10.0.0
-      prettier: 2.8.0
+      prettier: 2.8.7
       typescript: 5.0.2
 
   packages/prettier-config:
     specifiers:
       '@ianvs/prettier-plugin-sort-imports': 3.7.1
-      prettier: 2.8.0
+      prettier: 2.8.7
       prettier-plugin-tailwindcss: 0.2.0
     dependencies:
-      '@ianvs/prettier-plugin-sort-imports': 3.7.1_prettier@2.8.0
-      prettier-plugin-tailwindcss: 0.2.0_prettier@2.8.0
+      '@ianvs/prettier-plugin-sort-imports': 3.7.1_prettier@2.8.7
+      prettier-plugin-tailwindcss: 0.2.0_prettier@2.8.7
     devDependencies:
-      prettier: 2.8.0
+      prettier: 2.8.7
 
   packages/tailwind-config:
     specifiers:
@@ -580,7 +580,7 @@ importers:
       '@vitest/ui': ^0.24.5
       eslint: ^8.26.0
       eslint-config-custom-server: workspace:*
-      prettier: 2.8.0
+      prettier: 2.8.7
       typescript: ^5.0.0
       vitest: ^0.24.5
       zod: ^3.20.2
@@ -594,7 +594,7 @@ importers:
       '@vitest/ui': 0.24.5
       eslint: 8.27.0
       eslint-config-custom-server: link:../eslint-config-custom-server
-      prettier: 2.8.0
+      prettier: 2.8.7
       typescript: 5.0.2
       vitest: 0.24.5_@vitest+ui@0.24.5
 
@@ -2674,7 +2674,7 @@ packages:
   /@humanwhocodes/object-schema/1.2.1:
     resolution: {integrity: sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==}
 
-  /@ianvs/prettier-plugin-sort-imports/3.7.1_prettier@2.8.0:
+  /@ianvs/prettier-plugin-sort-imports/3.7.1_prettier@2.8.7:
     resolution: {integrity: sha512-XDnBUUruJY9KgNd7T2ZHnVPWo5B9NzVDCLEMm7HjXTA3rTtMg5Q46gYRjLvampDXSmN8+icu54aRE3IIT8U+1w==}
     peerDependencies:
       '@vue/compiler-sfc': '>=3.0.0'
@@ -2691,7 +2691,7 @@ packages:
       javascript-natural-sort: 0.7.1
       lodash.clone: 4.5.0
       lodash.isequal: 4.5.0
-      prettier: 2.8.0
+      prettier: 2.8.7
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -8793,7 +8793,7 @@ packages:
     engines: {node: '>=6'}
     dev: true
 
-  /kysely-codegen/0.10.0_kysely@0.22.0+pg@8.8.0:
+  /kysely-codegen/0.10.0_kysely@0.23.5+pg@8.8.0:
     resolution: {integrity: sha512-EV2v9yr9N9WrUPrURvFl5FPTtz39npsi1p1tLpJwEcFeOAKAPJruBpAASvnZWdqu5Pw/aaTssStE3qcI2sfxMQ==}
     hasBin: true
     peerDependencies:
@@ -10269,17 +10269,17 @@ packages:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
     engines: {node: '>= 0.8.0'}
 
-  /prettier-plugin-tailwindcss/0.2.0_prettier@2.8.0:
+  /prettier-plugin-tailwindcss/0.2.0_prettier@2.8.7:
     resolution: {integrity: sha512-Ruqig/mdWCSpqdq9WK44nrmqM4BFWTzBPhPGwC5NK3coV9eZntEQPB84MGZbjAg0XQU02jVRHXNRPREBzxvM+A==}
     engines: {node: '>=12.17.0'}
     peerDependencies:
       prettier: '>=2.2.0'
     dependencies:
-      prettier: 2.8.0
+      prettier: 2.8.7
     dev: false
 
-  /prettier/2.8.0:
-    resolution: {integrity: sha512-9Lmg8hTFZKG0Asr/kW9Bp8tJjRVluO8EJQVfY2T7FMw9T5jy4I/Uvx0Rca/XWf50QQ1/SS48+6IJWnrb+2yemA==}
+  /prettier/2.8.7:
+    resolution: {integrity: sha512-yPngTo3aXUUmyuTjeTUT75txrf+aMh9FiD7q9ZE/i6r0bPb22g4FsE6Y338PQX1bmfy08i9QQCB7/rcUAVntfw==}
     engines: {node: '>=10.13.0'}
     hasBin: true
 
