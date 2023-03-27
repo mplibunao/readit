@@ -27,12 +27,12 @@
 		"@readit/prettier-config": "workspace:*",
 		"@readit/tsconfig": "workspace:*",
 		"@types/node": "^18.0.0",
-		"@vitest/coverage-c8": "^0.24.5",
-		"@vitest/ui": "^0.24.5",
+		"@vitest/coverage-c8": "^0.29.0",
+		"@vitest/ui": "^0.29.0",
 		"eslint": "^8.26.0",
 		"prettier": "2.8.7",
 		"typescript": "^5.0.0",
-		"vitest": "^0.24.5"
+		"vitest": "^0.29.0"
 	},
 	"prettier": "@readit/prettier-config",
 	"eslintConfig": {
