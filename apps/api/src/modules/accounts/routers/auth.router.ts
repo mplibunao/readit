@@ -73,6 +73,16 @@ export const authRouter = router({
 			},
 		),
 
+	clearPartialOAuthUser: publicProcedure.mutation(async ({ ctx }) => {
+		const { session, deps } = ctx
+		try {
+			session.partialUser = undefined
+			return 'ok'
+		} catch (error) {
+			throw handleTRPCServiceErrors(error, deps.logger)
+		}
+	}),
+
 	login: publicProcedure
 		.input(UserSchemas.loginInput)
 		.output(z.void())

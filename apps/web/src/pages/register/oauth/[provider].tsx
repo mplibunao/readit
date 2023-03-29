@@ -1,8 +1,8 @@
+import { Button } from '@/components/Button'
 import { Card } from '@/components/Card'
 import { ErrorPageTemplate } from '@/components/Error'
 import { Logo } from '@/components/Icon'
 import { PageLayout } from '@/components/Layout'
-import { styledLink } from '@/components/Link'
 import { LoadingPage } from '@/components/Spinner'
 import { errorToast, successToast } from '@/components/Toast'
 import { OAuthRegisterForm } from '@/features/accounts/auth/OAuthRegisterForm'
@@ -10,10 +10,8 @@ import { NextPageWithLayout } from '@/pages/_app'
 import { client } from '@/utils/trpc/client'
 import { OAuthSchemas } from '@api/modules/accounts/domain/oAuth.schema'
 import { capitalize } from '@api/utils/string'
-import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React from 'react'
-import { twMerge } from 'tailwind-merge'
 
 const providers = ['google', 'discord']
 
@@ -42,6 +40,19 @@ export const OAuthRegister: NextPageWithLayout = (): JSX.Element => {
 			router.push('/')
 		},
 	})
+
+	const clearPartialOAuthUserMutation =
+		client.auth.clearPartialOAuthUser.useMutation({
+			onError: (error) => {
+				errorToast({
+					title: 'Failed to clear social details',
+					message: error.message,
+				})
+			},
+			onSuccess: () => {
+				router.push('/')
+			},
+		})
 
 	if (!router.isReady) return <LoadingPage />
 
@@ -95,17 +106,15 @@ export const OAuthRegister: NextPageWithLayout = (): JSX.Element => {
 					<div className='mt-6'>
 						<div className='relative'>
 							<div className='relative flex justify-center text-sm'>
-								<Link
-									href='/'
-									className={twMerge(
-										styledLink({
-											intent: 'neutral' as const,
-										}),
-										'px-2',
-									)}
+								<Button
+									className={'px-2 w-full'}
+									intent='ghost'
+									loadingText='Going back'
+									loading={clearPartialOAuthUserMutation.isLoading}
+									onClick={() => clearPartialOAuthUserMutation.mutate()}
 								>
 									Go back home
-								</Link>
+								</Button>
 							</div>
 						</div>
 					</div>
