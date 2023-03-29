@@ -2,8 +2,6 @@
 	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
 	"extends": ["config:base"],
 	"automerge": true,
-	"commitMessage": "{{semanticPrefix}}Update {{depName}} to {{newVersion}} 🌟",
-	"prTitle": "{{semanticPrefix}}{{#if isPin}}Pin{{else}}Update{{/if}} dependency {{depName}} to version {{newVersion}} 🌟",
 	"major": {
 		"dependencyDashboardApproval": true,
 		"automerge": false
