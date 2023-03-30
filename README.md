@@ -39,6 +39,7 @@
 - [Migrations](./apps/pg-manager/README.md)
 - [Tunneling](./docs/tunnel.md)
 - [CLI](./cli/README.md)
+- [docs improvements](./docs/improvements.md)
 
 # Reddit Clone v2
 
