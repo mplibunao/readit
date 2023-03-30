@@ -17,7 +17,7 @@ import {
 	InvalidDeleteFilter,
 	InvalidQueryFilter,
 } from '@api/utils/errors/repoErrors'
-import { NoResultError } from 'kysely'
+import { NoResultError, sql } from 'kysely'
 import Pg from 'pg'
 
 type TagDeleteQuery = DeleteQuery<'tags'>
@@ -222,6 +222,71 @@ export const buildTagRepository = ({ pg }: Dependencies) => {
 				.leftJoin('tags', 'userInterests.tagId', 'tags.id')
 				.where('userId', '=', userId)
 				.select(['tagId', 'name'])
+				.execute()
+		} catch (error) {
+			throw new DBError({ cause: error })
+		}
+	}
+
+	const getRecommendedCommunities = async (userId: string, trx?: Trx) => {
+		try {
+			const connection = trx ? trx : pg
+			const { countAll } = connection.fn
+			return await connection
+				.selectFrom((eb) =>
+					eb
+						.selectFrom('communityTags')
+						.innerJoin(
+							'communities',
+							'communities.id',
+							'communityTags.communityId',
+						)
+						.innerJoin('tags', 'communityTags.tagId', 'tags.id')
+						.innerJoin('userInterests', 'tags.id', 'userInterests.tagId')
+						.innerJoin(
+							connection
+								.selectFrom('communityTags')
+								.innerJoin(
+									'userInterests',
+									'communityTags.tagId',
+									'userInterests.tagId',
+								)
+								.where('userInterests.userId', '=', userId)
+								.select([
+									'communityTags.communityId',
+									countAll().as('numCommonTags'),
+								])
+								.groupBy('communityTags.communityId')
+								.as('commonTags'),
+							'commonTags.communityId',
+							'communities.id',
+						)
+						.where('userInterests.userId', '=', userId)
+						.groupBy([
+							'tags.id',
+							'communities.id',
+							'commonTags.numCommonTags',
+							'communityTags.isPrimary',
+						])
+						.select([
+							'tags.name',
+							'tags.id',
+							'communities.name',
+							'communities.id',
+							'numCommonTags',
+							(eb) =>
+								sql<number>`ROW_NUMBER() OVER (PARTITION BY ${eb.ref(
+									'tags.id',
+								)} ORDER BY ${eb.ref('numCommonTags')} DESC, ${eb.ref(
+									'communityTags.isPrimary',
+								)} DESC)`.as('tagRank'),
+						])
+						.as('communityRecommendations'),
+				)
+				.selectAll()
+				.where('tagRank', '<=', 5)
+				.orderBy('name')
+				.orderBy('tagRank')
 				.execute()
 		} catch (error) {
 			throw new DBError({ cause: error })
