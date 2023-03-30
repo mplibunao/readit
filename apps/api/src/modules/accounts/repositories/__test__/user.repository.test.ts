@@ -3,11 +3,10 @@ import {
 	createSocialAccount,
 	createTestUser,
 } from '@api/test/fixtures/accounts'
+import { NotFound } from '@api/utils/errors/baseError'
 import { randomUUID } from 'crypto'
 import type { FastifyInstance } from 'fastify'
 import { beforeEach, describe, expect, test } from 'vitest'
-
-import { UserNotFound } from '../../domain/user.errors'
 
 type Ctx = {
 	fastify: FastifyInstance
@@ -20,90 +19,70 @@ describe('UserRepository', () => {
 
 	describe('findOneOrThrow', () => {
 		test<Ctx>('should throw error if user not found', async ({ fastify }) => {
-			const { UserQueriesRepo } = fastify.diContainer.cradle
-			expect(
-				UserQueriesRepo.findOneOrThrow({ where: { id: randomUUID() } }),
-			).rejects.toThrow(UserNotFound)
-
-			expect(
-				UserQueriesRepo.findOneOrThrow({
-					where: { email: 'mark@example.com' },
-				}),
-			).rejects.toThrow(UserNotFound)
+			const { UserRepository } = fastify.diContainer.cradle
+			expect(UserRepository.findByIdOrThrow(randomUUID())).rejects.toThrow(
+				NotFound,
+			)
 		})
 
 		test<Ctx>('should return the user if it exists', async ({ fastify }) => {
-			const { UserMutationsRepo, UserQueriesRepo } = fastify.diContainer.cradle
+			const { UserRepository } = fastify.diContainer.cradle
 			const params = createTestUser()
-			const user = await UserMutationsRepo.create(params)
-			expect(
-				UserQueriesRepo.findOneOrThrow({ where: { id: user.id } }),
-			).resolves.toMatchObject(params)
+			const user = await UserRepository.create(params)
+			expect(UserRepository.findByIdOrThrow(user.id)).resolves.toMatchObject(
+				params,
+			)
 		})
 	})
 
 	describe('findOne queries', () => {
 		test<Ctx>('should return null if user not found', async ({ fastify }) => {
-			const { UserQueriesRepo } = fastify.diContainer.cradle
-			expect(
-				UserQueriesRepo.findOne({ where: { id: randomUUID() } }),
-			).resolves.toBe(undefined)
-			expect(
-				UserQueriesRepo.findOne({ where: { email: 'mark@example.com' } }),
-			).resolves.toBe(undefined)
-			expect(
-				UserQueriesRepo.findOne({ where: { username: 'mark' } }),
-			).resolves.toBe(undefined)
+			const { UserRepository } = fastify.diContainer.cradle
+			expect(UserRepository.findById(randomUUID())).resolves.toBe(undefined)
+			expect(UserRepository.findByEmail('mark@example.com')).resolves.toBe(
+				undefined,
+			)
 		})
 
 		test<Ctx>('should return the user if it exists', async ({ fastify }) => {
-			const { UserMutationsRepo, UserQueriesRepo } = fastify.diContainer.cradle
+			const { UserRepository } = fastify.diContainer.cradle
 			const params = createTestUser()
-			const user = await UserMutationsRepo.create(params)
-			expect(
-				UserQueriesRepo.findOne({ where: { id: user.id } }),
-			).resolves.toMatchObject(params)
-			expect(
-				UserQueriesRepo.findOne({ where: { email: user.email } }),
-			).resolves.toMatchObject(params)
-			expect(
-				UserQueriesRepo.findOne({ where: { username: user.username } }),
-			).resolves.toMatchObject(params)
+			const user = await UserRepository.create(params)
+			expect(UserRepository.findById(user.id)).resolves.toMatchObject(params)
+			expect(UserRepository.findByEmail(user.email)).resolves.toMatchObject(
+				params,
+			)
 		})
 	})
 
 	describe('create user', () => {
 		test<Ctx>('should create a user', async ({ fastify }) => {
-			const { UserMutationsRepo, UserQueriesRepo } = fastify.diContainer.cradle
+			const { UserRepository } = fastify.diContainer.cradle
 			const params = createTestUser()
-			const createdUser = await UserMutationsRepo.create(params)
-			const user = await UserQueriesRepo.findOne({
-				where: { id: createdUser.id },
-			})
+			const createdUser = await UserRepository.create(params)
+			const user = await UserRepository.findById(createdUser.id)
 			expect(user).toMatchObject(params)
 		})
 	})
 
 	describe('updateTakeOne', () => {
 		test<Ctx>('should update a user', async ({ fastify }) => {
-			const { UserMutationsRepo, UserQueriesRepo } = fastify.diContainer.cradle
+			const { UserRepository } = fastify.diContainer.cradle
 			const params = createTestUser()
-			const user = await UserMutationsRepo.create(params)
-			const updatedUser = await UserMutationsRepo.updateTakeOne({
+			const user = await UserRepository.create(params)
+			const updatedUser = await UserRepository.updateTakeOne({
 				where: { id: user.id },
 				data: { username: 'new_username' },
 			})
 			expect(updatedUser!.username).toEqual('new_username')
-			expect(
-				UserQueriesRepo.findOne({ where: { id: user.id } }),
-			).resolves.toEqual(updatedUser)
+			expect(UserRepository.findById(user.id)).resolves.toEqual(updatedUser)
 		})
 
 		test<Ctx>('should return undefined if user not found', async ({
 			fastify,
 		}) => {
-			const { UserMutationsRepo } = fastify.diContainer.cradle
-			const updatedUser = await UserMutationsRepo.updateTakeOne({
+			const { UserRepository } = fastify.diContainer.cradle
+			const updatedUser = await UserRepository.updateTakeOne({
 				where: { id: randomUUID() },
 				data: { username: 'new_username' },
 			})
@@ -113,27 +92,27 @@ describe('UserRepository', () => {
 
 	describe('updateTakeOneOrThrow', () => {
 		test<Ctx>('should update a user', async ({ fastify }) => {
-			const { UserMutationsRepo, UserQueriesRepo } = fastify.diContainer.cradle
+			const { UserRepository } = fastify.diContainer.cradle
 			const params = createTestUser()
-			const user = await UserMutationsRepo.create(params)
-			const updatedUser = await UserMutationsRepo.updateTakeOneOrThrow({
+			const user = await UserRepository.create(params)
+			const updatedUser = await UserRepository.updateTakeOneOrThrow({
 				where: { id: user.id },
 				data: { username: 'new_username' },
 			})
 			expect(updatedUser.username).toEqual('new_username')
 
-			const result = await UserQueriesRepo.findOne({ where: { id: user.id } })
+			const result = await UserRepository.findById(user.id)
 			expect(result).toMatchObject(updatedUser)
 		})
 
 		test<Ctx>('should throw error if user not found', async ({ fastify }) => {
-			const { UserMutationsRepo } = fastify.diContainer.cradle
+			const { UserRepository } = fastify.diContainer.cradle
 			expect(
-				UserMutationsRepo.updateTakeOneOrThrow({
+				UserRepository.updateTakeOneOrThrow({
 					where: { id: randomUUID() },
 					data: { username: 'new_username' },
 				}),
-			).rejects.toThrow(UserNotFound)
+			).rejects.toThrow(NotFound)
 		})
 	})
 
@@ -141,19 +120,19 @@ describe('UserRepository', () => {
 		test<Ctx>('should return an error if user not found', async ({
 			fastify,
 		}) => {
-			const { UserQueriesRepo } = fastify.diContainer.cradle
-			expect(UserQueriesRepo.findAccountStatus(randomUUID())).rejects.toThrow(
-				UserNotFound,
+			const { UserRepository } = fastify.diContainer.cradle
+			expect(UserRepository.findAccountStatus(randomUUID())).rejects.toThrow(
+				NotFound,
 			)
 		})
 
 		test<Ctx>('should return the user with all its social accounts if it exists', async ({
 			fastify,
 		}) => {
-			const { UserMutationsRepo, UserQueriesRepo, SocialAccountRepository } =
+			const { UserRepository, SocialAccountRepository } =
 				fastify.diContainer.cradle
 			const userParams = createTestUser()
-			const user = await UserMutationsRepo.create(userParams)
+			const user = await UserRepository.create(userParams)
 			const googleSocial = createSocialAccount({ userId: user.id })
 			const discordSocial = createSocialAccount({
 				userId: user.id,
@@ -167,7 +146,7 @@ describe('UserRepository', () => {
 				({ createdAt: _createdAt, updatedAt: _updatedAt, ...social }) => social,
 			)
 
-			const userWithSocial = await UserQueriesRepo.findAccountStatus(user.id)
+			const userWithSocial = await UserRepository.findAccountStatus(user.id)
 
 			const formattedUserWithSocial = {
 				...userWithSocial,

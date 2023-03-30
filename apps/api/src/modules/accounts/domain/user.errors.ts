@@ -2,6 +2,7 @@ import {
 	AppError,
 	ErrorOpts,
 	InternalServerError,
+	NotFound,
 } from '@api/utils/errors/baseError'
 import { DBError, InvalidQueryFilter } from '@api/utils/errors/repoErrors'
 
@@ -9,7 +10,7 @@ import { SocialAccountAlreadyExists } from './oAuth.errors'
 import { InvalidToken, TokenNotFound } from './token.errors'
 
 export type FindByIdError =
-	| UserNotFound
+	| NotFound
 	| DBError
 	| InvalidQueryFilter
 	| InternalServerError
@@ -24,7 +25,7 @@ export type ConfirmUserError =
 	| DBError
 	| InvalidToken
 	| UserAlreadyConfirmed
-	| UserNotFound
+	| NotFound
 	| InvalidQueryFilter
 	| InternalServerError
 export type LoginError =
@@ -47,15 +48,6 @@ export type CreateUserFromSocial =
 	| UsernameAlreadyExists
 	| SocialAccountAlreadyExists
 	| InternalServerError
-
-export class UserNotFound extends AppError {
-	static type = 'User Not Found'
-
-	constructor({ message = 'User was not found', ...opts }: ErrorOpts) {
-		super({ ...opts, type: UserNotFound.type, message })
-		this.name = UserNotFound.type
-	}
-}
 
 export class UserAlreadyExists extends AppError {
 	static type = 'User Already Exists'

@@ -5,13 +5,14 @@ import {
 	MockPubSubClient,
 } from '@api/test/mocks/pubsub'
 import { createMockSession } from '@api/test/mocks/session'
+import { NotFound } from '@api/utils/errors/baseError'
 import { asValue } from 'awilix'
 import { randomUUID } from 'crypto'
 import type { FastifyInstance } from 'fastify'
 import { describe, beforeEach, test, expect } from 'vitest'
 
 import { InvalidToken, TokenNotFound } from '../../domain/token.errors'
-import { UserAlreadyConfirmed, UserNotFound } from '../../domain/user.errors'
+import { UserAlreadyConfirmed } from '../../domain/user.errors'
 import { UserSchemas } from '../../domain/user.schema'
 
 type Context = {
@@ -188,13 +189,13 @@ describe('AuthService', () => {
 				type: 'accountActivation',
 				expirationTimeInSeconds: 60,
 			})
-			expect(AuthService.confirmEmail(token.id)).rejects.toThrow(UserNotFound)
+			expect(AuthService.confirmEmail(token.id)).rejects.toThrow(NotFound)
 		})
 
 		test<Context>('should throw an error if user in token is already confirmed', async ({
 			fastify,
 		}) => {
-			const { TokenService, AuthService, UserMutationsRepo } =
+			const { TokenService, AuthService, UserRepository } =
 				fastify.diContainer.cradle
 			const confirmedUser = {
 				id: randomUUID(),
@@ -204,7 +205,7 @@ describe('AuthService', () => {
 				username: 'johnny',
 				confirmedAt: 'Now()',
 			}
-			await UserMutationsRepo.create(confirmedUser)
+			await UserRepository.create(confirmedUser)
 			const token = await TokenService.create({
 				userId: confirmedUser.id,
 				type: 'accountActivation',

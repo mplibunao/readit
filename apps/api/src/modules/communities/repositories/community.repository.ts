@@ -1,4 +1,5 @@
 import { Dependencies } from '@api/infra/diConfig'
+import { PG } from '@api/infra/pg/createClient'
 import {
 	CommunityData,
 	DeleteOptions,
@@ -27,39 +28,22 @@ type CommunityUpdateOptions = UpdateOptions<'communities'>
 type CommunityQuery = SelectQuery<'communities'>
 type CommunityQueryOptions = SelectOptions<'communities'>
 
-export type CommunityRepository = ReturnType<typeof buildCommunityRepository>
+export class CommunityRepository {
+	private pg: PG
 
-export const buildCommunityRepository = ({ pg }: Dependencies) => {
-	const del = (
-		{ where }: CommunityDeleteOptions,
-		trx?: Trx,
-	): CommunityDeleteQuery => {
-		if (Object.keys(where).length === 0) {
-			throw new InvalidDeleteFilter({})
-		}
-
-		// Support transaction or non-transaction
-		const connection = trx ? trx : pg
-		let query = connection.deleteFrom('communities')
-
-		// loop over filters and add where clauses
-		for (const [key, value] of Object.entries(where)) {
-			query = query.where(key as keyof CommunityData, '=', value)
-		}
-
-		return query
+	constructor(deps: Dependencies) {
+		this.pg = deps.pg
 	}
 
-	const find = (
+	private findQuery(
 		{ where }: CommunityQueryOptions,
 		trx?: Trx,
-	): CommunityQuery => {
+	): CommunityQuery {
 		if (Object.keys(where).length === 0) {
 			throw new InvalidQueryFilter({})
 		}
 
-		// Support transaction or non-transaction
-		const connection = trx ? trx : pg
+		const connection = trx ? trx : this.pg
 		let query = connection.selectFrom('communities')
 
 		// loop over filters and add where clauses
@@ -70,16 +54,34 @@ export const buildCommunityRepository = ({ pg }: Dependencies) => {
 		return query
 	}
 
-	const update = (
-		{ where, data }: CommunityUpdateOptions,
+	private removeQuery(
+		{ where }: CommunityDeleteOptions,
 		trx?: Trx,
-	): CommunityUpdateQuery => {
+	): CommunityDeleteQuery {
 		if (Object.keys(where).length === 0) {
-			throw new InvalidQueryFilter({})
+			throw new InvalidDeleteFilter({})
 		}
 
-		// Support transaction or non-transaction
-		const connection = trx ? trx : pg
+		const connection = trx ? trx : this.pg
+		let query = connection.deleteFrom('communities')
+
+		// loop over filters and add where clauses
+		for (const [key, value] of Object.entries(where)) {
+			query = query.where(key as keyof CommunityData, '=', value)
+		}
+
+		return query
+	}
+
+	private updateQuery(
+		{ where, data }: CommunityUpdateOptions,
+		trx?: Trx,
+	): CommunityUpdateQuery {
+		if (Object.keys(where).length === 0) {
+			throw new InvalidDeleteFilter({})
+		}
+
+		const connection = trx ? trx : this.pg
 		let query = connection.updateTable('communities').set(data)
 
 		// loop over filters and add where clauses
@@ -90,62 +92,9 @@ export const buildCommunityRepository = ({ pg }: Dependencies) => {
 		return query
 	}
 
-	const findTakeOneOrThrow = async (
-		options: CommunityQueryOptions,
-		trx?: Trx,
-	): Promise<CommunityData> => {
+	async create(params: InsertableCommunity, trx?: Trx) {
 		try {
-			return await find(options, trx).selectAll().executeTakeFirstOrThrow()
-		} catch (error) {
-			if (error instanceof NoResultError) {
-				throw new NotFound({ cause: error, message: 'Community not found' })
-			}
-			throw new DBError({ cause: error })
-		}
-	}
-
-	const findTakeOne = async (
-		options: CommunityQueryOptions,
-		trx?: Trx,
-	): Promise<CommunityData | undefined> => {
-		try {
-			return await find(options, trx).selectAll().executeTakeFirst()
-		} catch (error) {
-			throw new DBError({ cause: error })
-		}
-	}
-
-	const updateTakeOneOrThrow = async (
-		options: CommunityUpdateOptions,
-		trx?: Trx,
-	): Promise<CommunityData> => {
-		try {
-			return await update(options, trx).returningAll().executeTakeFirstOrThrow()
-		} catch (error) {
-			if (error instanceof NoResultError) {
-				throw new NotFound({ cause: error, message: 'Community not found' })
-			}
-			throw new DBError({ cause: error })
-		}
-	}
-
-	const deleteTakeOneOrThrow = async (
-		options: CommunityDeleteOptions,
-		trx?: Trx,
-	) => {
-		try {
-			return await del(options, trx).returningAll().executeTakeFirstOrThrow()
-		} catch (error) {
-			if (error instanceof NoResultError) {
-				throw new NotFound({ cause: error, message: 'Community not found' })
-			}
-			throw new DBError({ cause: error })
-		}
-	}
-
-	const create = async (params: InsertableCommunity, trx?: Trx) => {
-		try {
-			const connection = trx ? trx : pg
+			const connection = trx ? trx : this.pg
 			return await connection
 				.insertInto('communities')
 				.values(params)
@@ -164,9 +113,9 @@ export const buildCommunityRepository = ({ pg }: Dependencies) => {
 		}
 	}
 
-	const createMembership = async (params: InsertableMembership, trx?: Trx) => {
+	async createMembership(params: InsertableMembership, trx?: Trx) {
 		try {
-			const connection = trx ? trx : pg
+			const connection = trx ? trx : this.pg
 			return await connection
 				.insertInto('memberships')
 				.values(params)
@@ -185,12 +134,51 @@ export const buildCommunityRepository = ({ pg }: Dependencies) => {
 		}
 	}
 
-	return {
-		findTakeOneOrThrow,
-		findTakeOne,
-		updateTakeOneOrThrow,
-		deleteTakeOneOrThrow,
-		create,
-		createMembership,
+	async updateTakeOneOrThrow(
+		options: CommunityUpdateOptions,
+		trx?: Trx,
+	): Promise<CommunityData> {
+		try {
+			return await this.updateQuery(options, trx)
+				.returningAll()
+				.executeTakeFirstOrThrow()
+		} catch (error) {
+			if (error instanceof NoResultError) {
+				throw new NotFound({ cause: error, message: 'Community not found' })
+			}
+			throw new DBError({ cause: error })
+		}
+	}
+
+	async findCommunityByIdOrThrow(
+		id: string,
+		trx?: Trx,
+	): Promise<CommunityData> {
+		try {
+			return await this.findQuery({ where: { id } }, trx)
+				.selectAll('communities')
+				.executeTakeFirstOrThrow()
+		} catch (error) {
+			if (error instanceof NoResultError) {
+				throw new NotFound({ cause: error, message: 'Community not found' })
+			}
+			throw new DBError({ cause: error })
+		}
+	}
+
+	async removeCommunityByIdOrThrow(
+		id: string,
+		trx?: Trx,
+	): Promise<CommunityData> {
+		try {
+			return await this.removeQuery({ where: { id } }, trx)
+				.returningAll('communities')
+				.executeTakeFirstOrThrow()
+		} catch (error) {
+			if (error instanceof NoResultError) {
+				throw new NotFound({ cause: error, message: 'Community not found' })
+			}
+			throw new DBError({ cause: error })
+		}
 	}
 }

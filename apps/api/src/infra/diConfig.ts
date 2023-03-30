@@ -2,19 +2,9 @@ import {
 	AccountEventsPublisher,
 	buildAccountEventsPublisher,
 } from '@api/modules/accounts/events/accountsEvents.publisher'
-import {
-	buildSocialAccountRepository,
-	SocialAccountRepository,
-} from '@api/modules/accounts/repositories/socialAccount.repository'
+import { SocialAccountRepository } from '@api/modules/accounts/repositories/socialAccount.repository'
 import { TokenRepository } from '@api/modules/accounts/repositories/token.repository'
-import {
-	buildUserMutationsRepo,
-	UserMutationsRepo,
-} from '@api/modules/accounts/repositories/user.mutations.repo'
-import {
-	buildUserQueriesRepo,
-	UserQueriesRepo,
-} from '@api/modules/accounts/repositories/user.queries.repo'
+import { UserRepository } from '@api/modules/accounts/repositories/user.repository'
 import {
 	AuthService,
 	buildAuthService,
@@ -31,18 +21,12 @@ import {
 	buildUserService,
 	UserService,
 } from '@api/modules/accounts/services/user.service'
-import {
-	buildCommunityRepository,
-	CommunityRepository,
-} from '@api/modules/communities/repositories/community.repository'
+import { CommunityRepository } from '@api/modules/communities/repositories/community.repository'
 import {
 	CommunityService,
 	buildCommunityService,
 } from '@api/modules/communities/services/community.service'
-import {
-	buildTagRepository,
-	TagRepository,
-} from '@api/modules/recommendations/repositories/tag.repository'
+import { TagRepository } from '@api/modules/recommendations/repositories/tag.repository'
 import { TagService } from '@api/modules/recommendations/services/tag.service'
 import { PubSub } from '@google-cloud/pubsub'
 import { FlagsRepo, FlagsService } from '@readit/flags'
@@ -103,8 +87,7 @@ export interface Dependencies {
 	TokenRepository: TokenRepository
 	TokenService: TokenService
 	MailerService: MailerService
-	UserQueriesRepo: UserQueriesRepo
-	UserMutationsRepo: UserMutationsRepo
+	UserRepository: UserRepository
 	SocialAccountRepository: SocialAccountRepository
 	OAuthService: OAuthServiceType
 	AuthService: AuthService
@@ -159,18 +142,14 @@ export function registerDependencies(
 		TokenRepository: asClass(TokenRepository, SINGLETON_CONFIG),
 		TokenService: asFunction(buildTokenService, SINGLETON_CONFIG),
 		MailerService: asFunction(buildMailerService, SINGLETON_CONFIG),
-		UserQueriesRepo: asFunction(buildUserQueriesRepo, SINGLETON_CONFIG),
-		UserMutationsRepo: asFunction(buildUserMutationsRepo, SINGLETON_CONFIG),
-		SocialAccountRepository: asFunction(
-			buildSocialAccountRepository,
-			SINGLETON_CONFIG,
-		),
+		UserRepository: asClass(UserRepository, SINGLETON_CONFIG),
+		SocialAccountRepository: asClass(SocialAccountRepository, SINGLETON_CONFIG),
 		OAuthService: asFunction(buildOAuthService, SINGLETON_CONFIG),
 		AuthService: asFunction(buildAuthService, SINGLETON_CONFIG),
 		UserService: asFunction(buildUserService, SINGLETON_CONFIG),
-		TagRepository: asFunction(buildTagRepository, SINGLETON_CONFIG),
+		TagRepository: asClass(TagRepository, SINGLETON_CONFIG),
 		TagService: asClass(TagService, SINGLETON_CONFIG),
-		CommunityRepository: asFunction(buildCommunityRepository, SINGLETON_CONFIG),
+		CommunityRepository: asClass(CommunityRepository, SINGLETON_CONFIG),
 		CommunityService: asFunction(buildCommunityService, SINGLETON_CONFIG),
 	}
 

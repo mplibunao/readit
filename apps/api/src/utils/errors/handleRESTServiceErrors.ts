@@ -7,7 +7,6 @@ import {
 	UserAlreadyConfirmed,
 	UserAlreadyExists,
 	UsernameAlreadyExists,
-	UserNotFound,
 	InvalidCredentials,
 	NoPasswordConfigured,
 } from '@api/modules/accounts/domain/user.errors'
@@ -46,7 +45,6 @@ export const handleRESTServiceErrors = (
 			case UnauthorizedError:
 				return createError(401, error, { type: error.type })
 			case TokenNotFound:
-			case UserNotFound:
 			case NotFound:
 				return createError(404, error, { type: error.type })
 			case UserAlreadyConfirmed:

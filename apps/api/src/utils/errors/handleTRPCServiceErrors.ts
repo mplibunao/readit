@@ -13,7 +13,6 @@ import {
 	UserAlreadyConfirmed,
 	UserAlreadyExists,
 	UsernameAlreadyExists,
-	UserNotFound,
 } from '@api/modules/accounts/domain/user.errors'
 import { Logger } from '@readit/logger'
 import { TRPCError } from '@trpc/server'
@@ -104,7 +103,6 @@ export const handleTRPCServiceErrors = (
 				})
 			// 404
 			case TokenNotFound:
-			case UserNotFound:
 			case NotFound:
 			case SocialAccountNotFound:
 				return new TrpcError({

@@ -15,7 +15,6 @@ import {
 	UserAlreadyExists,
 	UsernameAlreadyExists,
 	InvalidCredentials,
-	UserNotFound,
 	NoPasswordConfigured,
 	EmailAlreadyTaken,
 } from '@api/modules/accounts/domain/user.errors'
@@ -133,7 +132,6 @@ const handleRedirectErrors = (
 
 			// 404 errors
 			case TokenNotFound:
-			case UserNotFound:
 			case NotFound:
 				return {
 					code: '404',

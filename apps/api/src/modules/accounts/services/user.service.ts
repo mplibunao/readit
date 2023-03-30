@@ -14,9 +14,8 @@ export type UserService = ReturnType<typeof buildUserService>
 
 export const buildUserService = ({
 	logger,
-	UserMutationsRepo,
-	UserQueriesRepo,
 	TagService,
+	UserRepository,
 }: Dependencies) => {
 	/*
 	 *const generateUsername = (name: string, codeLength = 4) => {
@@ -31,7 +30,7 @@ export const buildUserService = ({
 		.returns(z.promise(UserSchemas.user))
 		.implement(async (id) => {
 			try {
-				return await UserQueriesRepo.findOneOrThrow({ where: { id } })
+				return await UserRepository.findByIdOrThrow(id)
 			} catch (error) {
 				if (error instanceof AppError) {
 					logger.error({ id, error }, `User was not found: ${error.type}`)
@@ -48,7 +47,7 @@ export const buildUserService = ({
 		.returns(z.promise(UserSchemas.user))
 		.implement(async ({ id, user }) => {
 			try {
-				return await UserMutationsRepo.updateTakeOneOrThrow({
+				return await UserRepository.updateTakeOneOrThrow({
 					where: { id },
 					data: user,
 				})
@@ -81,7 +80,7 @@ export const buildUserService = ({
 				})
 			}
 			const { socialAccounts, hashedPassword, ...user } =
-				await UserQueriesRepo.findAccountStatus(session.user.id)
+				await UserRepository.findAccountStatus(session.user.id)
 
 			const accountStatus = {
 				...user,

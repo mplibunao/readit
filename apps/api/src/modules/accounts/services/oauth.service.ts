@@ -20,10 +20,9 @@ export type OAuthServiceType = ReturnType<typeof buildOAuthService>
 export const buildOAuthService = ({
 	config,
 	logger,
-	UserMutationsRepo,
-	UserQueriesRepo,
 	SocialAccountRepository,
 	pg,
+	UserRepository,
 }: Dependencies) => {
 	const { google, discord } = config.oauth
 
@@ -269,9 +268,7 @@ export const buildOAuthService = ({
 				 * If user is already logged in using credentials, link the social account to the user regardless if the email is same (this means the user is linking using the settings page)
 				 */
 				if (state.userId) {
-					const user = await UserQueriesRepo.findOneOrThrow({
-						where: { id: state.userId },
-					})
+					const user = await UserRepository.findByIdOrThrow(state.userId)
 
 					await SocialAccountRepository.create({
 						userId: user.id,
@@ -291,9 +288,7 @@ export const buildOAuthService = ({
 				 * Check if basic auth with same email exists then link the social account to that
 				 * Or create a new user/social account after completing the registration form
 				 */
-				const user = await UserQueriesRepo.findOne({
-					where: { email: googleUser.email },
-				})
+				const user = await UserRepository.findByEmail(googleUser.email)
 				if (user) {
 					await SocialAccountRepository.create({
 						provider: 'google',
@@ -305,7 +300,7 @@ export const buildOAuthService = ({
 					if (!user.imageUrl) {
 						return {
 							status: 'loggedIn',
-							user: await UserMutationsRepo.updateTakeOne({
+							user: await UserRepository.updateTakeOne({
 								where: { id: user.id },
 								data: { imageUrl: googleUser.picture },
 							}),
@@ -371,9 +366,7 @@ export const buildOAuthService = ({
 				 * If user is already logged in using credentials, link the social account to the user regardless if the email is same (this means the user is linking using the settings page)
 				 */
 				if (state.userId) {
-					const user = await UserQueriesRepo.findOneOrThrow({
-						where: { id: state.userId },
-					})
+					const user = await UserRepository.findByIdOrThrow(state.userId)
 
 					await SocialAccountRepository.create({
 						userId: user.id,
@@ -388,9 +381,7 @@ export const buildOAuthService = ({
 					}
 				}
 
-				const user = await UserQueriesRepo.findOne({
-					where: { email: discordUser.email },
-				})
+				const user = await UserRepository.findByEmail(discordUser.email)
 				if (user) {
 					await SocialAccountRepository.create({
 						provider: 'discord',
@@ -402,7 +393,7 @@ export const buildOAuthService = ({
 					if (!user.imageUrl) {
 						return {
 							status: 'loggedIn',
-							user: await UserMutationsRepo.updateTakeOne({
+							user: await UserRepository.updateTakeOne({
 								where: { id: user.id },
 								data: {
 									imageUrl: formatDiscordAvatar({ discordUser }),
@@ -447,15 +438,13 @@ export const buildOAuthService = ({
 		id: string
 	}) => {
 		try {
-			const social = await SocialAccountRepository.findOneOrThrow({
-				where: { id },
-			})
+			const social = await SocialAccountRepository.findByIdOrThrow(id)
 
 			if (social.userId !== session.user?.id) {
 				throw new SocialNotOwnedByUser({})
 			}
 
-			await SocialAccountRepository.deleteTakeOneOrThrow(id)
+			await SocialAccountRepository.deleteByIdOrThrow(id)
 			return social.provider
 		} catch (error) {
 			if (error instanceof AppError) {
@@ -475,9 +464,8 @@ export const buildOAuthService = ({
 		.returns(z.promise(OAuthSchemas.createOAuthUserOutput))
 		.implement(async ({ social, user }) => {
 			try {
-				const userByEmail = await UserQueriesRepo.findOne({
-					where: { email: user.email },
-				})
+				const userByEmail = await UserRepository.findByEmail(user.email)
+
 				if (userByEmail) {
 					logger.error(
 						{ ...userByEmail, email: user.email },
@@ -486,7 +474,7 @@ export const buildOAuthService = ({
 					throw new UserAlreadyExists({})
 				}
 				const result = await pg.transaction().execute(async (trx) => {
-					const createdUser = await UserMutationsRepo.create(
+					const createdUser = await UserRepository.create(
 						{ ...user, confirmedAt: 'NOW' },
 						trx,
 					)

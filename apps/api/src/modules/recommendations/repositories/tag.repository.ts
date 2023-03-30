@@ -1,4 +1,5 @@
 import { Dependencies } from '@api/infra/diConfig'
+import { PG } from '@api/infra/pg/createClient'
 import {
 	TagData,
 	DeleteOptions,
@@ -27,33 +28,19 @@ type TagUpdateOptions = UpdateOptions<'tags'>
 type TagQuery = SelectQuery<'tags'>
 type TagQueryOptions = SelectOptions<'tags'>
 
-export type TagRepository = ReturnType<typeof buildTagRepository>
+export class TagRepository {
+	private pg: PG
 
-export const buildTagRepository = ({ pg }: Dependencies) => {
-	const del = ({ where }: TagDeleteOptions, trx?: Trx): TagDeleteQuery => {
-		if (Object.keys(where).length === 0) {
-			throw new InvalidDeleteFilter({})
-		}
-
-		// Support transaction or non-transaction
-		const connection = trx ? trx : pg
-		let query = connection.deleteFrom('tags')
-
-		// loop over filters and add where clauses
-		for (const [key, value] of Object.entries(where)) {
-			query = query.where(key as keyof TagData, '=', value)
-		}
-
-		return query
+	constructor(deps: Dependencies) {
+		this.pg = deps.pg
 	}
 
-	const find = ({ where }: TagQueryOptions, trx?: Trx): TagQuery => {
+	private findQuery({ where }: TagQueryOptions, trx?: Trx): TagQuery {
 		if (Object.keys(where).length === 0) {
 			throw new InvalidQueryFilter({})
 		}
 
-		// Support transaction or non-transaction
-		const connection = trx ? trx : pg
+		const connection = trx ? trx : this.pg
 		let query = connection.selectFrom('tags')
 
 		// loop over filters and add where clauses
@@ -64,16 +51,31 @@ export const buildTagRepository = ({ pg }: Dependencies) => {
 		return query
 	}
 
-	const update = (
-		{ where, data }: TagUpdateOptions,
-		trx?: Trx,
-	): TagUpdateQuery => {
+	private removeQuery({ where }: TagDeleteOptions, trx?: Trx): TagDeleteQuery {
 		if (Object.keys(where).length === 0) {
-			throw new InvalidQueryFilter({})
+			throw new InvalidDeleteFilter({})
 		}
 
-		// Support transaction or non-transaction
-		const connection = trx ? trx : pg
+		const connection = trx ? trx : this.pg
+		let query = connection.deleteFrom('tags')
+
+		// loop over filters and add where clauses
+		for (const [key, value] of Object.entries(where)) {
+			query = query.where(key as keyof TagData, '=', value)
+		}
+
+		return query
+	}
+
+	private updateQuery(
+		{ where, data }: TagUpdateOptions,
+		trx?: Trx,
+	): TagUpdateQuery {
+		if (Object.keys(where).length === 0) {
+			throw new InvalidDeleteFilter({})
+		}
+
+		const connection = trx ? trx : this.pg
 		let query = connection.updateTable('tags').set(data)
 
 		// loop over filters and add where clauses
@@ -84,12 +86,11 @@ export const buildTagRepository = ({ pg }: Dependencies) => {
 		return query
 	}
 
-	const findTakeOneOrThrow = async (
-		options: TagQueryOptions,
-		trx?: Trx,
-	): Promise<TagData> => {
+	async updateTakeOneOrThrow(options: TagUpdateOptions, trx?: Trx) {
 		try {
-			return await find(options, trx).selectAll().executeTakeFirstOrThrow()
+			return await this.updateQuery(options, trx)
+				.returningAll()
+				.executeTakeFirstOrThrow()
 		} catch (error) {
 			if (error instanceof NoResultError) {
 				throw new NotFound({ cause: error, message: 'Tag not found' })
@@ -98,42 +99,9 @@ export const buildTagRepository = ({ pg }: Dependencies) => {
 		}
 	}
 
-	const findTakeOne = async (
-		options: TagQueryOptions,
-		trx?: Trx,
-	): Promise<TagData | undefined> => {
+	async getTags(trx?: Trx) {
 		try {
-			return await find(options, trx).selectAll().executeTakeFirst()
-		} catch (error) {
-			throw new DBError({ cause: error })
-		}
-	}
-
-	const updateTakeOneOrThrow = async (options: TagUpdateOptions, trx?: Trx) => {
-		try {
-			return await update(options, trx).returningAll().executeTakeFirstOrThrow()
-		} catch (error) {
-			if (error instanceof NoResultError) {
-				throw new NotFound({ cause: error, message: 'Tag not found' })
-			}
-			throw new DBError({ cause: error })
-		}
-	}
-
-	const deleteTakeOneOrThrow = async (options: TagDeleteOptions, trx?: Trx) => {
-		try {
-			return await del(options, trx).returningAll().executeTakeFirstOrThrow()
-		} catch (error) {
-			if (error instanceof NoResultError) {
-				throw new NotFound({ cause: error, message: 'Tag not found' })
-			}
-			throw new DBError({ cause: error })
-		}
-	}
-
-	const getTags = async (trx?: Trx) => {
-		try {
-			const connection = trx ? trx : pg
+			const connection = trx ? trx : this.pg
 			return await connection
 				.selectFrom('tags')
 				.where('deletedAt', 'is', null)
@@ -144,9 +112,9 @@ export const buildTagRepository = ({ pg }: Dependencies) => {
 		}
 	}
 
-	const createTags = async (params: InsertableTag[], trx?: Trx) => {
+	async createTags(params: InsertableTag[], trx?: Trx) {
 		try {
-			const connection = trx ? trx : pg
+			const connection = trx ? trx : this.pg
 			return await connection.insertInto('tags').values(params).execute()
 		} catch (error) {
 			if (error instanceof Pg.DatabaseError) {
@@ -161,12 +129,9 @@ export const buildTagRepository = ({ pg }: Dependencies) => {
 		}
 	}
 
-	const createCommunityTags = async (
-		params: InsertableCommunityTag[],
-		trx?: Trx,
-	) => {
+	async createCommunityTags(params: InsertableCommunityTag[], trx?: Trx) {
 		try {
-			const connection = trx ? trx : pg
+			const connection = trx ? trx : this.pg
 			return await connection
 				.insertInto('communityTags')
 				.values(params)
@@ -184,12 +149,12 @@ export const buildTagRepository = ({ pg }: Dependencies) => {
 		}
 	}
 
-	const upsertUserInterests = async (
+	async upsertUserInterests(
 		params: { userId: string; tagIds: string[] },
 		trx?: Trx,
-	) => {
+	) {
 		try {
-			const connection = trx ? trx : pg
+			const connection = trx ? trx : this.pg
 			const insertableUserInterests = params.tagIds.map((tagId) => ({
 				userId: params.userId,
 				tagId,
@@ -214,9 +179,9 @@ export const buildTagRepository = ({ pg }: Dependencies) => {
 		}
 	}
 
-	const getUserInterests = async (userId: string, trx?: Trx) => {
+	async getUserInterests(userId: string, trx?: Trx) {
 		try {
-			const connection = trx ? trx : pg
+			const connection = trx ? trx : this.pg
 			return await connection
 				.selectFrom('userInterests')
 				.leftJoin('tags', 'userInterests.tagId', 'tags.id')
@@ -228,9 +193,9 @@ export const buildTagRepository = ({ pg }: Dependencies) => {
 		}
 	}
 
-	const getRecommendedCommunities = async (userId: string, trx?: Trx) => {
+	async getRecommendedCommunities(userId: string, trx?: Trx) {
 		try {
-			const connection = trx ? trx : pg
+			const connection = trx ? trx : this.pg
 			const { countAll } = connection.fn
 			return await connection
 				.selectFrom((eb) =>
@@ -293,15 +258,29 @@ export const buildTagRepository = ({ pg }: Dependencies) => {
 		}
 	}
 
-	return {
-		getTags,
-		findTakeOneOrThrow,
-		findTakeOne,
-		updateTakeOneOrThrow,
-		deleteTakeOneOrThrow,
-		createCommunityTags,
-		getUserInterests,
-		upsertUserInterests,
-		createTags,
+	async findTagByIdOrThrow(id: string, trx?: Trx) {
+		try {
+			return await this.findQuery({ where: { id } }, trx)
+				.selectAll('tags')
+				.executeTakeFirstOrThrow()
+		} catch (error) {
+			if (error instanceof NoResultError) {
+				throw new NotFound({ cause: error, message: 'Tag not found' })
+			}
+			throw new DBError({ cause: error })
+		}
+	}
+
+	async removeTagByIdOrThrow(id: string, trx?: Trx) {
+		try {
+			return await this.removeQuery({ where: { id } }, trx)
+				.returningAll('tags')
+				.executeTakeFirstOrThrow()
+		} catch (error) {
+			if (error instanceof NoResultError) {
+				throw new NotFound({ cause: error, message: 'Tag not found' })
+			}
+			throw new DBError({ cause: error })
+		}
 	}
 }

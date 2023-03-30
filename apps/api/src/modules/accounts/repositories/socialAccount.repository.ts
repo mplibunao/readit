@@ -1,4 +1,5 @@
 import { Dependencies } from '@api/infra/diConfig'
+import { PG } from '@api/infra/pg/createClient'
 import {
 	DeleteOptions,
 	DeleteQuery,
@@ -30,41 +31,22 @@ type SocialAccountUpdateOptions = UpdateOptions<'socialAccounts'>
 type SocialAccountQuery = SelectQuery<'socialAccounts'>
 type SocialAccountFindOptions = SelectOptions<'socialAccounts'>
 
-export type SocialAccountRepository = ReturnType<
-	typeof buildSocialAccountRepository
->
+export class SocialAccountRepository {
+	private pg: PG
 
-export const buildSocialAccountRepository = ({ pg }: Dependencies) => {
-	const del = (
-		{ where }: SocialAccountDeleteOptions,
-		trx?: Trx,
-	): SocialAccountDeleteQuery => {
-		if (Object.keys(where).length === 0) {
-			throw new InvalidDeleteFilter({})
-		}
-
-		// Support transaction or non-transaction
-		const connection = trx ? trx : pg
-		let query = connection.deleteFrom('socialAccounts')
-
-		// loop over filters and add where clauses
-		for (const [key, value] of Object.entries(where)) {
-			query = query.where(key as keyof SocialAccountData, '=', value)
-		}
-
-		return query
+	constructor(deps: Dependencies) {
+		this.pg = deps.pg
 	}
 
-	const find = (
+	private findQuery(
 		{ where }: SocialAccountFindOptions,
 		trx?: Trx,
-	): SocialAccountQuery => {
+	): SocialAccountQuery {
 		if (Object.keys(where).length === 0) {
 			throw new InvalidQueryFilter({})
 		}
 
-		// Support transaction or non-transaction
-		const connection = trx ? trx : pg
+		const connection = trx ? trx : this.pg
 		let query = connection.selectFrom('socialAccounts')
 
 		// loop over filters and add where clauses
@@ -75,16 +57,34 @@ export const buildSocialAccountRepository = ({ pg }: Dependencies) => {
 		return query
 	}
 
-	const update = (
+	private removeQuery(
+		{ where }: SocialAccountDeleteOptions,
+		trx?: Trx,
+	): SocialAccountDeleteQuery {
+		if (Object.keys(where).length === 0) {
+			throw new InvalidDeleteFilter({})
+		}
+
+		const connection = trx ? trx : this.pg
+		let query = connection.deleteFrom('socialAccounts')
+
+		// loop over filters and add where clauses
+		for (const [key, value] of Object.entries(where)) {
+			query = query.where(key as keyof SocialAccountData, '=', value)
+		}
+
+		return query
+	}
+
+	private updateQuery(
 		{ where, data }: SocialAccountUpdateOptions,
 		trx?: Trx,
-	): SocialAccountUpdateQuery => {
+	): SocialAccountUpdateQuery {
 		if (Object.keys(where).length === 0) {
 			throw new InvalidQueryFilter({})
 		}
 
-		// Support transaction or non-transaction
-		const connection = trx ? trx : pg
+		const connection = trx ? trx : this.pg
 		let query = connection.updateTable('socialAccounts').set(data)
 
 		// loop over filters and add where clauses
@@ -95,9 +95,9 @@ export const buildSocialAccountRepository = ({ pg }: Dependencies) => {
 		return query
 	}
 
-	const create = async (data: InsertableSocialAccount, trx?: Trx) => {
+	async create(data: InsertableSocialAccount, trx?: Trx) {
 		try {
-			const connection = trx ? trx : pg
+			const connection = trx ? trx : this.pg
 			return await connection
 				.insertInto('socialAccounts')
 				.values(data)
@@ -107,60 +107,18 @@ export const buildSocialAccountRepository = ({ pg }: Dependencies) => {
 			if (error instanceof Pg.DatabaseError) {
 				throw new SocialAccountAlreadyExists({})
 			}
-			throw new DBError({
-				cause: error,
-			})
+			throw new DBError({ cause: error })
 		}
 	}
 
-	const findOneOrThrow = async (
-		options: SocialAccountFindOptions,
-		trx?: Trx,
-	): Promise<SocialAccountData> => {
-		try {
-			return await find(options, trx).selectAll().executeTakeFirstOrThrow()
-		} catch (error) {
-			if (error instanceof NoResultError) {
-				throw new SocialAccountNotFound({ cause: error })
-			}
-			throw new DBError({
-				cause: error,
-			})
-		}
-	}
-
-	const findOne = async (
-		options: SocialAccountFindOptions,
-		trx?: Trx,
-	): Promise<SocialAccountData | undefined> => {
-		try {
-			return await find(options, trx).selectAll().executeTakeFirst()
-		} catch (error) {
-			throw new DBError({
-				cause: error,
-			})
-		}
-	}
-
-	const findBySocialId = async (socialId: string, trx?: Trx) => {
-		try {
-			return await find({ where: { socialId } }, trx)
-				.innerJoin('users', 'socialAccounts.userId', 'users.id')
-				.selectAll(['socialAccounts', 'users'])
-				.executeTakeFirst()
-		} catch (error) {
-			throw new DBError({
-				cause: error,
-			})
-		}
-	}
-
-	const updateTakeOneOrThrow = async (
+	async updateTakeOneOrThrow(
 		options: SocialAccountUpdateOptions,
 		trx?: Trx,
-	): Promise<SocialAccountData> => {
+	): Promise<SocialAccountData> {
 		try {
-			return await update(options, trx).returningAll().executeTakeFirstOrThrow()
+			return await this.updateQuery(options, trx)
+				.returningAll()
+				.executeTakeFirstOrThrow()
 		} catch (error) {
 			if (error instanceof NoResultError) {
 				throw new SocialAccountNotFound({ cause: error })
@@ -172,27 +130,37 @@ export const buildSocialAccountRepository = ({ pg }: Dependencies) => {
 		}
 	}
 
-	const deleteTakeOneOrThrow = async (id: string, trx?: Trx) => {
+	async deleteByIdOrThrow(id: string, trx?: Trx) {
 		try {
-			return await del({ where: { id } }, trx)
+			return await this.removeQuery({ where: { id } }, trx)
 				.returningAll()
 				.executeTakeFirstOrThrow()
 		} catch (error) {
 			if (error instanceof NoResultError) {
 				throw new SocialAccountNotFound({ cause: error })
 			}
-			throw new DBError({
-				cause: error,
-			})
+			throw new DBError({ cause: error })
 		}
 	}
 
-	return {
-		findOne,
-		findOneOrThrow,
-		findBySocialId,
-		updateTakeOneOrThrow,
-		deleteTakeOneOrThrow,
-		create,
+	async findBySocialId(socialId: string, trx?: Trx) {
+		try {
+			return await this.findQuery({ where: { socialId } }, trx)
+				.innerJoin('users', 'socialAccounts.userId', 'users.id')
+				.selectAll(['socialAccounts', 'users'])
+				.executeTakeFirst()
+		} catch (error) {
+			throw new DBError({ cause: error })
+		}
+	}
+
+	async findByIdOrThrow(id: string, trx?: Trx) {
+		try {
+			return await this.findQuery({ where: { id } }, trx)
+				.selectAll('socialAccounts')
+				.executeTakeFirstOrThrow()
+		} catch (error) {
+			throw new DBError({ cause: error })
+		}
 	}
 }

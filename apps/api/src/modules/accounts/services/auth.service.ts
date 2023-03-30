@@ -1,6 +1,10 @@
 import { Dependencies } from '@api/infra/diConfig'
 import { Session } from '@api/infra/session'
-import { AppError, InternalServerError } from '@api/utils/errors/baseError'
+import {
+	AppError,
+	InternalServerError,
+	NotFound,
+} from '@api/utils/errors/baseError'
 import { email, id } from '@readit/utils'
 import argon2 from 'argon2'
 import { z } from 'zod'
@@ -13,19 +17,17 @@ import {
 	NoPasswordConfigured,
 	UserAlreadyConfirmed,
 	UserAlreadyExists,
-	UserNotFound,
 } from '../domain/user.errors'
 import { UserSchemas } from '../domain/user.schema'
 
 export type AuthService = ReturnType<typeof buildAuthService>
 
 export const buildAuthService = ({
-	UserQueriesRepo,
 	logger,
-	UserMutationsRepo,
 	AccountEventsPublisher,
 	TokenService,
 	UserService,
+	UserRepository,
 }: Dependencies) => {
 	const register = async ({
 		input,
@@ -37,9 +39,8 @@ export const buildAuthService = ({
 		UserSchemas.createUserInput.parse(input)
 		const { password, ...user } = input
 		try {
-			const userByEmail = await UserQueriesRepo.findOne({
-				where: { email: user.email },
-			})
+			const userByEmail = await UserRepository.findByEmail(user.email)
+
 			if (userByEmail) {
 				logger.error(
 					{ ...userByEmail, email: user.email },
@@ -50,7 +51,7 @@ export const buildAuthService = ({
 
 			const hashedPassword = await argon2.hash(password)
 
-			const createdUser = await UserMutationsRepo.create({
+			const createdUser = await UserRepository.create({
 				...user,
 				hashedPassword,
 			})
@@ -82,7 +83,7 @@ export const buildAuthService = ({
 				const filter = isEmail.success
 					? { email: usernameOrEmail }
 					: { username: usernameOrEmail }
-				const user = await UserQueriesRepo.findOneOrThrow({ where: filter })
+				const user = await UserRepository.findByEmailOrUsernameOrThrow(filter)
 
 				if (!user.hashedPassword) {
 					throw new NoPasswordConfigured({})
@@ -99,7 +100,7 @@ export const buildAuthService = ({
 					)
 
 					switch (error.constructor) {
-						case UserNotFound:
+						case NotFound:
 						case InvalidPassword:
 							throw new InvalidCredentials({ cause: error, type: error.type })
 						default:
@@ -159,7 +160,7 @@ export const buildAuthService = ({
 				if (user.confirmedAt) throw new UserAlreadyConfirmed({})
 
 				await TokenService.del(token.id)
-				await UserMutationsRepo.updateTakeOneOrThrow({
+				await UserRepository.updateTakeOneOrThrow({
 					where: { id: user.id },
 					data: { confirmedAt: 'NOW()' },
 				})
@@ -179,9 +180,7 @@ export const buildAuthService = ({
 		.returns(z.promise(z.void()))
 		.implement(async ({ oldPassword, newPassword, userId }) => {
 			try {
-				const user = await UserQueriesRepo.findOneOrThrow({
-					where: { id: userId },
-				})
+				const user = await UserRepository.findByIdOrThrow(userId)
 
 				if (user.hashedPassword && oldPassword) {
 					const oldPasswordValid = await argon2.verify(
@@ -196,7 +195,7 @@ export const buildAuthService = ({
 				}
 
 				const hashedPassword = await argon2.hash(newPassword)
-				await UserMutationsRepo.updateTakeOneOrThrow({
+				await UserRepository.updateTakeOneOrThrow({
 					where: { id: userId },
 					data: { hashedPassword },
 				})
@@ -217,17 +216,15 @@ export const buildAuthService = ({
 		.implement(async (params) => {
 			try {
 				const { userId, newEmail } = params
-				const user = await UserQueriesRepo.findOne({ where: { id: userId } })
-				if (!user) throw new UserNotFound({})
+				const user = await UserRepository.findById(userId)
+				if (!user) throw new NotFound({ message: 'User was not found' })
 				if (user && user.email === newEmail) {
 					throw new EmailAlreadyTaken({
 						message: 'New email cannot be the same as the old one',
 					})
 				}
 
-				const userWithNewEmail = await UserQueriesRepo.findOne({
-					where: { email: newEmail },
-				})
+				const userWithNewEmail = await UserRepository.findByEmail(newEmail)
 				if (userWithNewEmail) {
 					throw new EmailAlreadyTaken({
 						message: 'The email you are trying to choose is already taken',
@@ -276,16 +273,15 @@ export const buildAuthService = ({
 					message: 'Only tokens for changing account email can be used',
 				})
 			}
-			const userByEmail = await UserQueriesRepo.findOne({
-				where: { email: newEmail },
-			})
+
+			const userByEmail = await UserRepository.findByEmail(newEmail)
 			if (userByEmail) {
 				throw new EmailAlreadyTaken({})
 			}
 
 			const user = await UserService.findById(token.userId)
 			await TokenService.del(tokenId)
-			await UserMutationsRepo.updateTakeOneOrThrow({
+			await UserRepository.updateTakeOneOrThrow({
 				where: { id: user.id },
 				data: { email: newEmail },
 			})
@@ -308,7 +304,7 @@ export const buildAuthService = ({
 		.args(UserSchemas.forgotPasswordInput)
 		.implement(async (filter) => {
 			try {
-				const user = await UserQueriesRepo.findOneOrThrow({ where: filter })
+				const user = await UserRepository.findByEmailOrUsernameOrThrow(filter)
 				return await AccountEventsPublisher.forgotPassword({ userId: user.id })
 			} catch (error) {
 				if (error instanceof AppError) {
@@ -335,7 +331,7 @@ export const buildAuthService = ({
 				})
 			}
 			const hashedPassword = await argon2.hash(newPassword)
-			await UserMutationsRepo.updateTakeOneOrThrow({
+			await UserRepository.updateTakeOneOrThrow({
 				where: { id: tokenData.userId },
 				data: { hashedPassword },
 			})
