@@ -76,6 +76,9 @@ async function main() {
 
 	if (watch) {
 		await context.watch()
+	} else {
+		await context.rebuild()
+		process.exit(0)
 	}
 
 	/*
