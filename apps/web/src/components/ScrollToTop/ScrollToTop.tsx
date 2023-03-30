@@ -50,7 +50,7 @@ export const ScrollToTop = () => {
 					<Icon
 						id='arrow-small-up'
 						label='Scroll to top'
-						className='xl:w-12 xl:h-12 w-7 h-7 text-white font-bold'
+						className='xl:w-12 xl:h-12 w-7 h-7 text-white font-bold stroke-2'
 					/>
 				</m.button>
 			)}
