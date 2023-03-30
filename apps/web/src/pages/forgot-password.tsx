@@ -5,7 +5,7 @@ import { PageLayout } from '@/components/Layout'
 import { styledLink } from '@/components/Link'
 import { Separator } from '@/components/Separator'
 import { errorToast } from '@/components/Toast'
-import { OAUTH_URL } from '@/constants/oauth'
+import { OAUTH_URL, OAUTH_DISABLED } from '@/constants/oauth'
 import {
 	ForgotPasswordEmailModal,
 	useVerificationEmail,
