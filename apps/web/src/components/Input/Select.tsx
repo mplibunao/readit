@@ -85,9 +85,7 @@ export const Select = <T extends BaseSelectOption>({
 						<Listbox.Button
 							className={twMerge(
 								'relative w-full cursor-default rounded-md border border-neutral-300 bg-white py-2 pl-3 pr-10 text-left shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500 sm:text-sm',
-								disabled
-									? 'cursor-not-allowed opacity-60 border-neutral-200 bg-neutral-50 text-neutral-500'
-									: '',
+								disabled ? 'disabled' : '',
 							)}
 						>
 							<ConditionalWrapper
