@@ -63,7 +63,7 @@
 		"fastify-plugin": "^4.3.0",
 		"http-errors": "^2.0.0",
 		"ioredis": "^5.2.5",
-		"kysely": "^0.23.5",
+		"kysely": "^0.24.0",
 		"path-to-regexp": "^6.2.1",
 		"pg": "^8.8.0",
 		"pino": "8.11.0",
