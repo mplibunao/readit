@@ -4,7 +4,7 @@ import { Icon, Logo } from '@/components/Icon'
 import { styledLink } from '@/components/Link'
 import { Separator } from '@/components/Separator'
 import { errorToast } from '@/components/Toast'
-import { OAUTH_URL } from '@/constants/oauth'
+import { OAUTH_DISABLED, OAUTH_URL } from '@/constants/oauth'
 import {
 	useLoggedIn,
 	useVerificationEmail,
@@ -15,6 +15,7 @@ import { UserSchemas } from '@api/modules/accounts/domain/user.schema'
 import * as Toggle from '@radix-ui/react-toggle'
 import Link from 'next/link'
 import React from 'react'
+import { twMerge } from 'tailwind-merge'
 
 export const Login = (): JSX.Element => {
 	useLoggedIn()
@@ -149,7 +150,10 @@ export const Login = (): JSX.Element => {
 								<div>
 									<Link
 										href={OAUTH_URL.google}
-										className='inline-flex w-full justify-center rounded-md border border-neutral-300 bg-white py-2 px-4 text-sm font-medium text-neutral-500 shadow-sm hover:bg-neutral-50'
+										className={twMerge(
+											'inline-flex w-full justify-center rounded-md border border-neutral-300 bg-white py-2 px-4 text-sm font-medium text-neutral-500 shadow-sm hover:bg-neutral-50',
+											OAUTH_DISABLED.google ? 'disabled' : '',
+										)}
 									>
 										<Icon
 											id='google'
@@ -163,7 +167,10 @@ export const Login = (): JSX.Element => {
 								<div>
 									<Link
 										href={OAUTH_URL.discord}
-										className='inline-flex w-full justify-center rounded-md border border-neutral-300 bg-white py-2 px-4 text-sm font-medium text-neutral-500 shadow-sm hover:bg-neutral-50'
+										className={twMerge(
+											'inline-flex w-full justify-center rounded-md border border-neutral-300 bg-white py-2 px-4 text-sm font-medium text-neutral-500 shadow-sm hover:bg-neutral-50',
+											OAUTH_DISABLED.discord ? 'disabled' : '',
+										)}
 									>
 										<Icon
 											id='discord'

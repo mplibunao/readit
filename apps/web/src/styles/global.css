@@ -104,6 +104,12 @@ a {
 	}
 }
 
+@layer components {
+	.disabled {
+		@apply cursor-not-allowed border-neutral-200 bg-neutral-50 text-neutral-500 opacity-60;
+	}
+}
+
 @layer utilities {
 	.h-header {
 		height: var(--header-height);
