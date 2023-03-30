@@ -794,7 +794,7 @@ export const seed = async () => {
 			isPrimary: false,
 		},
 	]
-		.map(({ communityName, tagName }) => {
+		.map(({ communityName, tagName, isPrimary }) => {
 			const communityId = communitiesResult.find(
 				(community) => community.name === communityName,
 			)?.id
@@ -807,6 +807,7 @@ export const seed = async () => {
 			return {
 				communityId,
 				tagId,
+				isPrimary,
 			}
 		})
 		.filter((communityTag) => !!communityTag) as Insertable<
