@@ -130,7 +130,7 @@ export class SocialAccountRepository {
 		}
 	}
 
-	async deleteByIdOrThrow(id: string, trx?: Trx) {
+	async removeByIdOrThrow(id: string, trx?: Trx) {
 		try {
 			return await this.removeQuery({ where: { id } }, trx)
 				.returningAll()

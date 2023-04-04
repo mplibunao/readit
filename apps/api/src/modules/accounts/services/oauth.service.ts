@@ -444,7 +444,7 @@ export const buildOAuthService = ({
 				throw new SocialNotOwnedByUser({})
 			}
 
-			await SocialAccountRepository.deleteByIdOrThrow(id)
+			await SocialAccountRepository.removeByIdOrThrow(id)
 			return social.provider
 		} catch (error) {
 			if (error instanceof AppError) {
