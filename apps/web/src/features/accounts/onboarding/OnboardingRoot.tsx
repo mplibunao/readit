@@ -10,6 +10,8 @@ const DynamicOnboardingModal = dynamic(
 
 export const OnboardingRoot = (): JSX.Element => {
 	const { data: user } = client.user.me.useQuery()
+	// for onclick handler
+	// if (onboardingModalIsOpen) return DymanicOnboardingModal
 	if (user?.onboardedAt) return <></>
 	return <DynamicOnboardingModal />
 }

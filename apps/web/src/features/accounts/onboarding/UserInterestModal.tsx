@@ -17,7 +17,7 @@ const descriptions = [
 ]
 
 export const UserInterestModal = (): JSX.Element => {
-	const { isOpen, onClose, onSkip, onContinue } = useUserInterest()
+	const { isOpen, onClose, onSkip, onContinue, steps } = useUserInterest()
 	const trpcUtils = client.useContext()
 
 	const { data: tags } = client.tag.list.useQuery(undefined, {
@@ -63,7 +63,7 @@ export const UserInterestModal = (): JSX.Element => {
 
 				<div>
 					<div className='mx-auto flex items-center justify-center py-4'>
-						<BulletSteps />
+						<BulletSteps steps={steps} />
 					</div>
 
 					<div className='mt-4 sm:mt-5'>

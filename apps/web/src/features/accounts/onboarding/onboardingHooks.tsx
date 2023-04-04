@@ -1,3 +1,4 @@
+import { Step } from '@/components/Steps'
 import { atom, useAtom } from 'jotai'
 
 const userInterestModalIsOpen = atom(true)
@@ -21,12 +22,18 @@ export const useUserInterest = () => {
 		setDiscoverCommunitiesIsOpen(true)
 	}
 
+	const steps: Step[] = [
+		{ name: 'Step 1', href: '#', status: 'current' },
+		{ name: 'Step 2', onClick: onContinue, status: 'upcoming' },
+	]
+
 	return {
 		isOpen: userInterestIsOpen,
 		onOpen,
 		onClose,
 		onSkip,
 		onContinue,
+		steps,
 	}
 }
 
@@ -49,11 +56,17 @@ export const useDicoverCommunities = () => {
 		// if yes, call a mutation to set it to now
 	}
 
+	const steps: Step[] = [
+		{ name: 'Step 1', onClick: onBack, status: 'complete' },
+		{ name: 'Step 2', href: '#', status: 'current' },
+	]
+
 	return {
 		isOpen: discoverCommunitiesIsOpen,
 		onOpen,
 		onClose,
 		onSkip,
 		onBack,
+		steps,
 	}
 }
