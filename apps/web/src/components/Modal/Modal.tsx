@@ -5,23 +5,6 @@ import { twMerge } from 'tailwind-merge'
 
 import { CloseButton as Close, BackButton as Back } from '../Button/IconButton'
 
-export interface BaseModalProps {
-	isOpen: boolean
-	onClose: () => void
-}
-
-export const useDisclosure = () => {
-	const [isOpen, setIsOpen] = React.useState(false)
-	const onClose = () => setIsOpen(false)
-	const onOpen = () => setIsOpen(true)
-
-	return {
-		isOpen,
-		onClose,
-		onOpen,
-	}
-}
-
 export interface ModalRootProps {
 	isOpen: boolean
 	onClose: () => void
