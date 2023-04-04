@@ -14,6 +14,8 @@ export interface Communities {
 	name: string
 	description: string | null
 	isNsfw: Generated<boolean>
+	imageUrl: string | null
+	bannerImageUrl: string | null
 }
 
 export interface CommunityTags {

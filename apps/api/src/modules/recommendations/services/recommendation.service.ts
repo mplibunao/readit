@@ -1,37 +1,54 @@
 import { Dependencies } from '@api/infra/diConfig'
+import { z } from 'zod'
 
-//import { z } from 'zod'
+import { RecommendationSchemas } from '../domain/recommendation.schema'
 
-export const buildRecommendationService = (_: Dependencies) => {
-	//const getRecommendedCommunities = z.function().args(z.string().uuid())
-	/*
-	 *SELECT communities.*, tags.name FROM communities
-	 *join community_tags on community_tags.community_id = communities.id
-	 *join tags on tags.id = community_tags.tag_id
-	 *join user_interests on user_interests.tag_id = tags.id
-	 *where user_interests.user_id = 'user_id'
-	 *group by tags.name, communities.id
-	 *order by count(*) desc
-	 *limit 25
-	 */
+export type RecommendationService = ReturnType<
+	typeof buildRecommendationService
+>
+
+export const buildRecommendationService = ({ TagRepository }: Dependencies) => {
+	return {
+		getRecommendedCommunities: z
+			.function()
+			.args(z.string().uuid())
+			.returns(z.promise(RecommendationSchemas.communityRecommendations))
+			.implement(async (userId) => {
+				const flatRecommendations =
+					await TagRepository.getRecommendedCommunities(userId)
+
+				return flatRecommendations.reduce(
+					(
+						acc: RecommendationSchemas.CommunityRecommendations,
+						recommendation,
+					) => {
+						const { tagId } = recommendation
+						const numCommonTags = Number(recommendation.numCommonTags)
+						const rank = Number(recommendation.rank)
+
+						const community = {
+							id: recommendation.communityId,
+							name: recommendation.community,
+							numCommonTags,
+							rank,
+							description: recommendation.communityDescription,
+							imageUrl: recommendation.communityImageUrl,
+						}
+
+						if (acc[tagId]) {
+							acc[tagId]!.communities.push(community)
+						} else {
+							acc[tagId] = {
+								tagId,
+								tag: recommendation.tag,
+								communities: [community],
+							}
+						}
+
+						return acc
+					},
+					{},
+				)
+			}),
+	}
 }
-
-/*
- *SELECT communities.*
- *FROM communities
- *JOIN community_tags ON community_tags.community_id = communities.id
- *JOIN tags ON tags.id = community_tags.tag_id
- *JOIN user_interests ON user_interests.tag_id = tags.id
- *WHERE user_interests.user_id = 'user_id' AND tags.id = 'tag_id'
- *GROUP BY communities.id
- *ORDER BY count(*) DESC, community_tags.isPrimary DESC
- *LIMIT 25 OFFSET 25
- */
-
-/*
- *SELECT community_tags.tag_id, tags.name, communities.*, ROW_NUMBER() OVER(PARTITION BY community_tags.tag_id) AS rank
- *FROM communities
- *JOIN community_tags ON community_tags.community_id = communities.id
- *JOIN tags ON tags.id = community_tags.tag_id
- *;
- */

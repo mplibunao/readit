@@ -27,6 +27,10 @@ import {
 	buildCommunityService,
 } from '@api/modules/communities/services/community.service'
 import { TagRepository } from '@api/modules/recommendations/repositories/tag.repository'
+import {
+	RecommendationService,
+	buildRecommendationService,
+} from '@api/modules/recommendations/services/recommendation.service'
 import { TagService } from '@api/modules/recommendations/services/tag.service'
 import { PubSub } from '@google-cloud/pubsub'
 import { FlagsRepo, FlagsService } from '@readit/flags'
@@ -96,6 +100,7 @@ export interface Dependencies {
 	TagService: TagService
 	CommunityRepository: CommunityRepository
 	CommunityService: CommunityService
+	RecommendationService: RecommendationService
 }
 
 /*
@@ -151,6 +156,10 @@ export function registerDependencies(
 		TagService: asClass(TagService, SINGLETON_CONFIG),
 		CommunityRepository: asClass(CommunityRepository, SINGLETON_CONFIG),
 		CommunityService: asFunction(buildCommunityService, SINGLETON_CONFIG),
+		RecommendationService: asFunction(
+			buildRecommendationService,
+			SINGLETON_CONFIG,
+		),
 	}
 
 	diContainer.register(diConfig)

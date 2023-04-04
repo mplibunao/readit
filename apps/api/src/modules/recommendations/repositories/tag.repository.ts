@@ -219,7 +219,7 @@ export class TagRepository {
 								.where('userInterests.userId', '=', userId)
 								.select([
 									'communityTags.communityId',
-									countAll().as('numCommonTags'),
+									countAll<number>().as('numCommonTags'),
 								])
 								.groupBy('communityTags.communityId')
 								.as('commonTags'),
@@ -234,24 +234,26 @@ export class TagRepository {
 							'communityTags.isPrimary',
 						])
 						.select([
-							'tags.name',
-							'tags.id',
-							'communities.name',
-							'communities.id',
+							'tags.name as tag',
+							'tags.id as tagId',
+							'communities.name as community',
+							'communities.id as communityId',
+							'communities.description as communityDescription',
+							'communities.imageUrl as communityImageUrl',
 							'numCommonTags',
 							(eb) =>
 								sql<number>`ROW_NUMBER() OVER (PARTITION BY ${eb.ref(
 									'tags.id',
 								)} ORDER BY ${eb.ref('numCommonTags')} DESC, ${eb.ref(
 									'communityTags.isPrimary',
-								)} DESC)`.as('tagRank'),
+								)} DESC)`.as('rank'),
 						])
 						.as('communityRecommendations'),
 				)
 				.selectAll()
-				.where('tagRank', '<=', 5)
-				.orderBy('name')
-				.orderBy('tagRank')
+				.where('rank', '<=', 5)
+				.orderBy('tag')
+				.orderBy('rank')
 				.execute()
 		} catch (error) {
 			throw new DBError({ cause: error })
