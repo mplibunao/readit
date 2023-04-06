@@ -1,5 +1,5 @@
 import { Circle } from '@/components/Banner'
-import { Modal } from '@/components/Modal'
+import { Modal } from '@/components/Modal/Modal'
 import { Spinner } from '@/components/Spinner'
 import { BulletSteps } from '@/components/Steps'
 import { client } from '@/utils/trpc/client'

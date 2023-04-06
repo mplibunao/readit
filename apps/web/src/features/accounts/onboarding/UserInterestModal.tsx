@@ -1,7 +1,7 @@
 import { Circle } from '@/components/Banner'
 import { Button } from '@/components/Button'
 import { FormButton } from '@/components/Forms'
-import { Modal } from '@/components/Modal'
+import { Modal } from '@/components/Modal/Modal'
 import { BulletSteps } from '@/components/Steps'
 import { errorToast, successToast } from '@/components/Toast'
 import { client } from '@/utils/trpc/client'

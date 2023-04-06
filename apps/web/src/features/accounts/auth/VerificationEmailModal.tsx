@@ -1,6 +1,7 @@
 import { Button } from '@/components/Button'
 import { Icon } from '@/components/Icon'
-import { Modal, useDisclosure } from '@/components/Modal'
+import { useDisclosure } from '@/components/Modal'
+import { Modal } from '@/components/Modal/Modal'
 import React from 'react'
 
 export const useVerificationEmail = ({

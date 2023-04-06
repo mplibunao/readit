@@ -5,14 +5,21 @@ import { twMerge } from 'tailwind-merge'
 
 import { CloseButton as Close, BackButton as Back } from '../Button/IconButton'
 
-export interface ModalRootProps {
+export * as Modal from './Modal'
+
+export interface BaseModalProps {
+	isOpen: boolean
+	onClose: () => void
+}
+
+interface ModalRootProps {
 	isOpen: boolean
 	onClose: () => void
 	children: React.ReactNode
 	initialFocus?: React.MutableRefObject<HTMLElement | null>
 }
 
-const Root = ({
+export const Root = ({
 	isOpen,
 	children,
 	onClose,
@@ -35,7 +42,7 @@ const Root = ({
 					leaveFrom='opacity-100'
 					leaveTo='opacity-0'
 				>
-					<div className='fixed inset-0 bg-black/50 backdrop-blur-sm transition-all duration-100'></div>
+					<div className='fixed inset-0 bg-black/50 backdrop-blur-sm transition-all duration-100' />
 				</Transition.Child>
 
 				<div className='fixed inset-0 z-10 overflow-y-auto'>
@@ -87,7 +94,7 @@ export interface ModalPanelProps extends VariantProps<typeof modalPanel> {
 	className?: string
 }
 
-const Panel = ({ children, className, ...props }: ModalPanelProps) => {
+export const Panel = ({ children, className, ...props }: ModalPanelProps) => {
 	return (
 		<Transition.Child
 			as={Fragment}
@@ -110,7 +117,7 @@ interface ModalTitleProps {
 	className?: string
 }
 
-const Title = ({ children, className }: ModalTitleProps) => {
+export const Title = ({ children, className }: ModalTitleProps) => {
 	return (
 		<Dialog.Title
 			as='h3'
@@ -128,7 +135,7 @@ interface ModalDescriptionProps {
 	children: React.ReactNode
 	className?: string
 }
-const Description = ({ children, className }: ModalDescriptionProps) => {
+export const Description = ({ children, className }: ModalDescriptionProps) => {
 	return (
 		<Dialog.Description className={twMerge('mt-2', className)}>
 			{children}
@@ -136,7 +143,7 @@ const Description = ({ children, className }: ModalDescriptionProps) => {
 	)
 }
 
-const modalActions = cva(['mt-5'], {
+export const modalActions = cva(['mt-5'], {
 	variants: {
 		intent: {
 			centerColumns:
@@ -156,7 +163,7 @@ interface ModalActionsProps extends VariantProps<typeof modalActions> {
 	className?: string
 }
 
-const Actions = ({ children, className, intent }: ModalActionsProps) => {
+export const Actions = ({ children, className, intent }: ModalActionsProps) => {
 	return (
 		<div className={twMerge(modalActions({ intent }), className)}>
 			{children}
@@ -168,10 +175,10 @@ interface ModalCloseButtonProps {
 	onClose: () => void
 }
 
-const CloseButton = ({ onClose }: ModalCloseButtonProps) => {
+export const CloseButton = ({ onClose }: ModalCloseButtonProps) => {
 	return (
 		<div className='absolute top-0 right-0 pt-4 pr-4 sm:block'>
-			<Close onClick={onClose} />
+			<Close onClick={onClose} label='Close dialog/modal' />
 		</div>
 	)
 }
@@ -180,20 +187,10 @@ interface ModalBackButtonProps {
 	onBack: () => void
 }
 
-const BackButton = ({ onBack }: ModalBackButtonProps) => {
+export const BackButton = ({ onBack }: ModalBackButtonProps) => {
 	return (
 		<div className='absolute top-0 left-0 pt-4 pl-4 sm:block'>
 			<Back onClick={onBack} iconClass='h-4 w-4' />
 		</div>
 	)
-}
-
-export const Modal = {
-	Root,
-	Panel,
-	Title,
-	Description,
-	Actions,
-	CloseButton,
-	BackButton,
 }

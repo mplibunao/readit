@@ -78,7 +78,7 @@ export const CloseButton = ({
 export const BackButton = ({
 	size = 'xs',
 	iconClass,
-	label = 'Back',
+	label = 'Go back',
 	...props
 }: SpecificIconButtonProps) => {
 	return (

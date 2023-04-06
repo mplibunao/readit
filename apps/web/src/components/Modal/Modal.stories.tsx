@@ -1,9 +1,10 @@
 import { Story } from '@ladle/react'
 import { useRef } from 'react'
 
+import { useDisclosure } from '.'
 import { Button } from '../Button/Button'
 import { Icon } from '../Icon/Icon'
-import { useDisclosure, Modal } from './Modal'
+import { Modal } from './Modal'
 
 export const Default: Story = () => {
 	const cancelRef = useRef<HTMLButtonElement>(null)

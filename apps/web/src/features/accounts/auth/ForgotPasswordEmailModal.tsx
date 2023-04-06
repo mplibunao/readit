@@ -1,6 +1,6 @@
 import { Button } from '@/components/Button'
 import { Icon } from '@/components/Icon'
-import { Modal } from '@/components/Modal'
+import { Modal } from '@/components/Modal/Modal'
 import React from 'react'
 
 export interface ForgotPasswordEmailModalProps {
