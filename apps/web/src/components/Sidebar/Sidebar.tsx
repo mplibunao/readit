@@ -5,6 +5,8 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { twMerge } from 'tailwind-merge'
 
+import { useSidebar } from '.'
+
 export interface SidebarItem {
 	name: string
 	href?: string
@@ -12,6 +14,7 @@ export interface SidebarItem {
 	children?: SidebarItem[]
 	image?: string
 	onClick?: () => void
+	id: string
 }
 
 export const sidebarLinks = cva(
@@ -70,6 +73,8 @@ export interface SidebarProps {
 }
 
 export const Sidebar = ({ indentSubitem }: SidebarProps): JSX.Element => {
+	const { sidebarItems } = useSidebar()
+	console.info(sidebarItems, 'sidebarItems')
 	const router = useRouter()
 	const { pathname } = router
 
@@ -97,9 +102,9 @@ export const Sidebar = ({ indentSubitem }: SidebarProps): JSX.Element => {
 							const itemIsActive = isLinkActive(item)
 
 							return !item.children ? (
-								<Link
+								<LinkOrButton
 									key={item.name}
-									href={item.href || '#'}
+									href={item.href}
 									onClick={item.onClick}
 									className={twMerge(
 										sidebarLinks({
@@ -108,16 +113,22 @@ export const Sidebar = ({ indentSubitem }: SidebarProps): JSX.Element => {
 											indentSubitem,
 										}),
 									)}
-									aria-current={itemIsActive ? 'page' : undefined}
+									isActive={itemIsActive}
 								>
-									{item.icon ? (
-										<Icon
-											id={item.icon}
-											className={twMerge(sidebarIcon({ active: itemIsActive }))}
-										/>
-									) : null}
-									<span className='truncate'>{item.name}</span>
-								</Link>
+									<>
+										{item.icon ? (
+											<Icon
+												id={item.icon}
+												className={twMerge(
+													sidebarIcon({ active: itemIsActive }),
+												)}
+											/>
+										) : (
+											<></>
+										)}
+										<span className='truncate'>{item.name}</span>
+									</>
+								</LinkOrButton>
 							) : (
 								<Disclosure
 									as='div'
@@ -167,9 +178,9 @@ export const Sidebar = ({ indentSubitem }: SidebarProps): JSX.Element => {
 														const subItemIsActive = isLinkActive(subItem)
 
 														return (
-															<Link
+															<LinkOrButton
 																key={subItem.name}
-																href={subItem.href || '#'}
+																href={subItem.href}
 																onClick={subItem.onClick}
 																className={twMerge(
 																	sidebarLinks({
@@ -178,21 +189,27 @@ export const Sidebar = ({ indentSubitem }: SidebarProps): JSX.Element => {
 																		indentSubitem,
 																	}),
 																)}
-																aria-current={
-																	subItemIsActive ? 'page' : undefined
-																}
+																isActive={subItemIsActive}
 															>
-																{subItem.icon ? (
-																	<Icon
-																		id={subItem.icon}
-																		className={twMerge(
-																			sidebarIcon({ active: subItemIsActive }),
-																		)}
-																		hidden
-																	/>
-																) : null}
-																<span className='truncate'>{subItem.name}</span>
-															</Link>
+																<>
+																	{subItem.icon ? (
+																		<Icon
+																			id={subItem.icon}
+																			className={twMerge(
+																				sidebarIcon({
+																					active: subItemIsActive,
+																				}),
+																			)}
+																			hidden
+																		/>
+																	) : (
+																		<></>
+																	)}
+																	<span className='truncate'>
+																		{subItem.name}
+																	</span>
+																</>
+															</LinkOrButton>
 														)
 													})}
 												</Disclosure.Panel>
@@ -209,65 +226,34 @@ export const Sidebar = ({ indentSubitem }: SidebarProps): JSX.Element => {
 	)
 }
 
-export const sidebarItems: SidebarItem[] = [
-	{
-		name: 'Feed',
-		children: [
-			{
-				name: 'Current Page',
-				href: '/test',
-				icon: 'home',
-			},
-			{
-				name: 'Home',
-				href: '/',
-				icon: 'home',
-			},
-			{
-				name: 'Popular',
-				href: '/r/popular',
-				icon: 'fire',
-			},
-			{
-				name: 'All',
-				href: '/r/all',
-				icon: 'user-group',
-			},
-			{
-				name: 'Trending',
-				href: '/r/trending',
-				icon: 'arrow-trending-up',
-			},
-		],
-	},
-	{
-		name: 'Your Communities',
-		children: [
-			{
-				icon: 'plus-circle',
-				name: 'Create Community',
-				href: '/communities/new',
-			},
-			{
-				name: 'r/node',
-				href: '/r/node',
-				icon: 'home',
-			},
-			{
-				name: 'r/devops',
-				href: '/r/devops',
-				icon: 'fire',
-			},
-			{
-				name: 'r/programming',
-				href: '/r/programming',
-				icon: 'user-group',
-			},
-			{
-				name: 'r/reactjs',
-				href: '/r/reactjs',
-				icon: 'arrow-trending-up',
-			},
-		],
-	},
-]
+type LinkOrButtonProps = {
+	children?: JSX.Element
+	className?: string
+	isActive: boolean
+} & SidebarItem
+
+const LinkOrButton = ({
+	children,
+	href,
+	onClick,
+	isActive,
+	...props
+}: LinkOrButtonProps) => {
+	if (onClick) {
+		return (
+			<button onClick={onClick} {...props}>
+				{children}
+			</button>
+		)
+	} else {
+		return (
+			<Link
+				href={href ?? '#'}
+				{...props}
+				aria-current={isActive ? 'page' : undefined}
+			>
+				{children}
+			</Link>
+		)
+	}
+}

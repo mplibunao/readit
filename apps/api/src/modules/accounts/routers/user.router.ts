@@ -80,4 +80,17 @@ export const userRouter = router({
 			throw handleTRPCServiceErrors(error, logger)
 		}
 	}),
+
+	finishOnboarding: protectedProcedure.mutation(async ({ ctx }) => {
+		const { session, deps } = ctx
+		const { logger, UserService } = deps
+		try {
+			return await UserService.updateById({
+				id: session.user!.id,
+				user: { onboardedAt: 'NOW' },
+			})
+		} catch (error) {
+			throw handleTRPCServiceErrors(error, logger)
+		}
+	}),
 })

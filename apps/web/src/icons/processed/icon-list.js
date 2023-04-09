@@ -24,6 +24,9 @@ module.exports = {
   "chevron-up-down": {
     "filename": "chevron-up-down.svg"
   },
+  "compass": {
+    "filename": "compass.svg"
+  },
   "discord": {
     "filename": "discord.svg"
   },
@@ -71,6 +74,9 @@ module.exports = {
   },
   "plus-circle": {
     "filename": "plus-circle.svg"
+  },
+  "plus": {
+    "filename": "plus.svg"
   },
   "reddit": {
     "filename": "reddit.svg"

@@ -46,7 +46,12 @@ export const IconButton = ({
 			{props.loading ? (
 				<span className='opacity-0'>{props.children}</span>
 			) : (
-				<Icon id={id} label={label} className={iconClass} hidden={hidden} />
+				<Icon
+					id={id}
+					label={label}
+					className={twMerge('w-5 h-5', iconClass)}
+					hidden={hidden}
+				/>
 			)}
 		</AriaButton>
 	)

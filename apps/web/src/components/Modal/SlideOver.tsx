@@ -1,23 +1,35 @@
 import { BaseCompoundComponentProps } from '@/utils/types'
 import { Dialog, Transition } from '@headlessui/react'
 import { VariantProps, cva } from 'cva'
-import { Provider, atom, useAtom } from 'jotai'
 import React from 'react'
 import { twMerge } from 'tailwind-merge'
 
-import { CloseButton as Close } from '../Button/IconButton'
+import { CloseButton as Close, BackButton as Back } from '../Button/IconButton'
 
 export * as SlideOver from './SlideOver'
 
-type SlideOverAtom = {
+type SlideOverContextType = {
 	withFooter?: boolean
 	withSubtitle?: boolean
 	colorTheme?: 'brandedPrimary' | 'base'
+	withBack?: boolean
 }
 
-const slideOverAtom = atom<SlideOverAtom>({})
+const SlideOverContext = React.createContext<SlideOverContextType>({})
 
-interface SlideOverRootProps {
+const useSlideOverContext = () => {
+	const context = React.useContext(SlideOverContext)
+
+	if (!context) {
+		throw new Error(
+			`SlideOver compound components cannot be rendered outside the SlideOver component`,
+		)
+	}
+
+	return context
+}
+
+interface SlideOverRootProps extends SlideOverContextType {
 	isOpen: boolean
 	onClose: () => void
 	children: React.ReactNode
@@ -31,9 +43,15 @@ export const Root = ({
 	onClose,
 	initialFocus,
 	backgroundOverlay,
+	withFooter,
+	colorTheme,
+	withSubtitle,
+	withBack,
 }: SlideOverRootProps): JSX.Element => {
 	return (
-		<Provider>
+		<SlideOverContext.Provider
+			value={{ withFooter, colorTheme, withSubtitle, withBack }}
+		>
 			<Transition.Root show={isOpen} as={React.Fragment}>
 				<Dialog
 					as='div'
@@ -66,7 +84,7 @@ export const Root = ({
 					</div>
 				</Dialog>
 			</Transition.Root>
-		</Provider>
+		</SlideOverContext.Provider>
 	)
 }
 
@@ -87,24 +105,15 @@ const panelStyle = cva(['pointer-events-auto w-screen'], {
 	},
 })
 
-type PanelProps = VariantProps<typeof panelStyle> &
-	BaseCompoundComponentProps &
-	SlideOverAtom
+type PanelProps = VariantProps<typeof panelStyle> & BaseCompoundComponentProps
 
 export const Panel = ({
 	children,
 	className,
 	maxWidth,
 	closeButton,
-	withFooter,
-	colorTheme,
-	withSubtitle,
 }: PanelProps) => {
-	const [_, setSlideOverState] = useAtom(slideOverAtom)
-
-	React.useEffect(() => {
-		setSlideOverState({ withFooter, withSubtitle, colorTheme })
-	}, [withFooter, withSubtitle, colorTheme, setSlideOverState])
+	const { withSubtitle, withFooter } = useSlideOverContext()
 
 	return (
 		<Transition.Child
@@ -140,8 +149,8 @@ export const Body = ({
 	children: React.ReactNode
 	className?: string
 }) => {
-	const [slideOverState] = useAtom(slideOverAtom)
-	return slideOverState.withFooter ? (
+	const { withFooter } = useSlideOverContext()
+	return withFooter ? (
 		<div
 			className={twMerge(
 				'flex min-h-0 flex-1 flex-col overflow-y-auto',
@@ -159,7 +168,7 @@ type HeaderProps = (
 	| {
 			withSubtitle: true
 			subtitleContainerClassName?: string
-			subtitle: React.ReactNode
+			subtitle?: React.ReactNode
 	  }
 	| {
 			withSubtitle?: false
@@ -168,14 +177,16 @@ type HeaderProps = (
 	BaseCompoundComponentProps
 
 export const Header = ({ className, children, ...props }: HeaderProps) => {
-	const [slideOverState] = useAtom(slideOverAtom)
+	const { withBack, withFooter } = useSlideOverContext()
+
 	// withSubtitle = true && withFooter = true || false
 	if (props.withSubtitle === true) {
 		return (
 			<div
 				className={twMerge(
-					'bg-primary-700 px-4 sm:px-6 py-6',
+					'bg-primary-700 px-4',
 					props.subtitleContainerClassName,
+					withBack ? 'pt-10 pb-6' : 'py-6 sm:px-6',
 				)}
 			>
 				<div
@@ -189,7 +200,7 @@ export const Header = ({ className, children, ...props }: HeaderProps) => {
 	}
 
 	// withFooter = true && withSubtitle = false
-	if (slideOverState.withFooter) {
+	if (withFooter) {
 		return (
 			<div className='px-4 sm:px-6'>
 				<div
@@ -225,7 +236,7 @@ const titleStyle = cva(['text-base font-semibold leading-6'], {
 type TitleProps = BaseCompoundComponentProps
 
 export const Title = ({ children, className }: TitleProps) => {
-	const [{ colorTheme }] = useAtom(slideOverAtom)
+	const { colorTheme } = useSlideOverContext()
 	return (
 		<Dialog.Title
 			className={twMerge(
@@ -243,7 +254,7 @@ export const Title = ({ children, className }: TitleProps) => {
 const subtitleStyle = cva(['text-sm'], {
 	variants: {
 		colorTheme: {
-			base: '',
+			base: 'text-neutral-500',
 			brandedPrimary: 'text-primary-300',
 		},
 	},
@@ -255,7 +266,7 @@ const subtitleStyle = cva(['text-sm'], {
 type SubtitleProps = BaseCompoundComponentProps
 
 export const Subtitle = ({ children, className }: SubtitleProps) => {
-	const [{ colorTheme }] = useAtom(slideOverAtom)
+	const { colorTheme } = useSlideOverContext()
 	return (
 		<div className='mt-1'>
 			<p className={twMerge(subtitleStyle({ className, colorTheme }))}>
@@ -283,12 +294,17 @@ const closeButtonStyles = cva([], {
 	},
 })
 
-export const CloseButton = ({ className, ...props }: BaseCloseButtonProps) => {
-	const [{ colorTheme }] = useAtom(slideOverAtom)
+export const CloseButton = ({
+	className,
+	onClose,
+	...props
+}: BaseCloseButtonProps) => {
+	const { colorTheme } = useSlideOverContext()
 	return (
 		<div className='ml-3 flex h-7 items-center'>
 			<Close
 				label='Close panel'
+				onClick={onClose}
 				className={twMerge(closeButtonStyles({ colorTheme, className }))}
 				{...props}
 			/>
@@ -315,6 +331,29 @@ export const OutsideCloseButton = (props: BaseCloseButtonProps) => {
 				/>
 			</div>
 		</Transition.Child>
+	)
+}
+
+interface BackButtonProps {
+	onClick: () => void
+	className?: string
+	iconClass?: string
+}
+
+export const BackButton = ({
+	onClick,
+	className,
+	iconClass,
+}: BackButtonProps) => {
+	const { colorTheme } = useSlideOverContext()
+	return (
+		<div className='absolute top-0 left-0 pt-4 pl-4 sm:block'>
+			<Back
+				onClick={onClick}
+				iconClass={twMerge('h-4 w-4', iconClass)}
+				className={twMerge(closeButtonStyles({ colorTheme, className }))}
+			/>
+		</div>
 	)
 }
 

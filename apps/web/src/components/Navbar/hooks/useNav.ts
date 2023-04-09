@@ -3,8 +3,8 @@ import { PROTECTED_PROCEDURE_AUTH_ERROR_TYPE } from '@api/utils/errors/errorType
 import { atom, useAtom } from 'jotai'
 import { useRouter } from 'next/router'
 
-import { errorToast, successToast } from '../Toast'
-import { UserNavigation } from './Navbar'
+import { UserNavigation } from '..'
+import { errorToast, successToast } from '../../Toast'
 
 const navIsOpenAtom = atom<boolean>(false)
 

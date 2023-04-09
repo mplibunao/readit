@@ -1,7 +1,6 @@
 import toast, { ToastOptions } from 'react-hot-toast'
 
-import { SuccessToast, ErrorToast } from './Toast'
-import { ToastProps } from './Toast'
+import { SuccessToast, ErrorToast, ToastProps } from '../Toast'
 
 type useToastProps = Omit<ToastProps, 'toast'>
 

@@ -1,14 +1,14 @@
 import { Circle } from '@/components/Banner'
 import { Button } from '@/components/Button'
 import { FormButton } from '@/components/Forms'
-import { Modal } from '@/components/Modal/Modal'
+import { SlideOver } from '@/components/Modal/SlideOver'
 import { BulletSteps } from '@/components/Steps'
 import { errorToast, successToast } from '@/components/Toast'
 import { client } from '@/utils/trpc/client'
 import { UserSchemas } from '@api/modules/accounts/domain/user.schema'
 
+import { useUserInterest } from '.'
 import { UserInterestsForm } from '../settings'
-import { useUserInterest } from './onboardingHooks'
 
 const descriptions = [
 	'Choose your interests to get more relevant recommendations.',
@@ -17,7 +17,8 @@ const descriptions = [
 ]
 
 export const UserInterestModal = (): JSX.Element => {
-	const { isOpen, onClose, onSkip, onContinue, steps } = useUserInterest()
+	const { isOpen, onClose, onSkip, onContinue, steps, setRecommendations } =
+		useUserInterest()
 	const trpcUtils = client.useContext()
 
 	const { data: tags } = client.tag.list.useQuery(undefined, {
@@ -38,6 +39,9 @@ export const UserInterestModal = (): JSX.Element => {
 			},
 			onSuccess: () => {
 				trpcUtils.user.getInterests.invalidate()
+				setRecommendations({})
+				// if user uses back and updates interests
+				trpcUtils.recommendation.getRecommendedCommunities.invalidate()
 				successToast({
 					title: 'Interests Updated',
 					message: 'Your interests were updated successfully',
@@ -57,32 +61,48 @@ export const UserInterestModal = (): JSX.Element => {
 	}
 
 	return (
-		<Modal.Root isOpen={isOpen} onClose={onClose}>
-			<Modal.Panel maxWidth='lg' padding='md' showOverflow>
-				<Modal.CloseButton onClose={onClose} />
+		<SlideOver.Root
+			isOpen={isOpen}
+			onClose={onClose}
+			withFooter
+			withSubtitle
+			colorTheme='brandedPrimary'
+		>
+			<SlideOver.Panel maxWidth='wide'>
+				<SlideOver.Body>
+					<SlideOver.Header
+						withSubtitle
+						subtitle={descriptions.map((description, index) => (
+							<SlideOver.Subtitle key={index} className='text-xs sm:text-base'>
+								<Circle className='mr-1' /> {description}
+							</SlideOver.Subtitle>
+						))}
+					>
+						<SlideOver.Title className='text-lg'>Interests</SlideOver.Title>
+						<SlideOver.CloseButton onClose={onClose} />
+					</SlideOver.Header>
 
-				<div>
 					<div className='mx-auto flex items-center justify-center py-4'>
 						<BulletSteps steps={steps} />
 					</div>
 
-					<div className='mt-4 sm:mt-5'>
-						<Modal.Title>Interests</Modal.Title>
-						<Modal.Description>
-							<span className='text-sm text-neutral-500 flex flex-col space-y-1'>
-								{descriptions.map((description, index) => (
-									<span key={index}>
-										<Circle className='mr-1' /> {description}
-									</span>
-								))}
-							</span>
-						</Modal.Description>
+					<div className='px-4 sm:px-6'>
 						<UserInterestsForm
 							handleSubmit={handleSubmitInterests}
 							tags={tags}
 							userInterests={userInterests}
 						>
-							<Modal.Actions>
+							<SlideOver.Footer className='mt-3'>
+								<Button
+									loadingText='Skipping'
+									className='mt-3 inline-flex w-full sm:mt-0 sm:w-auto ml-4'
+									intent='outline'
+									color='neutral'
+									onClick={onSkip}
+								>
+									Skip
+								</Button>
+
 								<FormButton
 									loadingText='Saving'
 									className='inline-flex w-full justify-center rounded-md sm:ml-3 sm:w-auto'
@@ -90,21 +110,11 @@ export const UserInterestModal = (): JSX.Element => {
 								>
 									Continue
 								</FormButton>
-
-								<Button
-									loadingText='Skipping'
-									className='mt-3 inline-flex w-full sm:mt-0 sm:w-auto'
-									intent='outline'
-									color='neutral'
-									onClick={onSkip}
-								>
-									Skip
-								</Button>
-							</Modal.Actions>
+							</SlideOver.Footer>
 						</UserInterestsForm>
 					</div>
-				</div>
-			</Modal.Panel>
-		</Modal.Root>
+				</SlideOver.Body>
+			</SlideOver.Panel>
+		</SlideOver.Root>
 	)
 }

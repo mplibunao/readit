@@ -10,8 +10,8 @@ import {
 	SidebarProps,
 	sidebarIcon,
 	SidebarItem,
-	sidebarItems,
 	sidebarLinks,
+	useSidebar,
 } from '.'
 import { Avatar } from '../Avatar'
 import { useNav } from '../Navbar'
@@ -22,6 +22,7 @@ export const MobileSidebar = ({
 	indentSubitem,
 }: MobileSidebarProps): JSX.Element => {
 	const { setNavIsOpen, navIsOpen, router, user, userNavigation } = useNav()
+	const { sidebarItems } = useSidebar()
 	const { pathname } = router
 
 	const isLinkActive = (item: SidebarItem) => {

@@ -1,4 +1,4 @@
-export * from './useLoggedIn'
+export * from './hooks/useLoggedIn'
 export * from './VerificationEmailModal'
 export * from './ForgotPasswordEmailModal'
-export * from './useProtectedPage'
+export * from './hooks/useProtectedPage'

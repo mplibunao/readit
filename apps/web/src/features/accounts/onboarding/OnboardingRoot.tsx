@@ -1,5 +1,13 @@
+import { useSidebar } from '@/components/Sidebar'
 import { client } from '@/utils/trpc/client'
+import { useAtom } from 'jotai'
 import dynamic from 'next/dynamic'
+import React from 'react'
+
+import {
+	userInterestModalIsOpenAtom,
+	discoverCommunitiesModalIsOpenAtom,
+} from '.'
 
 const DynamicOnboardingModal = dynamic(
 	() => import('./OnboardingModal').then((module) => module.OnboardingModal),
@@ -9,9 +17,39 @@ const DynamicOnboardingModal = dynamic(
 )
 
 export const OnboardingRoot = (): JSX.Element => {
-	const { data: user } = client.user.me.useQuery()
-	// for onclick handler
-	// if (onboardingModalIsOpen) return DymanicOnboardingModal
-	if (user?.onboardedAt) return <></>
-	return <DynamicOnboardingModal />
+	const [userInterestIsOpen, setUserInterestIsOpen] = useAtom(
+		userInterestModalIsOpenAtom,
+	)
+	const [discoverCommunitiesIsOpen] = useAtom(
+		discoverCommunitiesModalIsOpenAtom,
+	)
+	const { addItem } = useSidebar()
+
+	React.useEffect(() => {
+		addItem(
+			{
+				id: 'DISCOVER',
+				icon: 'compass',
+				name: 'Discover Communities',
+				onClick: () => {
+					setUserInterestIsOpen(true)
+				},
+			},
+			'YOUR_COMMUNITIES',
+		)
+	}, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+	const { data: user, isLoading } = client.user.me.useQuery(undefined, {
+		onSuccess: (user) => {
+			// don't open if 2nd step is open even if user hasn't finished onboarding (query probably got invalidated)
+			if (!user?.onboardedAt && discoverCommunitiesIsOpen === false) {
+				setUserInterestIsOpen(true)
+			}
+		},
+	})
+
+	if (isLoading) return <></>
+	if (userInterestIsOpen || discoverCommunitiesIsOpen)
+		return <DynamicOnboardingModal onboardedAt={user?.onboardedAt} />
+	return <></>
 }

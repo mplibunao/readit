@@ -6,9 +6,9 @@ import Link from 'next/link'
 import { Fragment } from 'react'
 import { twMerge } from 'tailwind-merge'
 
+import { useNav } from '.'
 import { Avatar } from '../Avatar'
 import { IconButton } from '../Button'
-import { useNav } from './useNav'
 
 export type UserNavigation =
 	| {

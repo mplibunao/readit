@@ -67,6 +67,7 @@ export const updateInput = z.object({
 		lastName: lastName.optional(),
 		username: username.optional(),
 		imageUrl: imageUrl.optional(),
+		onboardedAt: z.union([z.string(), onboardedAt]).optional(),
 	}),
 })
 export type UpdateInput = z.infer<typeof updateInput>
