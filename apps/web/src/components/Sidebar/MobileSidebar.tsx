@@ -12,6 +12,7 @@ import {
 	SidebarItem,
 	sidebarLinks,
 	useSidebar,
+	LinkOrButton,
 } from '.'
 import { Avatar } from '../Avatar'
 import { useNav } from '../Navbar'
@@ -91,7 +92,7 @@ export const MobileSidebar = ({
 										{sidebarItems.map((item) => {
 											const itemIsActive = isLinkActive(item)
 											return !item.children ? (
-												<Link
+												<LinkOrButton
 													key={item.name}
 													href={item.href || '#'}
 													onClick={item.onClick}
@@ -102,18 +103,20 @@ export const MobileSidebar = ({
 															indentSubitem,
 														}),
 													)}
-													aria-current={itemIsActive ? 'page' : undefined}
+													isActive={itemIsActive}
 												>
-													{item.icon ? (
-														<Icon
-															id={item.icon}
-															className={twMerge(
-																sidebarIcon({ active: itemIsActive }),
-															)}
-														/>
-													) : null}
-													<span className='truncate'>{item.name}</span>
-												</Link>
+													<>
+														{item.icon ? (
+															<Icon
+																id={item.icon}
+																className={twMerge(
+																	sidebarIcon({ active: itemIsActive }),
+																)}
+															/>
+														) : null}
+														<span className='truncate'>{item.name}</span>
+													</>
+												</LinkOrButton>
 											) : (
 												<Disclosure
 													as='div'
@@ -165,7 +168,7 @@ export const MobileSidebar = ({
 																			isLinkActive(subItem)
 
 																		return (
-																			<Link
+																			<LinkOrButton
 																				key={subItem.name}
 																				href={subItem.href || '#'}
 																				onClick={subItem.onClick}
@@ -180,21 +183,23 @@ export const MobileSidebar = ({
 																					subItemIsActive ? 'page' : undefined
 																				}
 																			>
-																				{subItem.icon ? (
-																					<Icon
-																						id={subItem.icon}
-																						className={twMerge(
-																							sidebarIcon({
-																								active: subItemIsActive,
-																							}),
-																						)}
-																						hidden
-																					/>
-																				) : null}
-																				<span className='truncate'>
-																					{subItem.name}
-																				</span>
-																			</Link>
+																				<>
+																					{subItem.icon ? (
+																						<Icon
+																							id={subItem.icon}
+																							className={twMerge(
+																								sidebarIcon({
+																									active: subItemIsActive,
+																								}),
+																							)}
+																							hidden
+																						/>
+																					) : null}
+																					<span className='truncate'>
+																						{subItem.name}
+																					</span>
+																				</>
+																			</LinkOrButton>
 																		)
 																	})}
 																</Disclosure.Panel>

@@ -74,7 +74,6 @@ export interface SidebarProps {
 
 export const Sidebar = ({ indentSubitem }: SidebarProps): JSX.Element => {
 	const { sidebarItems } = useSidebar()
-	console.info(sidebarItems, 'sidebarItems')
 	const router = useRouter()
 	const { pathname } = router
 
@@ -230,9 +229,11 @@ type LinkOrButtonProps = {
 	children?: JSX.Element
 	className?: string
 	isActive: boolean
-} & SidebarItem
+	href?: string
+	onClick?: () => void
+}
 
-const LinkOrButton = ({
+export const LinkOrButton = ({
 	children,
 	href,
 	onClick,

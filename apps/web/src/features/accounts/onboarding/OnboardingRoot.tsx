@@ -1,3 +1,4 @@
+import { useNav } from '@/components/Navbar'
 import { useSidebar } from '@/components/Sidebar'
 import { client } from '@/utils/trpc/client'
 import { useAtom } from 'jotai'
@@ -24,6 +25,7 @@ export const OnboardingRoot = (): JSX.Element => {
 		discoverCommunitiesModalIsOpenAtom,
 	)
 	const { addItem } = useSidebar()
+	const { setNavIsOpen } = useNav()
 
 	React.useEffect(() => {
 		addItem(
@@ -32,6 +34,7 @@ export const OnboardingRoot = (): JSX.Element => {
 				icon: 'compass',
 				name: 'Discover Communities',
 				onClick: () => {
+					setNavIsOpen(false)
 					setUserInterestIsOpen(true)
 				},
 			},
