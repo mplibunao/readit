@@ -1,4 +1,5 @@
 import { Menu, Transition } from '@headlessui/react'
+import Image from 'next/image'
 import React from 'react'
 import { twMerge } from 'tailwind-merge'
 
@@ -675,7 +676,7 @@ export const UserProfile = () => {
 							<div className='pb-1 sm:pb-6'>
 								<div>
 									<div className='relative h-40 sm:h-56'>
-										<img
+										<Image
 											className='absolute h-full w-full object-cover'
 											src='https://images.unsplash.com/photo-1501031170107-cfd33f0cbdcc?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&h=600&q=80'
 											alt=''
