@@ -232,7 +232,27 @@ export class TagRepository {
 							'commonTags.communityId',
 							'communities.id',
 						)
-						.where('userInterests.userId', '=', userId)
+						.where(({ and, cmpr, not, exists, selectFrom }) =>
+							and([
+								cmpr('userInterests.userId', '=', userId),
+								not(
+									exists(
+										selectFrom('memberships')
+											.select('id')
+											.where(({ and, ref }) =>
+												and([
+													cmpr('memberships.userId', '=', userId),
+													cmpr(
+														'memberships.communityId',
+														'=',
+														ref('communities.id'),
+													),
+												]),
+											),
+									),
+								),
+							]),
+						)
 						.groupBy([
 							'tags.id',
 							'communities.id',
@@ -316,7 +336,6 @@ export class TagRepository {
 						)
 						.where('userInterests.userId', '=', userId)
 						.where('tags.id', '=', tagId)
-						.where('communities.id', '!=', userId)
 						.groupBy([
 							'tags.id',
 							'communities.id',
