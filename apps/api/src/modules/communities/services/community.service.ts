@@ -1,4 +1,5 @@
 import { Dependencies } from '@api/infra/diConfig'
+import { MembershipRole } from '@api/infra/pg/types'
 import { AppError, InternalServerError } from '@api/utils/errors/baseError'
 import { z } from 'zod'
 
@@ -28,7 +29,7 @@ export const buildCommunityService = ({
 					)
 					const { id: communityId } = community
 
-					const membership = await CommunityRepository.createMembership(
+					const membershipPromise = CommunityRepository.createMembership(
 						{
 							communityId,
 							userId,
@@ -38,6 +39,7 @@ export const buildCommunityService = ({
 					)
 
 					if (!params.primaryTag && params.secondaryTags.length === 0) {
+						const [membership] = await Promise.all([membershipPromise])
 						return { community, membership, communityTags: [] }
 					}
 					if (params.secondaryTags.length > 0 && !params.primaryTag) {
@@ -64,7 +66,12 @@ export const buildCommunityService = ({
 						})
 					}
 
-					const communityTags = await TagService.createCommunityTags(tags, trx)
+					const tagsPromise = TagService.createCommunityTags(tags, trx)
+
+					const [membership, communityTags] = await Promise.all([
+						membershipPromise,
+						tagsPromise,
+					])
 
 					return { community, membership, communityTags }
 				})
@@ -81,7 +88,36 @@ export const buildCommunityService = ({
 			}
 		})
 
+	const joinCommunities = z
+		.function()
+		.args(CommunitySchemas.joinCommunitiesInput)
+		.implement(async ({ communityIds, userId }) => {
+			try {
+				const role: MembershipRole = 'member'
+				const params = communityIds.map((communityId) => ({
+					userId,
+					communityId,
+					role,
+				}))
+				return await CommunityRepository.createMemberships(params)
+			} catch (error) {
+				if (error instanceof AppError) {
+					logger.error(
+						{ error, communityIds, userId },
+						`Failed to join communities: ${error.type}`,
+					)
+					throw error
+				}
+				logger.error(
+					{ error, communityIds, userId },
+					'Failed to join communities',
+				)
+				throw new InternalServerError({ cause: error })
+			}
+		})
+
 	return {
 		create,
+		joinCommunities,
 	}
 }

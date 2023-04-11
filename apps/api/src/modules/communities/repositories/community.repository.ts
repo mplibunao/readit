@@ -13,6 +13,7 @@ import {
 	UpdateQuery,
 } from '@api/infra/pg/types'
 import { AlreadyExists, NotFound } from '@api/utils/errors/baseError'
+import { throwIfUniqueConstraintError } from '@api/utils/errors/repoErrorUtils'
 import {
 	DBError,
 	InvalidDeleteFilter,
@@ -126,10 +127,23 @@ export class CommunityRepository {
 				if (error.code === '23505') {
 					throw new AlreadyExists({
 						cause: error,
-						message: 'Membership already exists',
+						message: 'User has already joined this community',
 					})
 				}
 			}
+			throw new DBError({ cause: error })
+		}
+	}
+
+	async createMemberships(params: InsertableMembership[], trx?: Trx) {
+		try {
+			const connection = trx ? trx : this.pg
+			return await connection.insertInto('memberships').values(params).execute()
+		} catch (error) {
+			throwIfUniqueConstraintError(
+				error,
+				'User has already joined one or more of these communities',
+			)
 			throw new DBError({ cause: error })
 		}
 	}

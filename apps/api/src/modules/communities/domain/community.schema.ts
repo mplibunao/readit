@@ -33,3 +33,8 @@ export const createCommunityInput = z.object({
 	secondaryTags: z.string().uuid().array().max(10),
 })
 export type CreateCommunityInput = z.infer<typeof createCommunityInput>
+
+export const joinCommunitiesInput = z.object({
+	communityIds: id.array().min(1),
+	userId: id,
+})

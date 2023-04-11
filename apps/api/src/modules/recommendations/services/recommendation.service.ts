@@ -11,13 +11,17 @@ export const buildRecommendationService = ({ TagRepository }: Dependencies) => {
 	return {
 		getRecommendedCommunities: z
 			.function()
-			.args(z.string().uuid())
+			.args(RecommendationSchemas.getRecommendedCommunitiesInput)
 			.returns(z.promise(RecommendationSchemas.communityRecommendations))
-			.implement(async (userId) => {
+			.implement(async ({ userId, recommendationNum }) => {
 				const flatRecommendations =
-					await TagRepository.getRecommendedCommunities(userId)
+					await TagRepository.getRecommendedCommunities({
+						userId: userId,
+						recommendationNum,
+					})
+				console.info(flatRecommendations, 'flatRecommendations')
 
-				return flatRecommendations.reduce(
+				return flatRecommendations.reduce<RecommendationSchemas.CommunityRecommendations>(
 					(
 						acc: RecommendationSchemas.CommunityRecommendations,
 						recommendation,
@@ -35,20 +39,56 @@ export const buildRecommendationService = ({ TagRepository }: Dependencies) => {
 							imageUrl: recommendation.communityImageUrl,
 						}
 
-						if (acc[tagId]) {
-							acc[tagId]!.communities.push(community)
+						const existingRecommendation = acc.get(tagId)
+
+						if (existingRecommendation) {
+							existingRecommendation.communities.push(community)
+							acc.set(tagId, existingRecommendation)
 						} else {
-							acc[tagId] = {
+							acc.set(tagId, {
 								tagId,
 								tag: recommendation.tag,
 								communities: [community],
-							}
+							})
 						}
 
 						return acc
 					},
-					{},
+					new Map<string, RecommendationSchemas.CommunityRecommendation>(),
 				)
 			}),
+
+		getMoreRecommendedCommunities: z
+			.function()
+			.args(RecommendationSchemas.getMoreRecommendedCommunitiesInput)
+			.returns(
+				z.promise(RecommendationSchemas.getMoreRecommendedCommunitiesOutput),
+			)
+			.implement(
+				async ({ userId, recommendationNum, tagId, offset, limit }) => {
+					const flatRecommendations =
+						await TagRepository.getMoreRecommendedCommunities({
+							userId: userId,
+							recommendationNum,
+							tagId,
+							offset,
+							limit,
+						})
+
+					const communities = flatRecommendations.map((recommendation) => ({
+						id: recommendation.communityId,
+						name: recommendation.community,
+						numCommonTags: Number(recommendation.numCommonTags),
+						rank: Number(recommendation.rank),
+						description: recommendation.communityDescription,
+						imageUrl: recommendation.communityImageUrl,
+					}))
+
+					return {
+						communities,
+						tagId,
+					}
+				},
+			),
 	}
 }

@@ -193,7 +193,13 @@ export class TagRepository {
 		}
 	}
 
-	async getRecommendedCommunities(userId: string, trx?: Trx) {
+	async getRecommendedCommunities(
+		{
+			userId,
+			recommendationNum,
+		}: { userId: string; recommendationNum: number },
+		trx?: Trx,
+	) {
 		try {
 			const connection = trx ? trx : this.pg
 			const { countAll } = connection.fn
@@ -246,14 +252,100 @@ export class TagRepository {
 									'tags.id',
 								)} ORDER BY ${eb.ref('numCommonTags')} DESC, ${eb.ref(
 									'communityTags.isPrimary',
-								)} DESC)`.as('rank'),
+								)} DESC, ${eb.ref('communities.id')})`.as('rank'),
 						])
 						.as('communityRecommendations'),
 				)
 				.selectAll()
-				.where('rank', '<=', 5)
+				.where('rank', '<=', recommendationNum)
 				.orderBy('tag')
 				.orderBy('rank')
+				.execute()
+		} catch (error) {
+			throw new DBError({ cause: error })
+		}
+	}
+
+	async getMoreRecommendedCommunities(
+		{
+			userId,
+			recommendationNum,
+			tagId,
+			offset,
+			limit,
+		}: {
+			userId: string
+			recommendationNum: number
+			tagId: string
+			offset: number
+			limit: number
+		},
+		trx?: Trx,
+	) {
+		try {
+			const connection = trx ? trx : this.pg
+			const { countAll } = connection.fn
+			return await connection
+				.selectFrom((eb) =>
+					eb
+						.selectFrom('communityTags')
+						.innerJoin(
+							'communities',
+							'communities.id',
+							'communityTags.communityId',
+						)
+						.innerJoin('tags', 'communityTags.tagId', 'tags.id')
+						.innerJoin('userInterests', 'tags.id', 'userInterests.tagId')
+						.innerJoin(
+							connection
+								.selectFrom('communityTags')
+								.innerJoin(
+									'userInterests',
+									'communityTags.tagId',
+									'userInterests.tagId',
+								)
+								.where('userInterests.userId', '=', userId)
+								.select([
+									'communityTags.communityId',
+									countAll<number>().as('numCommonTags'),
+								])
+								.groupBy('communityTags.communityId')
+								.as('commonTags'),
+							'commonTags.communityId',
+							'communities.id',
+						)
+						.where('userInterests.userId', '=', userId)
+						.where('tags.id', '=', tagId)
+						.where('communities.id', '!=', userId)
+						.groupBy([
+							'tags.id',
+							'communities.id',
+							'commonTags.numCommonTags',
+							'communityTags.isPrimary',
+						])
+						.select([
+							'tags.name as tag',
+							'tags.id as tagId',
+							'communities.name as community',
+							'communities.id as communityId',
+							'communities.description as communityDescription',
+							'communities.imageUrl as communityImageUrl',
+							'numCommonTags',
+							(eb) =>
+								sql<number>`ROW_NUMBER() OVER (PARTITION BY ${eb.ref(
+									'tags.id',
+								)} ORDER BY ${eb.ref('numCommonTags')} DESC, ${eb.ref(
+									'communityTags.isPrimary',
+								)} DESC, ${eb.ref('communities.id')})`.as('rank'),
+						])
+						.as('communityRecommendations'),
+				)
+				.selectAll()
+				.where('rank', '<=', recommendationNum)
+				.orderBy('tag')
+				.orderBy('rank')
+				.offset(offset)
+				.limit(limit)
 				.execute()
 		} catch (error) {
 			throw new DBError({ cause: error })

@@ -179,9 +179,7 @@ export const MobileSidebar = ({
 																						indentSubitem,
 																					}),
 																				)}
-																				aria-current={
-																					subItemIsActive ? 'page' : undefined
-																				}
+																				isActive={subItemIsActive}
 																			>
 																				<>
 																					{subItem.icon ? (

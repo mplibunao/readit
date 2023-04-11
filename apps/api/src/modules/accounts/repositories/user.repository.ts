@@ -100,6 +100,9 @@ export class UserRepository {
 				.selectAll('users')
 				.executeTakeFirstOrThrow()
 		} catch (error) {
+			if (error instanceof NoResultError) {
+				throw new NotFound({ cause: error, message: 'User was not found' })
+			}
 			throw new DBError({ cause: error })
 		}
 	}

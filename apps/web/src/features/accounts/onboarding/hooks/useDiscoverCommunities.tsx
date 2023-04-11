@@ -3,14 +3,168 @@ import { errorToast, successToast } from '@/components/Toast'
 import { client } from '@/utils/trpc/client'
 import { RecommendationSchemas } from '@api/modules/recommendations/domain/recommendation.schema'
 import { atom, useAtom } from 'jotai'
+import { useReducerAtom } from 'jotai/utils'
 
 import {
 	discoverCommunitiesModalIsOpenAtom,
 	userInterestModalIsOpenAtom,
 } from './useUserInterest'
 
-export const communityRecommendationsAtom =
-	atom<RecommendationSchemas.CommunityRecommendations>({})
+const recommendationNumber = 5
+
+export type CommunityRecommendationsState = {
+	recommendations: RecommendationSchemas.CommunityRecommendations
+	selected: Map<string, boolean>
+}
+
+export const communityRecommendationsAtom = atom<CommunityRecommendationsState>(
+	{
+		recommendations: new Map(),
+		selected: new Map(),
+	},
+)
+
+export type RecommendationAction =
+	| {
+			type: 'SET_RECOMMENDATIONS'
+			payload: RecommendationSchemas.CommunityRecommendations
+	  }
+	| {
+			type: 'TOGGLE_COMMUNITY_RECOMMENDATION'
+			payload: ToggleCommunityRecommendationProps
+	  }
+	| {
+			type: 'ADD_TAG_RECOMMENDED_COMMUNITIES'
+			payload: RecommendationSchemas.GetMoreRecommendedCommunitiesOutput
+	  }
+	| { type: 'SELECT_ALL_TAG_COMMUNITIES'; payload: string }
+	| { type: 'DESELECT_ALL_TAG_COMMUNITIES'; payload: string }
+	| { type: 'RESET'; payload: undefined }
+
+export const recommendationsReducer = (
+	state: CommunityRecommendationsState,
+	{ payload, type }: RecommendationAction,
+) => {
+	switch (type) {
+		case 'RESET':
+			return {
+				recommendations: new Map(),
+				selected: new Map(),
+			}
+		case 'SET_RECOMMENDATIONS':
+			return {
+				...state,
+				recommendations: payload,
+			}
+		case 'TOGGLE_COMMUNITY_RECOMMENDATION': {
+			const recommendation = state.recommendations.get(payload.tagId)
+			if (!recommendation) return state
+
+			const selected = new Map(state.selected)
+			payload.selected
+				? selected.set(payload.communityId, true)
+				: selected.delete(payload.communityId)
+
+			const newRecommendation = {
+				...recommendation,
+				allSelected: recommendation.communities.every((community) =>
+					selected.has(community.id),
+				),
+				allUnselected: recommendation.communities.every(
+					(community) => !selected.has(community.id),
+				),
+			}
+
+			return {
+				selected,
+				recommendations: new Map(state.recommendations).set(
+					payload.tagId,
+					newRecommendation,
+				),
+			}
+		}
+		case 'ADD_TAG_RECOMMENDED_COMMUNITIES': {
+			const recommendation = state.recommendations.get(payload.tagId)
+			if (!recommendation) return state
+			if (payload.communities.length === 0) {
+				successToast({
+					title: 'No more recommendations for this category',
+					message: 'Try another one or change your interest',
+				})
+			}
+
+			const newRecommendation =
+				payload.communities.length === 0
+					? {
+							...recommendation,
+							noMoreCommunities: true,
+					  }
+					: {
+							...recommendation,
+							communities: [
+								...recommendation.communities,
+								...payload.communities,
+							],
+					  }
+
+			return {
+				...state,
+				recommendations: new Map(state.recommendations).set(
+					payload.tagId,
+					newRecommendation,
+				),
+			}
+		}
+		case 'SELECT_ALL_TAG_COMMUNITIES': {
+			const recommendation = state.recommendations.get(payload)
+			if (!recommendation) return state
+
+			const newRecommendation = {
+				...recommendation,
+				allSelected: true,
+				allUnselected: false,
+			}
+
+			return {
+				selected: recommendation.communities.reduce<Map<string, boolean>>(
+					(acc, community) => {
+						acc.set(community.id, true)
+						return acc
+					},
+					state.selected,
+				),
+				recommendations: new Map(state.recommendations).set(
+					payload,
+					newRecommendation,
+				),
+			}
+		}
+		case 'DESELECT_ALL_TAG_COMMUNITIES': {
+			const recommendation = state.recommendations.get(payload)
+			if (!recommendation) return state
+
+			const newRecommendation = {
+				...recommendation,
+				allSelected: false,
+				allUnselected: true,
+			}
+
+			return {
+				recommendations: new Map(state.recommendations).set(
+					payload,
+					newRecommendation,
+				),
+				selected: recommendation.communities.reduce<Map<string, boolean>>(
+					(acc, community) => {
+						acc.delete(community.id)
+						return acc
+					},
+					state.selected,
+				),
+			}
+		}
+	}
+}
 
 export type ToggleCommunityRecommendationProps = {
 	tagId: string
@@ -23,9 +177,15 @@ export const useDicoverCommunities = () => {
 		discoverCommunitiesModalIsOpenAtom,
 	)
 	const [, setUserInterestIsOpen] = useAtom(userInterestModalIsOpenAtom)
-	const [recommendations, setRecommendations] = useAtom(
+
+	const [
+		{ recommendations, selected: selectedCommunities },
+		dispatchRecommendations,
+	] = useReducerAtom<CommunityRecommendationsState, RecommendationAction>(
 		communityRecommendationsAtom,
+		recommendationsReducer,
 	)
+
 	const finishOnboarding = client.user.finishOnboarding.useMutation({
 		onError: (error) => {
 			errorToast({
@@ -35,18 +195,22 @@ export const useDicoverCommunities = () => {
 		},
 		onSuccess: () => {
 			successToast({
-				title: 'Successfully finished onboarding rprocess',
+				title: 'Successfully finished onboarding process',
 				message: 'You can come back and update this later',
 			})
 			setDiscoverCommunitiesIsOpen(false)
 		},
 	})
+
 	const onOpen = () => setDiscoverCommunitiesIsOpen(true)
+
 	const onClose = () => setDiscoverCommunitiesIsOpen(false)
+
 	const onBack = () => {
 		setDiscoverCommunitiesIsOpen(false)
 		setUserInterestIsOpen(true)
 	}
+
 	const onSkip = (onboardedAt?: Date | null) => {
 		if (!onboardedAt) {
 			finishOnboarding.mutate()
@@ -55,93 +219,47 @@ export const useDicoverCommunities = () => {
 		}
 	}
 
-	const tagCommunitiesAllSelected = (
-		tag: RecommendationSchemas.CommunityRecommendationsTag,
-	) => tag.communities.every((community) => community.selected)
+	const handleFinishOnboarding = () => finishOnboarding.mutate()
 
-	const tagCommunitiesAllUnselected = (
-		tag: RecommendationSchemas.CommunityRecommendationsTag,
-	) => tag.communities.every((community) => !community.selected)
-
-	const toggleRecommendation = ({
-		tagId,
-		communityId,
-		selected,
-	}: ToggleCommunityRecommendationProps) => {
-		const tag = recommendations[tagId]
-		if (!tag) return
-		const community = tag.communities.find(
-			(community) => community.id === communityId,
-		)
-
-		if (community) {
-			const newCommunities = tag.communities.map((community) => {
-				if (community.id === communityId) {
-					return { ...community, selected }
-				}
-				return community
-			})
-			const updatedTag = {
-				...tag,
-				communities: newCommunities,
-			}
-			setRecommendations({
-				...recommendations,
-				[tagId]: {
-					...updatedTag,
-					allSelected: tagCommunitiesAllSelected(updatedTag),
-					allUnselected: tagCommunitiesAllUnselected(updatedTag),
-				},
-			})
-		}
+	const setRecommendations = (
+		recommendations: RecommendationSchemas.CommunityRecommendations,
+	) => {
+		dispatchRecommendations({
+			type: 'SET_RECOMMENDATIONS',
+			payload: recommendations,
+		})
 	}
 
-	const toggleSelectAllTagCommunities = (newValue: boolean, tagId: string) => {
-		if (newValue) {
-			selectAllTagCommunities(tagId)
-		} else {
-			deselectAllTagCommunities(tagId)
-		}
+	const toggleCommunityRecommendation = (
+		payload: ToggleCommunityRecommendationProps,
+	) => {
+		dispatchRecommendations({
+			type: 'TOGGLE_COMMUNITY_RECOMMENDATION',
+			payload,
+		})
+	}
+
+	const addTagRecommendedCommunities = (
+		recommendedCommunities: RecommendationSchemas.GetMoreRecommendedCommunitiesOutput,
+	) => {
+		dispatchRecommendations({
+			type: 'ADD_TAG_RECOMMENDED_COMMUNITIES',
+			payload: recommendedCommunities,
+		})
 	}
 
 	const selectAllTagCommunities = (tagId: string) => {
-		const tag = recommendations[tagId]
-		if (!tag) return
-
-		const newRecommendations = {
-			...recommendations,
-			[tagId]: {
-				...tag,
-				allSelected: true,
-				allUnselected: false,
-				communities: tag.communities.map((community) => ({
-					...community,
-					selected: true,
-				})),
-			},
-		}
-
-		setRecommendations(newRecommendations)
+		dispatchRecommendations({
+			type: 'SELECT_ALL_TAG_COMMUNITIES',
+			payload: tagId,
+		})
 	}
 
 	const deselectAllTagCommunities = (tagId: string) => {
-		const tag = recommendations[tagId]
-		if (!tag) return
-
-		const newRecommendations = {
-			...recommendations,
-			[tagId]: {
-				...tag,
-				allSelected: false,
-				allUnselected: true,
-				communities: tag.communities.map((community) => ({
-					...community,
-					selected: false,
-				})),
-			},
-		}
-
-		setRecommendations(newRecommendations)
+		dispatchRecommendations({
+			type: 'DESELECT_ALL_TAG_COMMUNITIES',
+			payload: tagId,
+		})
 	}
 
 	const steps: Step[] = [
@@ -158,7 +276,12 @@ export const useDicoverCommunities = () => {
 		steps,
 		recommendations,
 		setRecommendations,
-		toggleRecommendation,
-		toggleSelectAllTagCommunities,
+		toggleCommunityRecommendation,
+		selectedCommunities,
+		handleFinishOnboarding,
+		recommendationNumber,
+		addTagRecommendedCommunities,
+		selectAllTagCommunities,
+		deselectAllTagCommunities,
 	}
 }

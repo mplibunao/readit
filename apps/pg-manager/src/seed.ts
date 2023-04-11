@@ -145,6 +145,36 @@ export const seed = async () => {
 			isNsfw: false,
 		},
 		{
+			name: 'fastify',
+			description:
+				'Fastify is a web framework highly focused on providing the best developer experience with the least overhead and a powerful plugin architecture.',
+			isNsfw: false,
+		},
+		{
+			name: 'graphql',
+			description:
+				'GraphQL is a query language for APIs and a runtime for fulfilling those queries with your existing data.',
+			isNsfw: false,
+		},
+		{
+			name: 'typescript',
+			description:
+				'TypeScript is a typed superset of JavaScript that compiles to plain JavaScript.',
+			isNsfw: false,
+		},
+		{
+			name: 'Postgres',
+			description:
+				'PostgreSQL is a powerful, open source object-relational database system.',
+			isNsfw: false,
+		},
+		{
+			name: 'expressjs',
+			description:
+				'Express is a minimal and flexible Node.js web application framework that provides a robust set of features for web and mobile applications.',
+			isNsfw: false,
+		},
+		{
 			name: 'petlovers',
 			description:
 				'A community for pet owners to share photos, stories, and tips.',
@@ -451,11 +481,6 @@ export const seed = async () => {
 			communityName: 'googlecloud',
 			tagName: 'Technology',
 			isPrimary: true,
-		},
-		{
-			communityName: 'googlecloud',
-			tagName: 'Programming',
-			isPrimary: false,
 		},
 		{
 			communityName: 'googlecloud',
@@ -792,6 +817,36 @@ export const seed = async () => {
 			communityName: 'wallstreetbets',
 			tagName: 'Politics',
 			isPrimary: false,
+		},
+		{
+			communityName: 'fastify',
+			tagName: 'Technology',
+			isPrimary: true,
+		},
+		{
+			communityName: 'fastify',
+			tagName: 'Programming',
+			isPrimary: false,
+		},
+		{
+			communityName: 'graphql',
+			tagName: 'Technology',
+			isPrimary: true,
+		},
+		{
+			communityName: 'typescript',
+			tagName: 'Technology',
+			isPrimary: true,
+		},
+		{
+			communityName: 'Postgres',
+			tagName: 'Technology',
+			isPrimary: true,
+		},
+		{
+			communityName: 'expressjs',
+			tagName: 'Technology',
+			isPrimary: true,
 		},
 	]
 		.map(({ communityName, tagName, isPrimary }) => {

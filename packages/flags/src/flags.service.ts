@@ -59,13 +59,13 @@ export class FlagsService implements BaseFlagsService {
 				}),
 			)
 
-			return flags.reduce((acc, flag) => ({ ...acc, ...flag }), {})
+			return flags.reduce((acc, flag) => Object.assign(acc, flag), {})
 		} catch (e) {
 			this.onError && this.onError(e)
 
 			return keys
 				.map((key, index) => ({ [key]: fallback[index] }))
-				.reduce((acc, flag) => ({ ...acc, ...flag }), {})
+				.reduce((acc, flag) => Object.assign(acc, flag), {})
 		}
 	}
 }

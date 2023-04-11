@@ -17,6 +17,11 @@ import { UserAlreadyExists } from '../domain/user.errors'
 
 export type OAuthServiceType = ReturnType<typeof buildOAuthService>
 
+export const GOOGLE_OAUTH_URL_PREFIX =
+	'https://accounts.google.com/o/oauth2/v2/auth'
+export const DISCORD_OAUTH_URL_PREFIX =
+	'https://discord.com/api/oauth2/authorize'
+
 export const buildOAuthService = ({
 	config,
 	logger,
@@ -79,7 +84,7 @@ export const buildOAuthService = ({
 		}
 
 		const searchParams = new URLSearchParams(options)
-		return `https://accounts.google.com/o/oauth2/v2/auth?${searchParams.toString()}`
+		return `${GOOGLE_OAUTH_URL_PREFIX}?${searchParams.toString()}`
 	}
 
 	const getDiscordOAuthUrl = (state: string) => {
@@ -93,7 +98,7 @@ export const buildOAuthService = ({
 
 		const searchParams = new URLSearchParams(options)
 
-		return `https://discord.com/api/oauth2/authorize?${searchParams.toString()}`
+		return `${DISCORD_OAUTH_URL_PREFIX}?${searchParams.toString()}`
 	}
 
 	const formatDiscordAvatar = z

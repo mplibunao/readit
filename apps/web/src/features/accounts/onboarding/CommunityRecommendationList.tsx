@@ -1,5 +1,6 @@
 import { Avatar } from '@/components/Avatar'
 import { Icon } from '@/components/Icon'
+import { client } from '@/utils/trpc/client'
 import { RecommendationSchemas } from '@api/modules/recommendations/domain/recommendation.schema'
 import * as Toggle from '@radix-ui/react-toggle'
 import { twMerge } from 'tailwind-merge'
@@ -9,15 +10,41 @@ import { ToggleCommunityRecommendationProps, useDicoverCommunities } from '.'
 export const CommunityRecommendationList = (): JSX.Element => {
 	const {
 		recommendations,
-		toggleRecommendation,
-		toggleSelectAllTagCommunities,
+		toggleCommunityRecommendation: toggleRecommendation,
+		recommendationNumber,
+		addTagRecommendedCommunities,
+		selectAllTagCommunities,
+		deselectAllTagCommunities,
+		selectedCommunities,
 	} = useDicoverCommunities()
+
+	const getMoreRecommendedCommunities =
+		client.recommendation.getMoreRecommendedCommunities.useMutation({
+			onSuccess: (data) => {
+				addTagRecommendedCommunities(data)
+			},
+		})
+
+	const handleGetMoreRecommendations = (
+		recommendation: RecommendationSchemas.CommunityRecommendation,
+	) => {
+		const offsetNum = 1 + recommendationNumber
+		const recommendationNum = recommendation.communities.length + offsetNum
+
+		getMoreRecommendedCommunities.mutate({
+			tagId: recommendation.tagId,
+			recommendationNum,
+			limit: recommendationNumber,
+			offset: recommendationNum - offsetNum,
+		})
+	}
+
 	return (
 		<nav
 			className='h-full overflow-y-auto'
 			aria-label='Community recommendations'
 		>
-			{Object.entries(recommendations).map(([id, recommendation]) => {
+			{Array.from(recommendations.entries()).map(([id, recommendation]) => {
 				const allSelected = isAllSelected({ recommendation })
 				return (
 					<div key={id} className='relative'>
@@ -27,7 +54,9 @@ export const CommunityRecommendationList = (): JSX.Element => {
 								className='hover:text-neutral-400 text-xs'
 								pressed={allSelected}
 								onPressedChange={(newValue) =>
-									toggleSelectAllTagCommunities(newValue, recommendation.tagId)
+									newValue
+										? selectAllTagCommunities(recommendation.tagId)
+										: deselectAllTagCommunities(recommendation.tagId)
 								}
 							>
 								{allSelected ? 'Deselect All' : 'Select All'}
@@ -40,11 +69,20 @@ export const CommunityRecommendationList = (): JSX.Element => {
 							{recommendation.communities.map((community) => (
 								<CommunityItem
 									community={community}
-									key={community.id}
+									key={`tag:${recommendation.tagId}-community:${community.id}-${community.name}`}
 									toggleRecommendation={toggleRecommendation}
 									tagId={recommendation.tagId}
+									selectedCommunities={selectedCommunities}
 								/>
 							))}
+							{!recommendation?.noMoreCommunities ? (
+								<button
+									className='hover:text-neutral-400 bg-white hover:bg-neutral-100 px-6 py-2 text-xs font-medium text-neutral-500 flex justify-center border-transparent w-full'
+									onClick={() => handleGetMoreRecommendations(recommendation)}
+								>
+									Show more
+								</button>
+							) : null}
 						</ul>
 					</div>
 				)
@@ -56,7 +94,7 @@ export const CommunityRecommendationList = (): JSX.Element => {
 function isAllSelected({
 	recommendation,
 }: {
-	recommendation: RecommendationSchemas.CommunityRecommendationsTag
+	recommendation: RecommendationSchemas.CommunityRecommendation
 }) {
 	if (recommendation.allSelected) {
 		return true
@@ -73,22 +111,25 @@ const CommunityItem = ({
 	community,
 	toggleRecommendation,
 	tagId,
+	selectedCommunities,
 }: {
-	community: RecommendationSchemas.CommunityRecommendationsCommunity
+	community: RecommendationSchemas.RecommendationCommunity
 	toggleRecommendation: (params: ToggleCommunityRecommendationProps) => void
 	tagId: string
+	selectedCommunities: Map<string, boolean>
 }) => {
+	const isSelected = selectedCommunities.get(community.id) ?? false
 	return (
 		<Toggle.Root
 			className={twMerge(
 				'flex w-full justify-between items-center focus-within:ring-2 focus-within:ring-inset focus-within:ring-primary-500 px-6 py-5',
-				community.selected
+				isSelected
 					? 'bg-primary-100 hover:bg-primary-50'
 					: 'hover:bg-neutral-50',
 			)}
-			pressed={community.selected}
+			pressed={isSelected}
 			aria-label={`${
-				community.selected ? 'Deselect' : 'Select'
+				isSelected ? 'Deselect' : 'Select'
 			} recommended community ${community.name}`}
 			onPressedChange={(selected) =>
 				toggleRecommendation({ tagId, communityId: community.id, selected })
@@ -112,10 +153,10 @@ const CommunityItem = ({
 				</div>
 			</li>
 			<Icon
-				id={community.selected ? 'check' : 'plus'}
+				id={isSelected ? 'check' : 'plus'}
 				className={twMerge(
 					'w-6 h-6 min-w-[24px]',
-					community.selected ? 'text-primary-500' : 'text-neutral-500',
+					isSelected ? 'text-primary-500' : 'text-neutral-500',
 				)}
 				hidden
 			/>

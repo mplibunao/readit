@@ -17,7 +17,7 @@ const descriptions = [
 ]
 
 export const UserInterestModal = (): JSX.Element => {
-	const { isOpen, onClose, onSkip, onContinue, steps, setRecommendations } =
+	const { isOpen, onClose, onSkip, onContinue, steps, resetRecommendations } =
 		useUserInterest()
 	const trpcUtils = client.useContext()
 
@@ -39,7 +39,7 @@ export const UserInterestModal = (): JSX.Element => {
 			},
 			onSuccess: () => {
 				trpcUtils.user.getInterests.invalidate()
-				setRecommendations({})
+				resetRecommendations()
 				// if user uses back and updates interests
 				trpcUtils.recommendation.getRecommendedCommunities.invalidate()
 				successToast({

@@ -19,17 +19,35 @@ export const DiscoverCommunitiesModal = ({
 }: {
 	onboardedAt?: Date | null
 }): JSX.Element => {
-	const { isOpen, onClose, onBack, steps, onSkip, setRecommendations } =
-		useDicoverCommunities()
-	const { isLoading, data } =
-		client.recommendation.getRecommendedCommunities.useQuery(undefined, {
-			enabled: isOpen,
-			staleTime: Infinity,
-			onSuccess: (data) => {
-				setRecommendations(data)
-			},
-		})
+	const {
+		isOpen,
+		onClose,
+		onBack,
+		steps,
+		onSkip,
+		setRecommendations,
+		selectedCommunities,
+		handleFinishOnboarding,
+		recommendationNumber,
+	} = useDicoverCommunities()
 
+	const { isLoading, data } =
+		client.recommendation.getRecommendedCommunities.useQuery(
+			recommendationNumber,
+			{
+				enabled: isOpen,
+				staleTime: Infinity,
+				onSuccess: (data) => {
+					setRecommendations(data)
+				},
+			},
+		)
+
+	const joinCommunitiesMutation = client.community.joinCommunities.useMutation({
+		onSuccess: () => {
+			handleFinishOnboarding()
+		},
+	})
 	return (
 		<SlideOver.Root
 			isOpen={isOpen}
@@ -83,7 +101,11 @@ export const DiscoverCommunitiesModal = ({
 					<Button
 						loadingText='Submitting'
 						className='mt-3 inline-flex w-full sm:mt-0 sm:w-auto ml-4'
-						onClick={() => {}}
+						onClick={() => {
+							joinCommunitiesMutation.mutate(
+								Array.from(selectedCommunities.keys()),
+							)
+						}}
 					>
 						Submit
 					</Button>

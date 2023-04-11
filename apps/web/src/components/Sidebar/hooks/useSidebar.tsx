@@ -53,17 +53,18 @@ export const useSidebar = () => {
 	function addItem(item: SidebarItem, key?: string) {
 		const newSidebarItems = sidebarItems.map((sidebarItem) => {
 			if (sidebarItem.id === (key ?? item.id)) {
-				const sidebarItemChildren = sidebarItem.children ?? []
-
-				// duplicate children with the same id
-				if (sidebarItemChildren.some((child) => child.id === item.id)) {
+				if (!sidebarItem.children) {
+					sidebarItem.children = [item]
 					return sidebarItem
 				}
 
-				return {
-					...sidebarItem,
-					children: [...sidebarItemChildren, item],
+				// duplicate children with the same id
+				if (sidebarItem.children.some((child) => child.id === item.id)) {
+					return sidebarItem
 				}
+
+				sidebarItem.children.push(item)
+				return sidebarItem
 			} else {
 				return sidebarItem
 			}
