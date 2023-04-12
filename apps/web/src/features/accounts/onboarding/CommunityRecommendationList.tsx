@@ -10,7 +10,7 @@ import { ToggleCommunityRecommendationProps, useDicoverCommunities } from '.'
 export const CommunityRecommendationList = (): JSX.Element => {
 	const {
 		recommendations,
-		toggleCommunityRecommendation: toggleRecommendation,
+		toggleCommunityRecommendation,
 		recommendationNumber,
 		addTagRecommendedCommunities,
 		selectAllTagCommunities,
@@ -70,7 +70,7 @@ export const CommunityRecommendationList = (): JSX.Element => {
 								<CommunityItem
 									community={community}
 									key={`tag:${recommendation.tagId}-community:${community.id}-${community.name}`}
-									toggleRecommendation={toggleRecommendation}
+									toggleRecommendation={toggleCommunityRecommendation}
 									tagId={recommendation.tagId}
 									selectedCommunities={selectedCommunities}
 								/>
