@@ -4,7 +4,12 @@ import { styledLink } from '@/components/Link'
 import { useDisclosure } from '@/components/Modal'
 import { LoadingPage } from '@/components/Spinner'
 import { errorToast, successToast } from '@/components/Toast'
-import { OAUTH_URL, providers } from '@/constants/oauth'
+import {
+	OAUTH_DISABLED,
+	OAUTH_URL,
+	Provider,
+	providers,
+} from '@/constants/oauth'
 import {
 	useVerificationEmail,
 	VerificationEmailModal,
@@ -169,7 +174,10 @@ export const SettingsIndex: NextPageWithLayout = (): JSX.Element => {
 							value={social.usernameOrEmail}
 						>
 							<SettingsAction.Button
-								disabled={unlinkSocialMutation.isLoading}
+								disabled={
+									unlinkSocialMutation.isLoading ||
+									OAUTH_DISABLED[social.provider as Provider]
+								}
 								onClick={() => unlinkSocialMutation.mutate(social.id)}
 							>
 								Disconnect
@@ -181,7 +189,10 @@ export const SettingsIndex: NextPageWithLayout = (): JSX.Element => {
 				{unconnectedSocials.map((provider) => {
 					return (
 						<SettingsRow key={provider} label={provider}>
-							<Link className={styledLink()} href={OAUTH_URL[provider]}>
+							<Link
+								className={styledLink({ disabled: OAUTH_DISABLED[provider] })}
+								href={OAUTH_URL[provider]}
+							>
 								Connect
 							</Link>
 						</SettingsRow>
