@@ -37,10 +37,11 @@ const sidebarItemsAtom = atom<SidebarItem[]>([
 
 export const useSidebar = () => {
 	const [sidebarItems, setSidebarItems] = useAtom(sidebarItemsAtom)
+	console.info(sidebarItems, 'sidebarItems')
 
-	function addChildren(item: SidebarItem, key?: string) {
+	function addChild(item: SidebarItem, parentKey: string) {
 		const newSidebarItems = sidebarItems.map((sidebarItem) => {
-			if (sidebarItem.id === (key ?? item.id)) {
+			if (sidebarItem.id === parentKey) {
 				if (!sidebarItem.children) {
 					sidebarItem.children = [item]
 					return sidebarItem
@@ -52,6 +53,29 @@ export const useSidebar = () => {
 				}
 
 				sidebarItem.children.push(item)
+				return sidebarItem
+			} else {
+				return sidebarItem
+			}
+		})
+
+		setSidebarItems(newSidebarItems)
+	}
+
+	function addChildren(item: SidebarItem[], parentKey: string) {
+		const newSidebarItems = sidebarItems.map((sidebarItem) => {
+			if (sidebarItem.id === parentKey) {
+				if (!sidebarItem.children) {
+					sidebarItem.children = item
+					return sidebarItem
+				}
+
+				// duplicate children with the same id
+				if (sidebarItem.children.some((child) => child.id === item.id)) {
+					return sidebarItem
+				}
+
+				sidebarItem.children.concat(item)
 				return sidebarItem
 			} else {
 				return sidebarItem
@@ -73,5 +97,5 @@ export const useSidebar = () => {
 		setSidebarItems((prev) => [...prev, item])
 	}
 
-	return { sidebarItems, addChildren, addParent }
+	return { sidebarItems, addChild, addParent, addChildren }
 }

@@ -34,4 +34,17 @@ export const communityRouter = router({
 				throw handleTRPCServiceErrors(error, logger)
 			}
 		}),
+
+	userCommunities: protectedProcedure
+		.output(CommunitySchemas.getUserCommunitiesOutput.array())
+		.query(async ({ ctx }) => {
+			const { deps, session } = ctx
+			const { CommunityService, logger } = deps
+			try {
+				if (!session.user?.id) throw new UnauthorizedError({})
+				return await CommunityService.getUserCommunities(session.user.id)
+			} catch (error) {
+				throw handleTRPCServiceErrors(error, logger)
+			}
+		}),
 })

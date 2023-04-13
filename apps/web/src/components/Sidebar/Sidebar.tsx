@@ -6,13 +6,14 @@ import { useRouter } from 'next/router'
 import { twMerge } from 'tailwind-merge'
 
 import { useSidebar } from '.'
+import { Avatar } from '../Avatar'
 
 export interface SidebarItem {
 	name: string
 	href?: string
 	icon?: IconId
 	children?: SidebarItem[]
-	image?: string
+	image?: string | null
 	onClick?: () => void
 	id: string
 }
@@ -58,7 +59,7 @@ export const sidebarLinks = cva(
 	},
 )
 
-export const sidebarIcon = cva(['mr-3 flex-shrink-0 h-6 w-6 -ml-1'], {
+export const sidebarIcon = cva(['mr-3 flex-shrink-0 h-6 w-6'], {
 	variants: {
 		active: {
 			true: 'text-primary-500',
@@ -115,16 +116,7 @@ export const Sidebar = ({ indentSubitem }: SidebarProps): JSX.Element => {
 									isActive={itemIsActive}
 								>
 									<>
-										{item.icon ? (
-											<Icon
-												id={item.icon}
-												className={twMerge(
-													sidebarIcon({ active: itemIsActive }),
-												)}
-											/>
-										) : (
-											<></>
-										)}
+										<IconOrImage {...item} isActive={itemIsActive} />
 										<span className='truncate'>{item.name}</span>
 									</>
 								</LinkOrButton>
@@ -149,7 +141,7 @@ export const Sidebar = ({ indentSubitem }: SidebarProps): JSX.Element => {
 											>
 												{item.icon ? (
 													<Icon
-														id={item.icon}
+														id={icon}
 														className={twMerge(sidebarIcon())}
 														hidden
 													/>
@@ -191,19 +183,10 @@ export const Sidebar = ({ indentSubitem }: SidebarProps): JSX.Element => {
 																isActive={subItemIsActive}
 															>
 																<>
-																	{subItem.icon ? (
-																		<Icon
-																			id={subItem.icon}
-																			className={twMerge(
-																				sidebarIcon({
-																					active: subItemIsActive,
-																				}),
-																			)}
-																			hidden
-																		/>
-																	) : (
-																		<></>
-																	)}
+																	<IconOrImage
+																		{...subItem}
+																		isActive={subItemIsActive}
+																	/>
 																	<span className='truncate'>
 																		{subItem.name}
 																	</span>
@@ -257,4 +240,32 @@ export const LinkOrButton = ({
 			</Link>
 		)
 	}
+}
+
+export const IconOrImage = ({
+	icon,
+	image,
+	name,
+	isActive,
+}: SidebarItem & { isActive: boolean; className?: string }) => {
+	if (icon) {
+		return (
+			<Icon
+				id={icon}
+				className={twMerge(
+					sidebarIcon({
+						active: isActive,
+					}),
+				)}
+				hidden
+			/>
+		)
+	}
+
+	return (
+		<>
+			<Avatar src={image} name={name} size='xs' />
+			<div className='mr-3' />
+		</>
+	)
 }

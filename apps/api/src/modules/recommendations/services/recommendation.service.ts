@@ -19,7 +19,6 @@ export const buildRecommendationService = ({ TagRepository }: Dependencies) => {
 						userId: userId,
 						recommendationNum,
 					})
-				console.info(flatRecommendations, 'flatRecommendations')
 
 				return flatRecommendations.reduce<RecommendationSchemas.CommunityRecommendations>(
 					(

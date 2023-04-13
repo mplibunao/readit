@@ -116,8 +116,29 @@ export const buildCommunityService = ({
 			}
 		})
 
+	const getUserCommunities = z
+		.function()
+		.args(z.string().uuid())
+		.returns(z.promise(CommunitySchemas.getUserCommunitiesOutput.array()))
+		.implement(async (userId) => {
+			try {
+				return await CommunityRepository.getUserCommunities(userId)
+			} catch (error) {
+				if (error instanceof AppError) {
+					logger.error(
+						{ error, userId },
+						`Failed to get user communities: ${error.type}`,
+					)
+					throw error
+				}
+				logger.error({ error, userId }, 'Failed to get user communities')
+				throw new InternalServerError({ cause: error })
+			}
+		})
+
 	return {
 		create,
 		joinCommunities,
+		getUserCommunities,
 	}
 }

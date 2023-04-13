@@ -22,6 +22,8 @@ import {
 import { NoResultError } from 'kysely'
 import Pg from 'pg'
 
+import { CommunitySchemas } from '../domain/community.schema'
+
 type CommunityDeleteQuery = DeleteQuery<'communities'>
 type CommunityDeleteOptions = DeleteOptions<'communities'>
 type CommunityUpdateQuery = UpdateQuery<'communities'>
@@ -192,6 +194,23 @@ export class CommunityRepository {
 			if (error instanceof NoResultError) {
 				throw new NotFound({ cause: error, message: 'Community not found' })
 			}
+			throw new DBError({ cause: error })
+		}
+	}
+
+	async getUserCommunities(
+		userId: string,
+		trx?: Trx,
+	): Promise<CommunitySchemas.GetUserCommunitiesOutput[]> {
+		try {
+			const connection = trx ? trx : this.pg
+			return await connection
+				.selectFrom('communities')
+				.select(['communities.id', 'name', 'imageUrl'])
+				.innerJoin('memberships', 'communities.id', 'memberships.communityId')
+				.where('memberships.userId', '=', userId)
+				.execute()
+		} catch (error) {
 			throw new DBError({ cause: error })
 		}
 	}

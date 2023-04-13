@@ -13,6 +13,7 @@ import {
 	sidebarLinks,
 	useSidebar,
 	LinkOrButton,
+	IconOrImage,
 } from '.'
 import { Avatar } from '../Avatar'
 import { useNav } from '../Navbar'
@@ -106,14 +107,7 @@ export const MobileSidebar = ({
 													isActive={itemIsActive}
 												>
 													<>
-														{item.icon ? (
-															<Icon
-																id={item.icon}
-																className={twMerge(
-																	sidebarIcon({ active: itemIsActive }),
-																)}
-															/>
-														) : null}
+														<IconOrImage {...icon} isActive={itemIsActive} />
 														<span className='truncate'>{item.name}</span>
 													</>
 												</LinkOrButton>
@@ -182,17 +176,10 @@ export const MobileSidebar = ({
 																				isActive={subItemIsActive}
 																			>
 																				<>
-																					{subItem.icon ? (
-																						<Icon
-																							id={subItem.icon}
-																							className={twMerge(
-																								sidebarIcon({
-																									active: subItemIsActive,
-																								}),
-																							)}
-																							hidden
-																						/>
-																					) : null}
+																					<IconOrImage
+																						{...subItem}
+																						isActive={subItemIsActive}
+																					/>
 																					<span className='truncate'>
 																						{subItem.name}
 																					</span>
