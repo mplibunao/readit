@@ -37,7 +37,6 @@ const sidebarItemsAtom = atom<SidebarItem[]>([
 
 export const useSidebar = () => {
 	const [sidebarItems, setSidebarItems] = useAtom(sidebarItemsAtom)
-	console.info(sidebarItems, 'sidebarItems')
 
 	function addChild(item: SidebarItem, parentKey: string) {
 		const newSidebarItems = sidebarItems.map((sidebarItem) => {
@@ -71,7 +70,11 @@ export const useSidebar = () => {
 				}
 
 				// duplicate children with the same id
-				if (sidebarItem.children.some((child) => child.id === item.id)) {
+				if (
+					sidebarItem.children.some((child) =>
+						item.some((i) => i.id === child.id),
+					)
+				) {
 					return sidebarItem
 				}
 

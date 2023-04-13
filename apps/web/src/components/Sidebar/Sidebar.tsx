@@ -141,7 +141,7 @@ export const Sidebar = ({ indentSubitem }: SidebarProps): JSX.Element => {
 											>
 												{item.icon ? (
 													<Icon
-														id={icon}
+														id={item.icon}
 														className={twMerge(sidebarIcon())}
 														hidden
 													/>

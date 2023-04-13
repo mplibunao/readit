@@ -107,7 +107,7 @@ export const MobileSidebar = ({
 													isActive={itemIsActive}
 												>
 													<>
-														<IconOrImage {...icon} isActive={itemIsActive} />
+														<IconOrImage {...item} isActive={itemIsActive} />
 														<span className='truncate'>{item.name}</span>
 													</>
 												</LinkOrButton>

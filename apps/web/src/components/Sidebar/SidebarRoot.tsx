@@ -3,12 +3,12 @@ import { client } from '@/utils/trpc/client'
 import { useAtom } from 'jotai'
 import React from 'react'
 
-import { MobileSidebar, Sidebar, SidebarItem, useSidebar } from '.'
+import { MobileSidebar, Sidebar, useSidebar } from '.'
 import { IconId } from '../Icon'
 import { useNav } from '../Navbar'
 
 export const SidebarRoot = (): JSX.Element => {
-	const { addParent, addChildren } = useSidebar()
+	const { addParent } = useSidebar()
 	const { setNavIsOpen } = useNav()
 	const [, setUserInterestIsOpen] = useAtom(userInterestModalIsOpenAtom)
 
