@@ -45,7 +45,7 @@ export const OnboardingRoot = (): JSX.Element => {
 	const { data: user, isLoading } = client.user.me.useQuery(undefined, {
 		onSuccess: (user) => {
 			// don't open if 2nd step is open even if user hasn't finished onboarding (query probably got invalidated)
-			if (!user?.onboardedAt && discoverCommunitiesIsOpen === false) {
+			if (user && !user?.onboardedAt && discoverCommunitiesIsOpen === false) {
 				setUserInterestIsOpen(true)
 			}
 		},
