@@ -126,6 +126,8 @@ export const SettingsIndex: NextPageWithLayout = (): JSX.Element => {
 				title='Account'
 				subtitle='Manage account settings and preferences'
 			>
+				<SettingsRow label='Username' value={data.username} />
+
 				<SettingsRow label='Email' value={data?.email}>
 					<SettingsAction.Button onClick={() => showChangeEmailModal.onOpen()}>
 						Change

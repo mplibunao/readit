@@ -3,7 +3,7 @@ import { Button as AriaButton } from 'ariakit/button'
 import { twMerge } from 'tailwind-merge'
 
 export interface SettingsRowProps {
-	children: React.ReactNode
+	children?: React.ReactNode
 	label: string
 	value?: React.ReactNode
 	multipleActions?: boolean
@@ -26,14 +26,16 @@ export const SettingsRow = ({
 				) : (
 					<div className='flex-grow' />
 				)}
-				<span
-					className={twMerge(
-						'ml-4 flex-shrink-0',
-						multipleActions ? 'flex items-start space-x-4' : '',
-					)}
-				>
-					{children}
-				</span>
+				{children ? (
+					<span
+						className={twMerge(
+							'ml-4 flex-shrink-0',
+							multipleActions ? 'flex items-start space-x-4' : '',
+						)}
+					>
+						{children}
+					</span>
+				) : null}
 			</dd>
 		</div>
 	)
