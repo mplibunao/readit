@@ -1,5 +1,5 @@
 import { Navbar } from '../Navbar'
-import { MobileSidebar, Sidebar } from '../Sidebar'
+import { SidebarRoot } from '../Sidebar'
 
 export interface LayoutProps {
 	children: React.ReactNode
@@ -8,8 +8,7 @@ export interface LayoutProps {
 export const Layout = ({ children }: LayoutProps): JSX.Element => {
 	return (
 		<div>
-			<MobileSidebar />
-			<Sidebar />
+			<SidebarRoot />
 			<div className='md:pl-64'>
 				<Navbar />
 				{children}

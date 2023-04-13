@@ -33,24 +33,12 @@ const sidebarItemsAtom = atom<SidebarItem[]>([
 			},
 		],
 	},
-	{
-		id: 'YOUR_COMMUNITIES',
-		name: 'Your Communities',
-		children: [
-			{
-				id: 'CREATE_COMMUNITY',
-				icon: 'plus-circle',
-				name: 'Create Community',
-				href: '/communities/new',
-			},
-		],
-	},
 ])
 
 export const useSidebar = () => {
 	const [sidebarItems, setSidebarItems] = useAtom(sidebarItemsAtom)
 
-	function addItem(item: SidebarItem, key?: string) {
+	function addChildren(item: SidebarItem, key?: string) {
 		const newSidebarItems = sidebarItems.map((sidebarItem) => {
 			if (sidebarItem.id === (key ?? item.id)) {
 				if (!sidebarItem.children) {
@@ -73,5 +61,17 @@ export const useSidebar = () => {
 		setSidebarItems(newSidebarItems)
 	}
 
-	return { sidebarItems, addItem }
+	function addParent(item: SidebarItem) {
+		const existingParent = sidebarItems.find(
+			(sidebarItem) => sidebarItem.id === item.id,
+		)
+
+		if (existingParent) {
+			return
+		}
+
+		setSidebarItems((prev) => [...prev, item])
+	}
+
+	return { sidebarItems, addChildren, addParent }
 }

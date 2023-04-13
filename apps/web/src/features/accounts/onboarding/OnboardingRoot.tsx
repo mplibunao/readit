@@ -1,5 +1,3 @@
-import { useNav } from '@/components/Navbar'
-import { useSidebar } from '@/components/Sidebar'
 import { client } from '@/utils/trpc/client'
 import { useAtom } from 'jotai'
 import dynamic from 'next/dynamic'
@@ -24,23 +22,6 @@ export const OnboardingRoot = (): JSX.Element => {
 	const [discoverCommunitiesIsOpen] = useAtom(
 		discoverCommunitiesModalIsOpenAtom,
 	)
-	const { addItem } = useSidebar()
-	const { setNavIsOpen } = useNav()
-
-	React.useEffect(() => {
-		addItem(
-			{
-				id: 'DISCOVER',
-				icon: 'compass',
-				name: 'Discover Communities',
-				onClick: () => {
-					setNavIsOpen(false)
-					setUserInterestIsOpen(true)
-				},
-			},
-			'YOUR_COMMUNITIES',
-		)
-	}, []) // eslint-disable-line react-hooks/exhaustive-deps
 
 	const { data: user, isLoading } = client.user.me.useQuery(undefined, {
 		onSuccess: (user) => {
