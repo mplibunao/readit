@@ -21,3 +21,13 @@ export const MainLayout = ({
 		</div>
 	)
 }
+
+export const FullWidthLayout = ({ children }: MainLayoutProps): JSX.Element => {
+	return (
+		<div className='relative z-0 flex flex-1 overflow-hidden'>
+			<main className='relative z-0 flex-1 overflow-y-auto focus:outline-none xl:order-last'>
+				{children}
+			</main>
+		</div>
+	)
+}

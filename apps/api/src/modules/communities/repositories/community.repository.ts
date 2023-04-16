@@ -13,7 +13,10 @@ import {
 	UpdateQuery,
 } from '@api/infra/pg/types'
 import { AlreadyExists, NotFound } from '@api/utils/errors/baseError'
-import { throwIfUniqueConstraintError } from '@api/utils/errors/repoErrorUtils'
+import {
+	throwIfNotFound,
+	throwIfUniqueConstraintError,
+} from '@api/utils/errors/repoErrorUtils'
 import {
 	DBError,
 	InvalidDeleteFilter,
@@ -211,6 +214,34 @@ export class CommunityRepository {
 				.where('memberships.userId', '=', userId)
 				.execute()
 		} catch (error) {
+			throw new DBError({ cause: error })
+		}
+	}
+
+	async getCommunityByName(name: string, trx?: Trx) {
+		try {
+			const connection = trx ? trx : this.pg
+			const { countAll } = connection.fn
+			return await connection
+				.selectFrom('communities')
+				.select([
+					countAll<number>().as('membersNum'),
+					'id',
+					'name',
+					'imageUrl',
+					'description',
+					'bannerImageUrl',
+					'isNsfw',
+					'createdAt',
+				])
+				.leftJoin('memberships', 'memberships.communityId', 'communities.id')
+				.where(({ and, cmpr }) =>
+					and([cmpr('name', '=', name), cmpr('deletedAt', 'is', null)]),
+				)
+				.groupBy(['communities.id'])
+				.executeTakeFirstOrThrow()
+		} catch (error) {
+			throwIfNotFound(error, 'Community was not found')
 			throw new DBError({ cause: error })
 		}
 	}

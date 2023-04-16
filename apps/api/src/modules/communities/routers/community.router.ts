@@ -1,4 +1,4 @@
-import { protectedProcedure, router } from '@api/trpc/builder'
+import { protectedProcedure, publicProcedure, router } from '@api/trpc/builder'
 import { UnauthorizedError } from '@api/utils/errors/baseError'
 import { handleTRPCServiceErrors } from '@api/utils/errors/handleTRPCServiceErrors'
 import { z } from 'zod'
@@ -43,6 +43,19 @@ export const communityRouter = router({
 			try {
 				if (!session.user?.id) throw new UnauthorizedError({})
 				return await CommunityService.getUserCommunities(session.user.id)
+			} catch (error) {
+				throw handleTRPCServiceErrors(error, logger)
+			}
+		}),
+
+	publicGetCommunityByName: publicProcedure
+		.input(z.string())
+		//.output(CommunitySchemas.community)
+		.query(async ({ ctx, input }) => {
+			const { deps } = ctx
+			const { logger, CommunityService } = deps
+			try {
+				return await CommunityService.getCommunityByName(input)
 			} catch (error) {
 				throw handleTRPCServiceErrors(error, logger)
 			}

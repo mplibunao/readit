@@ -1,6 +1,7 @@
+import { NoResultError } from 'kysely'
 import Pg from 'pg'
 
-import { AlreadyExists } from './baseError'
+import { AlreadyExists, NotFound } from './baseError'
 
 export function throwIfUniqueConstraintError(error: unknown, message: string) {
 	if (error instanceof Pg.DatabaseError) {
@@ -10,5 +11,11 @@ export function throwIfUniqueConstraintError(error: unknown, message: string) {
 				message,
 			})
 		}
+	}
+}
+
+export function throwIfNotFound(error: unknown, message: string) {
+	if (error instanceof NoResultError) {
+		throw new NotFound({ cause: error, message })
 	}
 }

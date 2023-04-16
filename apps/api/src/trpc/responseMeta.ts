@@ -20,9 +20,10 @@ export const responseMeta = ({ paths, type, errors }: ResponseMetaParams) => {
 	const isQuery = type === 'query'
 	if (allOk && allPublic && isQuery) {
 		const ONE_DAY_IN_SECONDS = 60 * 60 * 24
+		const ONE_HOUR_IN_SECONDS = 3600
 		return {
 			headers: {
-				'cache-control': `s-maxage=1, stale-while-revalidate=${ONE_DAY_IN_SECONDS}`,
+				'cache-control': `s-maxage=1, stale-while-revalidate=${ONE_DAY_IN_SECONDS} stale-if-error=${ONE_HOUR_IN_SECONDS}`,
 			},
 		}
 	}

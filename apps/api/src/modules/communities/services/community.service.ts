@@ -136,9 +136,35 @@ export const buildCommunityService = ({
 			}
 		})
 
+	const getCommunityByName = z
+		.function()
+		.args(z.string())
+		//.returns(z.promise(CommunitySchemas.community))
+		.implement(async (communityName) => {
+			try {
+				const community = CommunityRepository.getCommunityByName(communityName)
+				console.info(community, 'community')
+				return community
+			} catch (error) {
+				if (error instanceof AppError) {
+					logger.error(
+						{ error, communityName },
+						`Failed to get community details: ${error.type}`,
+					)
+					throw error
+				}
+				logger.error(
+					{ error, communityName },
+					`Failed to get community details`,
+				)
+				throw new InternalServerError({ cause: error })
+			}
+		})
+
 	return {
 		create,
 		joinCommunities,
 		getUserCommunities,
+		getCommunityByName,
 	}
 }
