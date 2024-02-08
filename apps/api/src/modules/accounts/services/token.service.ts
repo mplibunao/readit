@@ -6,12 +6,17 @@ import { z } from 'zod'
 import { TokenNotFound } from '../domain/token.errors'
 import { TokenSchemas } from '../domain/token.schema'
 
-export type TokenService = ReturnType<typeof buildTokenService>
+//export type TokenService = ReturnType<typeof buildTokenService>
+export interface TokenService {
+	create(params: TokenSchemas.CreateTokenInput): Promise<TokenSchemas.Token>
+	get(id: string): Promise<TokenSchemas.Token>
+	del(id: string): Promise<true>
+}
 
 export const buildTokenService = ({
 	TokenRepository,
 	logger,
-}: Dependencies) => {
+}: Dependencies): TokenService => {
 	const create = z
 		.function()
 		.args(TokenSchemas.createTokenInput)

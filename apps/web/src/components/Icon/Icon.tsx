@@ -16,7 +16,7 @@ const isHidden = ({
 	label,
 	role,
 }: Pick<IconProps, 'hidden' | 'label' | 'role'>) => {
-	// hidden should take precedence over label since an icon can be not hidden but have no label (eg. have sibling elements that announce purpose)
+	// hidden should take precedence over label since an icon can be visible but have no label (eg. have sibling elements that announce purpose)
 	if (hidden) {
 		return true
 	}

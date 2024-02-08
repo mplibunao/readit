@@ -23,5 +23,6 @@ module.exports = {
 		],
 		'@typescript-eslint/no-non-null-assertion': 'off',
 		'@typescript-eslint/no-empty-function': 'off',
+		'@typescript-eslint/switch-exhaustiveness-check': 'error',
 	},
 }
