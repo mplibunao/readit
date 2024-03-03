@@ -11,7 +11,7 @@
 		"typecheck": "tsc"
 	},
 	"dependencies": {
-		"@react-email/button": "^0.0.7",
+		"@react-email/button": "^0.0.14",
 		"@react-email/container": "^0.0.8",
 		"@react-email/head": "^0.0.5",
 		"@react-email/heading": "^0.0.8",
