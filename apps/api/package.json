@@ -79,7 +79,7 @@
 		"@readit/pg-manager": "workspace:*",
 		"@readit/prettier-config": "workspace:*",
 		"@readit/tsconfig": "workspace:*",
-		"@types/connect-redis": "^0.0.19",
+		"@types/connect-redis": "^0.0.23",
 		"@types/http-errors": "^2.0.1",
 		"@types/node": "^18.0.0",
 		"@types/pg": "^8.6.5",
