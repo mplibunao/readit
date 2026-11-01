@@ -20,7 +20,7 @@
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
-		"zod": "^3.20.2"
+		"zod": "^4.0.0"
 	},
 	"devDependencies": {
 		"eslint-config-custom-server": "workspace:*",
